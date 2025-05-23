@@ -20,6 +20,7 @@
 #include <iostream>
 #include <functional>
 #include <variant>
+#include "video/sdlbase_video_system.hpp"
 
 using namespace std::string_literals;
 
