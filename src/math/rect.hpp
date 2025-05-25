@@ -18,6 +18,8 @@
 #ifndef HEADER_SUPERTUX_MATH_RECT_HPP
 #define HEADER_SUPERTUX_MATH_RECT_HPP
 
+#include "size.hpp"
+
 template <typename T>
 class Rect_t
 {
@@ -36,6 +38,16 @@ public:
 		};
 	}
 	
+	Rect_t(T left, T top, T right, T bottom) :
+		left(left), top(top), right(right), bottom(bottom)
+	{}
+	
+	Rect_t(T left, T top, const Size_t<T>& size) :
+		left(left),
+		top(top),
+		right(left + size.width),
+		bottom(top + size.height)
+	{}
 	
 public:
 	T left;
