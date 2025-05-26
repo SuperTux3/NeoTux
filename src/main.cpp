@@ -20,7 +20,7 @@
 #include <iostream>
 #include <functional>
 #include <variant>
-#include "video/sdlbase_video_system.hpp"
+#include "video/sdl/window.hpp"
 
 using namespace std::string_literals;
 
@@ -154,8 +154,12 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
+	SDLWindow window;
 	if (parse_arguments(argc, argv, st_args) == 0)
+	{
+		window.create_window(0, "SuperTux Milestone 3");
 		std::cout << "Start game" << std::endl;
-	//print_help(argc, argv, st_args);
+	}
+
 	return 0;
 }

@@ -66,4 +66,4 @@ public:
 using Size = Size_t<int>;
 using Sizef = Size_t<float>;
 
-#endif // HEADER_SUPERTUX_MATH_RECT_HPP
+#endif // HEADER_SUPERTUX_MATH_SIZE_HPP
