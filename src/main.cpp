@@ -158,7 +158,6 @@ int main(int argc, char** argv)
 	if (parse_arguments(argc, argv, st_args) == 0)
 	{
 		window.create_window(0, "SuperTux Milestone 3");
-		std::cout << "Start game" << std::endl;
 	}
 
 	return 0;

@@ -21,13 +21,14 @@
 #include <vector>
 #include <SDL3/SDL.h>
 #include "math/size.hpp"
-#include "video/sampler.hpp"
-#include "video/texture_ptr.hpp"
+#include "sdl/window.hpp"
+//#include "video/sampler.hpp"
+//#include "video/texture_ptr.hpp"
 
 class Rect;
 class Renderer;
 class SDLSurfacePtr;
-class Sampler;
+//class Sampler;
 class Surface;
 class SurfaceData;
 class Viewport;
