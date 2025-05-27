@@ -25,10 +25,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#ifdef SDL_PLATFORM_UNIX
-#include <X11/Xlib.h>
-#endif
-
 using namespace std::string_literals;
 
 BGFXVideoSystem::BGFXVideoSystem() :
@@ -92,27 +88,49 @@ void BGFXVideoSystem::init(VideoSystem::Backend backend)
 	binit.resolution.height = 600;
 	
 	window.create_window(flags, "SuperTux");
+	SDL_ShowWindow(window.m_sdl_window.get());
 	
 #ifdef SDL_PLATFORM_UNIX
 	SDL_Window* sdlwin = window.m_sdl_window.get();
 	std::string video_driver = SDL_GetCurrentVideoDriver();
+	SDL_PropertiesID sdlprops = SDL_GetWindowProperties(sdlwin);
 	if (video_driver == "x11") {
-		Display* xdisplay = reinterpret_cast<Display*>(
-			SDL_GetPointerProperty(SDL_GetWindowProperties(sdlwin), SDL_PROP_WINDOW_X11_DISPLAY_POINTER, NULL));
-		Window xwindow = static_cast<Window>(
-			SDL_GetNumberProperty(SDL_GetWindowProperties(sdlwin), SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0));
+		void* xdisplay = SDL_GetPointerProperty(sdlprops,
+		                                        SDL_PROP_WINDOW_X11_DISPLAY_POINTER,
+		                                        NULL);
+		void* xwindow = reinterpret_cast<void*>(SDL_GetNumberProperty(sdlprops,
+		                                                            SDL_PROP_WINDOW_X11_WINDOW_NUMBER,
+		                                                            0));
+
 		if (!(xdisplay && xwindow))
 			throw std::runtime_error("Error with X11");
+
 		binit.platformData.ndt = xdisplay;
-		binit.platformData.nwh = reinterpret_cast<void*>(xwindow);
+		binit.platformData.nwh = xwindow;
 	}
 	else if (video_driver == "wayland") {
-		throw std::runtime_error("Wayland TODO");
+		binit.platformData.type = bgfx::NativeWindowHandleType::Wayland;
+
+		void* wdisplay = SDL_GetPointerProperty(sdlprops,
+		                                        SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER,
+		                                        NULL);
+
+		void* wsurface = SDL_GetPointerProperty(sdlprops,
+		                                        SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER,
+		                                        NULL);
+
+		if (!(wsurface && wdisplay))
+			throw std::runtime_error("Error with Wayland");
+
+		binit.platformData.ndt = wdisplay;
+		binit.platformData.nwh = wsurface;
 	}
 #endif
-	bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
+	//bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
 	if (!bgfx::init(binit))
 		throw std::runtime_error("bgfx::init() failed :-(");
+
+	bgfx::frame();
 	
 	m_backend = backend;
 }
