@@ -28,7 +28,7 @@
 class Rect;
 class Renderer;
 class SDLSurfacePtr;
-//class Sampler;
+class Sampler;
 class Surface;
 class SurfaceData;
 class Viewport;
@@ -36,57 +36,61 @@ class Viewport;
 class VideoSystem
 {
 public:
-  enum Enum {
-    VIDEO_SDL,
-    VIDEO_OPENGL_AUTO,
-    VIDEO_OPENGL33CORE,
-    VIDEO_OPENGL20,
-    VIDEO_NULL
-  };
+	enum Backend {
+		VIDEO_SDL,
+		VIDEO_BGFX_OPENGL,
+		VIDEO_BGFX_OPENGLES,
+		VIDEO_BGFX_VULKAN,
+		VIDEO_BGFX_METAL,
+		VIDEO_NULL
+	};
 
-  static std::unique_ptr<VideoSystem> create(VideoSystem::Enum video_system);
+	static std::unique_ptr<VideoSystem> create(VideoSystem::Backend video_system);
 
-  static Enum get_video_system(const std::string &video);
-  static std::string get_video_string(Enum video);
+	static Backend get_video_system(const std::string &video);
+	static std::string get_video_string(Backend video);
 
-  struct Info final
-  {
-    const Enum value;
-    const std::string name;
-    const std::string description;
-  };
-  static std::vector<Info> get_available_video_systems();
+	struct Info final
+	{
+		const Backend value;
+		const std::string name;
+		const std::string description;
+	};
+	static std::vector<Info> get_available_video_systems();
 
 public:
-  VideoSystem() {}
-  ~VideoSystem() override {}
+	VideoSystem() = default;
+	virtual ~VideoSystem() = default;
 
-  /** Return a human readable name of the current video system */
-  virtual std::string get_name() const = 0;
+	/** Return a human readable name of the current video system */
+	virtual std::string_view get_name() const = 0;
 
-  virtual Renderer* get_back_renderer() const = 0;
-  virtual Renderer& get_renderer() const = 0;
-  virtual Renderer& get_lightmap() const = 0;
+	virtual Renderer* get_back_renderer() const = 0;
+	virtual Renderer& get_renderer() const = 0;
+	virtual Renderer& get_lightmap() const = 0;
 
-  virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
+	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
-  virtual const Viewport& get_viewport() const = 0;
-  virtual void apply_config() = 0;
-  virtual void flip() = 0;
-  virtual void on_resize(int w, int h) = 0;
-  virtual Size get_window_size() const = 0;
+	virtual const Viewport& get_viewport() const = 0;
+	virtual void apply_config() = 0;
+	virtual void flip() = 0;
+	virtual void on_resize(int w, int h) = 0;
+	virtual Size get_window_size() const = 0;
 
-  virtual void set_vsync(int mode) = 0;
-  virtual int get_vsync() const = 0;
-  virtual void set_title(const std::string& title) = 0;
-  virtual void set_icon(const SDL_Surface& icon) = 0;
-  virtual SDLSurfacePtr make_screenshot() = 0;
+	virtual void set_vsync(int mode) = 0;
+	virtual int get_vsync() const = 0;
+	virtual void set_title(const std::string& title) = 0;
+	virtual void set_icon(const SDL_Surface& icon) = 0;
+	//virtual SDLSurfacePtr make_screenshot() = 0;
 
-  void do_take_screenshot();
+	void do_take_screenshot();
+
+protected:
+	SDLWindow window;
 
 private:
-  VideoSystem(const VideoSystem&) = delete;
-  VideoSystem& operator=(const VideoSystem&) = delete;
+	VideoSystem(const VideoSystem&) = delete;
+	VideoSystem& operator=(const VideoSystem&) = delete;
 };
 
 #endif

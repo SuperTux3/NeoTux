@@ -20,7 +20,9 @@
 #include <iostream>
 #include <functional>
 #include <variant>
+#include "video/bgfx/bgfx_video_system.hpp"
 #include "video/sdl/window.hpp"
+#include "video/video_system.hpp"
 
 using namespace std::string_literals;
 
@@ -154,10 +156,14 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
-	SDLWindow window;
+	BGFXVideoSystem video{};
+	video.init(VideoSystem::Backend::VIDEO_BGFX_OPENGL);
+	VideoSystem& real_video = video;
+
 	if (parse_arguments(argc, argv, st_args) == 0)
 	{
-		window.create_window(0, "SuperTux Milestone 3");
+		//window.create_window(0, "SuperTux Milestone 3");
+		sleep(3);
 	}
 
 	return 0;

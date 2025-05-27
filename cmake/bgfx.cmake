@@ -19,7 +19,7 @@ target_include_directories(BX PUBLIC
 	${BX_DIRECTORY}/include/compat/linux
 	${BX_DIRECTORY}/3rdparty)
 target_compile_definitions(BX PUBLIC
-	BX_CONFIG_DEBUG=0)
+	BX_CONFIG_DEBUG=1)
 
 # BIMG
 project(BIMG LANGUAGES CXX C)
@@ -31,7 +31,7 @@ file(GLOB_RECURSE BIMG_SRC
 	${BIMG_DIRECTORY}/src/image.cpp
 	${BIMG_DIRECTORY}/src/image_gnf.cpp
 	${BIMG_DIRECTORY}/src/*.h
-	${BIMG_DIRECTORY}/3rdparty/astc-encoder/source/*.cc)
+	${BIMG_DIRECTORY}/3rdparty/astc-encoder/source/*.cpp)
 
 add_library(BIMG ${BIMG_SRC})
 target_link_libraries(BIMG BX)
@@ -56,7 +56,7 @@ list(REMOVE_ITEM BGFX_SRC ${BGFX_DIRECTORY}/src/amalgamated.cpp)
 add_library(BGFX ${BGFX_SRC})
 #add_dependencies(BGFX BX BIMG)
 target_link_libraries(BGFX BX BIMG)
-target_include_directories(BGFX PRIVATE
+target_include_directories(BGFX PUBLIC
 	${BGFX_DIRECTORY}/include 
 	${BGFX_DIRECTORY}/3rdparty
 	${BGFX_DIRECTORY}/3rdparty/dxsdk/include

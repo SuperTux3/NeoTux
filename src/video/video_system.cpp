@@ -1,5 +1,5 @@
 //  SuperTux
-//  Copyright (C) 2025 Hyland B. <me@ow.swag.toys>
+//  Copyright (C) 2006 Matthias Braun <matze@braunis.de>
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -14,19 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "window.hpp"
-#include <SDL3/SDL_error.h>
+#include "video_system.hpp"
 
-using namespace std::string_literals;
 
-SDLWindow::SDLWindow() :
-	m_sdl_window{nullptr, SDL_DestroyWindow}
-{
-	if (SDL_Init(SDL_INIT_VIDEO) == false)
-		throw std::runtime_error("SDL Failed to initialize: "s + SDL_GetError());
-}
-
-void SDLWindow::create_window(u32 flags, const std::string& title)
-{
-	m_sdl_window.reset(SDL_CreateWindow(title.c_str(), 800, 600, flags));
-}
