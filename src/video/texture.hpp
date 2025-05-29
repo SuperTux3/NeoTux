@@ -1,5 +1,5 @@
 //  SuperTux
-//  Copyright (C) 2025 Hyland B. <me@ow.swag.toys>
+//  Copyright (C) 2006 Matthias Braun <matze@braunis.de>
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -14,26 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef HEADER_SUPERTUX_VIDEO_SDL_WINDOW_HPP
-#define HEADER_SUPERTUX_VIDEO_SDL_WINDOW_HPP
+#ifndef HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
+#define HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
 
-#include "../../types.hpp"
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_video.h>
-#include <string>
-#include <memory>
-#include <iostream>
-class SDLWindow
+class Texture
 {
 public:
-	SDLWindow();
-	~SDLWindow() = default;
-	
-	void set_title(const std::string& title);
-	void set_icon(const std::string& icon);
-	void create_window(u32 flags, const std::string& title);
-	
-	std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_sdl_window;
+	Texture();
+	virtual ~Texture();
 };
 
-#endif // HEADER_SUPERTUX_VIDEO_SDL_WINDOW_HPP
+#endif

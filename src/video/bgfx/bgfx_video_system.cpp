@@ -16,6 +16,7 @@
 
 #include "bgfx_video_system.hpp"
 #include "bgfx/bgfx.h"
+#include "bgfx/defines.h"
 #include "bgfx/platform.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_properties.h>
@@ -136,9 +137,14 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 	bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
 	if (!bgfx::init(binit))
 		throw std::runtime_error("bgfx::init() failed :-(");
-
-	bgfx::frame();
 	
+	bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x505050ff);
+	bgfx::setViewRect(0, 0, 0, 800, 900);
+	bgfx::touch(0);
+	// ---
+	bgfx::frame();
+	bgfx::renderFrame();
+
 	m_backend = backend;
 }
 

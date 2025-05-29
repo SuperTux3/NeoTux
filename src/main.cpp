@@ -14,8 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <atomic>
 #include <format>
+#include <string>
 #include <iomanip>
 #include <iostream>
 #include <functional>
@@ -23,6 +23,7 @@
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/sdl/window.hpp"
 #include "video/video_system.hpp"
+#include "game.hpp"
 
 using namespace std::string_literals;
 
@@ -156,16 +157,13 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
-	BGFXVideoSystem video{VideoSystem::Backend::VIDEO_BGFX_OPENGL};
+	
 
 	if (parse_arguments(argc, argv, st_args) == 0)
 	{
+		g_game.run();
 		// Simple loop for now
 		//window.create_window(0, "SuperTux Milestone 3");
-		while (true)
-		{
-			sleep(1.f/.6f);
-		}
 	}
 
 	return 0;

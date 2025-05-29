@@ -93,6 +93,8 @@ private:
 	VideoSystem& operator=(const VideoSystem&) = delete;
 };
 
+static std::unique_ptr<VideoSystem> g_video_system;
+
 #endif
 
 /* EOF */
