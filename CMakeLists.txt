@@ -7,12 +7,13 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(bgfx)
 
 find_package(SDL3 REQUIRED)
+find_package(SDL3_ttf REQUIRED)
 
 file(GLOB_RECURSE SUPERTUX_SRC src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
 	
 add_executable(SuperTux ${SUPERTUX_SRC})
 target_include_directories(SuperTux PRIVATE src BGFX BIMG BX)
-target_link_libraries(SuperTux PRIVATE BGFX SDL3::SDL3 BIMG BX)
+target_link_libraries(SuperTux PRIVATE BGFX SDL3::SDL3 SDL3_ttf::SDL3_ttf BIMG BX)
 set_target_properties(SuperTux PROPERTIES OUTPUT_NAME supertux3)
 
 set_property(TARGET SuperTux PROPERTY CXX_STANDARD 20)

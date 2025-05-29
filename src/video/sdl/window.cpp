@@ -15,15 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "window.hpp"
-#include <SDL3/SDL_error.h>
-
-using namespace std::string_literals;
+#include "sdl_exception.hpp"
 
 SDLWindow::SDLWindow() :
 	m_sdl_window{nullptr, SDL_DestroyWindow}
 {
 	if (SDL_Init(SDL_INIT_VIDEO) == false)
-		throw std::runtime_error("SDL Failed to initialize: "s + SDL_GetError());
+		throw SDLException("SDL Failed to initialize");
 }
 
 void SDLWindow::create_window(u32 flags, const std::string& title)

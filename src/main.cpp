@@ -156,14 +156,16 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
-	BGFXVideoSystem video{};
-	video.init(VideoSystem::Backend::VIDEO_BGFX_OPENGL);
-	VideoSystem& real_video = video;
+	BGFXVideoSystem video{VideoSystem::Backend::VIDEO_BGFX_OPENGL};
 
 	if (parse_arguments(argc, argv, st_args) == 0)
 	{
+		// Simple loop for now
 		//window.create_window(0, "SuperTux Milestone 3");
-		sleep(3);
+		while (true)
+		{
+			sleep(1.f/.6f);
+		}
 	}
 
 	return 0;

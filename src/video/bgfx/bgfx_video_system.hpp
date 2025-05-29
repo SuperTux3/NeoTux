@@ -39,10 +39,9 @@ class BGFXVideoSystem : public VideoSystem
 {
 
 public:
-	BGFXVideoSystem();
-	virtual ~BGFXVideoSystem() = default;
+	BGFXVideoSystem(VideoSystem::Backend backend);
+	virtual ~BGFXVideoSystem();
 	
-	void init(VideoSystem::Backend backend);
 
 	/** Return a human readable name of the current video system */
 	std::string_view get_name() const override;
@@ -55,7 +54,7 @@ public:
 
 	const Viewport& get_viewport() const {};
 	void apply_config() {};
-	void flip() {};
+	void flip();
 	void on_resize(int w, int h) {};
 	Size get_window_size() const {};
 
@@ -69,6 +68,8 @@ public:
 
 private:
 	enum VideoSystem::Backend m_backend;
+	
+	void init(VideoSystem::Backend backend);
 	
 	BGFXVideoSystem(const BGFXVideoSystem&) = delete;
 	BGFXVideoSystem& operator=(const BGFXVideoSystem&) = delete;

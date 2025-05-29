@@ -27,9 +27,15 @@
 
 using namespace std::string_literals;
 
-BGFXVideoSystem::BGFXVideoSystem() :
+BGFXVideoSystem::BGFXVideoSystem(BGFXVideoSystem::Backend backend) :
 	m_backend{VideoSystem::Backend::VIDEO_NULL}
 {
+	init(backend);
+}
+
+BGFXVideoSystem::~BGFXVideoSystem()
+{
+	bgfx::shutdown();
 }
 
 std::string_view BGFXVideoSystem::get_name() const
@@ -48,7 +54,8 @@ std::string_view BGFXVideoSystem::get_name() const
 	}
 }
 
-void BGFXVideoSystem::init(VideoSystem::Backend backend)
+void
+BGFXVideoSystem::init(VideoSystem::Backend backend)
 {
 	bgfx::Init binit;
 	u8 flags = SDL_WINDOW_RESIZABLE;
@@ -126,11 +133,17 @@ void BGFXVideoSystem::init(VideoSystem::Backend backend)
 		binit.platformData.nwh = wsurface;
 	}
 #endif
-	//bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
+	bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
 	if (!bgfx::init(binit))
 		throw std::runtime_error("bgfx::init() failed :-(");
 
 	bgfx::frame();
 	
 	m_backend = backend;
+}
+
+void
+BGFXVideoSystem::flip()
+{
+	bgfx::frame();
 }
