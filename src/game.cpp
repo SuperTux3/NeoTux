@@ -18,7 +18,6 @@
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/video_system.hpp"
 #include <SDL3/SDL_events.h>
-#include <iostream>
 
 Game::Game() :
 	m_quit(false)
@@ -53,6 +52,10 @@ Game::handle_events()
 			case SDL_EVENT_QUIT:
 				m_quit = true;
 				break;
+			case SDL_EVENT_WINDOW_RESIZED:
+			{
+				g_video_system->on_resize(ev.window.data1, ev.window.data2);
+			}
 		}
 	}
 }

@@ -149,7 +149,22 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 }
 
 void
+BGFXVideoSystem::on_resize(int w, int h)
+{
+	// Surely there is a better way?
+	bgfx::reset(w, h);
+	bgfx::setViewRect(0, 0, 0, w, h);
+	bgfx::touch(0);
+	flip();
+}
+
+void
 BGFXVideoSystem::flip()
 {
 	bgfx::frame();
+	
+	bgfx::touch(0);
+	// ---
+	bgfx::frame();
+	bgfx::renderFrame();
 }

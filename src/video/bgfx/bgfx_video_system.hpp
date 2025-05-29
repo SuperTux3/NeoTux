@@ -55,7 +55,7 @@ public:
 	const Viewport& get_viewport() const {};
 	void apply_config() {};
 	void flip();
-	void on_resize(int w, int h) {};
+	void on_resize(int w, int h);
 	Size get_window_size() const {};
 
 	void set_vsync(int mode) {};
