@@ -1,4 +1,4 @@
-//  SuperTux
+//  NeoTux
 //  Copyright (C) 2025 MatusGuy
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,8 @@
 #ifndef HEADER_SUPERTUX_SETTINGS_HPP
 #define HEADER_SUPERTUX_SETTINGS_HPP
 
+#include <memory>
+
 #include "video/video_system.hpp"
 
 struct Settings {
@@ -25,6 +27,6 @@ struct Settings {
 	VideoSystem::Backend renderer = VideoSystem::VIDEO_AUTO;
 };
 
-static Settings g_settings{};
+static auto g_settings = std::make_unique<Settings>();
 
 #endif // HEADER_SUPERTUX_SETTINGS_HPP

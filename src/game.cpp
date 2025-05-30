@@ -34,7 +34,7 @@ Game::update()
 void
 Game::run()
 {
-	g_video_system = std::make_unique<BGFXVideoSystem>(g_settings.renderer);
+	g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
 	
 	while (!m_quit)
 	{

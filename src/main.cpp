@@ -79,11 +79,11 @@ bool check_arg(Argument& arg, char* argument)
 int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx) {
 	switch (idx) {
 		case 1:
-			g_settings.verbose = true;
+			g_settings->show_help = true;
 			break;
 
 		case 3:
-			g_settings.verbose = true;
+			g_settings->verbose = true;
 			break;
 
 		case 4: {
@@ -91,7 +91,7 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 				return 1;
 
 			std::string renderer = argv[argvidx + 1];
-			g_settings.renderer = VideoSystem::get_video_system(renderer);
+			g_settings->renderer = VideoSystem::get_video_system(renderer);
 			break;
 		}
 	}
@@ -190,7 +190,7 @@ int main(int argc, char** argv)
 	if (result != 0)
 		return result;
 
-	if (g_settings.show_help)
+	if (g_settings->show_help)
 	{
 		print_help(std::cout, argc, argv, st_args);
 		return 0;
