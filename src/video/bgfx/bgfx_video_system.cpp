@@ -96,7 +96,6 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 	binit.resolution.height = 600;
 	
 	window.create_window(flags, "SuperTux");
-	SDL_ShowWindow(window.m_sdl_window.get());
 	
 #ifdef SDL_PLATFORM_UNIX
 	SDL_Window* sdlwin = window.m_sdl_window.get();
@@ -139,11 +138,7 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 		throw std::runtime_error("bgfx::init() failed :-(");
 	
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x505050ff);
-	bgfx::setViewRect(0, 0, 0, 800, 900);
-	bgfx::touch(0);
-	// ---
-	bgfx::frame();
-	bgfx::renderFrame();
+	on_resize(800, 600);
 
 	m_backend = backend;
 }

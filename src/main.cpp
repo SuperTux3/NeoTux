@@ -158,7 +158,6 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
-	Logger::warn("Hi");	
 	if (parse_arguments(argc, argv, st_args) == 0)
 	{
 		g_game.run();

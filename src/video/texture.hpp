@@ -22,6 +22,8 @@ class Texture
 public:
 	Texture();
 	virtual ~Texture();
+	
+	void from_image
 };
 
 #endif
