@@ -20,6 +20,7 @@
 #include <iostream>
 #include <functional>
 #include <variant>
+#include "util/logger.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/sdl/window.hpp"
 #include "video/video_system.hpp"
@@ -157,8 +158,7 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
-	
-
+	Logger::warn("Hi");	
 	if (parse_arguments(argc, argv, st_args) == 0)
 	{
 		g_game.run();

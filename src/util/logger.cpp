@@ -38,7 +38,7 @@ void Logger::log(Level lv, const std::string& lvname, const std::string& msg)
 std::string Logger::get_color_code(Level lv)
 {
 	static char* no_color = std::getenv("NO_COLOR");
-	if (no_color == NULL)
+	if (no_color != NULL && no_color[0] != '\0')
 		return "";
 	
 	switch (lv) {
