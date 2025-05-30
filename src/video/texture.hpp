@@ -17,15 +17,22 @@
 #ifndef HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
 #define HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
 
+#include "math/size.hpp"
+#include <SDL3/SDL_surface.h>
 #include <string>
 
 class Texture
 {
 public:
 	Texture();
-	virtual ~Texture();
+	virtual ~Texture() = default;
 	
-	void from_image(const std::string& filename);
+	
+	void load_file(const std::string& filename);
+private:
+	static SDL_Surface* create_surface(const std::string& filename);
+
+	Size size;	
 };
 
 #endif

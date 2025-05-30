@@ -16,6 +16,8 @@
 
 #include "video_system.hpp"
 
+std::unique_ptr<VideoSystem> g_video_system;
+
 VideoSystem::Backend VideoSystem::get_video_system(const std::string& video)
 {
 	if (video == "opengl")

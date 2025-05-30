@@ -5,8 +5,8 @@ project(SuperTux LANGUAGES CXX)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
-	add_compile_options(-fsanitize=address)
-	add_link_options(-fsanitize=address)
+	add_compile_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
+	add_link_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
 endif()
 
 include(bgfx)

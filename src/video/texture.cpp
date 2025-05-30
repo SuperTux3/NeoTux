@@ -14,52 +14,24 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "game.hpp"
-#include "video/bgfx/bgfx_video_system.hpp"
-#include "video/video_system.hpp"
-#include "settings.hpp"
-#include <SDL3/SDL_events.h>
+#include "texture.hpp"
+#include <SDL3_image/SDL_image.h>
 
-Game g_game{};
-
-Game::Game() :
-	m_quit(false)
-{
-}
+Texture::Texture()
+{}
 
 void
-Game::update()
+Texture::load_file(const std::string& filename)
 {
-	
+	SDL_Surface* surface = create_surface(filename);
+	size.width  = surface->w;
+	size.height = surface->h;
+
 }
 
-void
-Game::run()
+SDL_Surface*
+Texture::create_surface(const std::string& filename)
 {
-	g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
-	
-	while (!m_quit)
-	{
-		handle_events();
-	}
-}
-
-void
-Game::handle_events()
-{
-	SDL_Event ev;
-	while (SDL_PollEvent(&ev))
-	{
-		switch (ev.type)
-		{
-			case SDL_EVENT_QUIT:
-				m_quit = true;
-				g_video_system->shutdown();
-				break;
-			case SDL_EVENT_WINDOW_RESIZED:
-			{
-				g_video_system->on_resize(ev.window.data1, ev.window.data2);
-			}
-		}
-	}
+	SDL_Surface* image = IMG_Load(filename.c_str());
+	return image;
 }

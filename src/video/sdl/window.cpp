@@ -42,14 +42,16 @@ SDLWindow::create_window(u32 flags, const std::string& title)
 void
 SDLWindow::set_icon(const std::string& filename)
 {
+	SDL_Surface* icon;
 	try
 	{
-		SDL_Surface* icon = IMG_Load(filename.c_str());
+		icon = IMG_Load(filename.c_str());
 		if (SDL_SetWindowIcon(m_sdl_window.get(), icon) == false)
 			throw SDLException("SDL_SetWindowIcon");
 		SDL_DestroySurface(icon);
 	}
 	catch (const SDLException& err) {
+		SDL_DestroySurface(icon);
 		// Ignore this specific error, not our problem
 		if (err.sdl_error == "wayland: cannot set icon; required xdg_toplevel_icon_v1 protocol not supported")
 			return;

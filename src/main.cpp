@@ -201,6 +201,6 @@ int main(int argc, char** argv)
 	g_game.run();
 	// Simple loop for now
 	//window.create_window(0, "SuperTux Milestone 3");
-
+	
 	return 0;
 }

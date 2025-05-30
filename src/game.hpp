@@ -17,6 +17,7 @@
 #ifndef HEADER_SUPERTUX_GAME_HPP
 #define HEADER_SUPERTUX_GAME_HPP
 
+#include <stdio.h>
 class Game
 {
 public:
@@ -31,6 +32,6 @@ private:
 	bool m_quit;
 };
 
-static Game g_game{};
+extern Game g_game;
 
 #endif
