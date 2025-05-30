@@ -1,6 +1,4 @@
 # BX
-project(BX LANGUAGES CXX C)
-
 set(BX_DIRECTORY ${SuperTux_SOURCE_DIR}/external/bx)
 
 file(GLOB_RECURSE BX_SRC
@@ -22,8 +20,6 @@ target_compile_definitions(BX PUBLIC
 	BX_CONFIG_DEBUG=0)
 
 # BIMG
-project(BIMG LANGUAGES CXX C)
-
 set(BIMG_DIRECTORY ${SuperTux_SOURCE_DIR}/external/bimg)
 
 file(GLOB_RECURSE BIMG_SRC
@@ -40,9 +36,7 @@ target_include_directories(BIMG PUBLIC
 	${BIMG_DIRECTORY}/include
 	${BIMG_DIRECTORY}/3rdparty/astc-encoder/include)
 
-# BGFX	
-project(BGFX LANGUAGES CXX C)
-
+# BGFX
 set(BGFX_DIRECTORY ${SuperTux_SOURCE_DIR}/external/bgfx)
 
 file(GLOB_RECURSE BGFX_SRC
