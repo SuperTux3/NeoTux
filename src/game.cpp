@@ -33,7 +33,7 @@ Game::update()
 void
 Game::run()
 {
-	g_video_system = std::make_unique<BGFXVideoSystem>(VideoSystem::Backend::VIDEO_BGFX_VULKAN);
+	g_video_system = std::make_unique<BGFXVideoSystem>(VideoSystem::Backend::VIDEO_BGFX_OPENGL);
 	
 	while (!m_quit)
 	{
