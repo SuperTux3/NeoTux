@@ -17,6 +17,7 @@
 #include "game.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/video_system.hpp"
+#include "settings.hpp"
 #include <SDL3/SDL_events.h>
 
 Game::Game() :
@@ -33,7 +34,7 @@ Game::update()
 void
 Game::run()
 {
-	g_video_system = std::make_unique<BGFXVideoSystem>(VideoSystem::Backend::VIDEO_BGFX_OPENGL);
+	g_video_system = std::make_unique<BGFXVideoSystem>(g_settings.renderer);
 	
 	while (!m_quit)
 	{

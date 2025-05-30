@@ -13,6 +13,7 @@ include(bgfx)
 
 # TODO my module function
 find_package(SDL3 REQUIRED)
+find_package(PkgConfig REQUIRED)
 # Kept getting compile-time errors with the packages... reverting to pkg-config
 pkg_check_modules(SDL3_image sdl3-image)
 #find_package(SDL3_ttf REQUIRED)

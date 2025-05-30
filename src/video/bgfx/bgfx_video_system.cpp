@@ -147,6 +147,7 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 	bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
 	if (!bgfx::init(binit))
 		throw std::runtime_error("bgfx::init() failed :-(");
+	
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x505050ff);
 	on_resize(800, 600);
 

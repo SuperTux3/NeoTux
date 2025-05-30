@@ -1,5 +1,5 @@
 //  SuperTux
-//  Copyright (C) 2006 Matthias Braun <matze@braunis.de>
+//  Copyright (C) 2025 MatusGuy
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -14,22 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "video_system.hpp"
+#ifndef HEADER_SUPERTUX_SETTINGS_HPP
+#define HEADER_SUPERTUX_SETTINGS_HPP
 
-VideoSystem::Backend VideoSystem::get_video_system(const std::string& video)
-{
-	if (video == "opengl")
-		return VideoSystem::VIDEO_BGFX_OPENGL;
-	else if (video == "opengles")
-		return VideoSystem::VIDEO_BGFX_OPENGLES;
-	else if (video == "vulkan")
-		return VideoSystem::VIDEO_BGFX_VULKAN;
-	else if (video == "metal")
-		return VideoSystem::VIDEO_BGFX_METAL;
-	else if (video == "sdl")
-		return VideoSystem::VIDEO_SDL;
-	else if (video == "null")
-		return VideoSystem::VIDEO_NULL;
-	else
-		return VideoSystem::VIDEO_AUTO;
-}
+#include "video/video_system.hpp"
+
+struct Settings {
+	bool show_help;
+	bool verbose;
+	VideoSystem::Backend renderer = VideoSystem::VIDEO_AUTO;
+};
+
+static Settings g_settings{};
+
+#endif // HEADER_SUPERTUX_SETTINGS_HPP

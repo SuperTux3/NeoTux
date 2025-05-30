@@ -24,37 +24,79 @@
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/sdl/window.hpp"
 #include "video/video_system.hpp"
+#include "settings.hpp"
 #include "game.hpp"
 
 using namespace std::string_literals;
 
-void print_help(std::ostream& cout, int, char**, struct Arguments*, int opt_width = 30);
+void print_help(std::ostream& cout, int, char**, struct Argument*, int opt_width = 30);
 
-struct Arguments {
+struct Argument {
+	Argument():
+		longarg(nullptr),
+		shortarg(0),
+		desc(nullptr),
+		paramhint(nullptr)
+	{
+
+	}
+
+	Argument(const char* longarg_,
+			  char shortarg_,
+			  const char* desc_,
+			  const char* paramhint_ = nullptr):
+		longarg(longarg_),
+		shortarg(shortarg_),
+		desc(desc_),
+		paramhint(paramhint_)
+	{
+	}
+
 	/// You MUST provide a longarg if you provide a shortarg.
 	const char* longarg;
 	char shortarg;
 	const char* paramhint;
 	const char* desc;
-	
-	/// Callback 
-	std::variant<std::monostate, std::function<int(int,char**)>, std::function<int(int,char**,std::string)>> cb;
 };
 
-Arguments st_args[] = {
-	{ nullptr, 0, nullptr, "General Options:", {} },
-	{ "help", 'h', nullptr, "Show this help message",
-		[](int argc, char** argv){ print_help(std::cout, argc, argv, st_args); return 1; } },
-	{ "version", 'V', nullptr, "Show SuperTux version", {} },
-	{ "verbose", 'v', nullptr, "Show verbose messages",
-		[](int argc, char** argv){ std::cout << "Enabling verbose mode..." << std::endl; return 0; } },
-	{ nullptr, 0, nullptr, nullptr, {} }
+Argument st_args[] = {
+	{ nullptr, 0, "General Options:" },
+	{ "help", 'h', "Show this help message" },
+	{ "version", 'V', "Show SuperTux version" },
+	{ "verbose", 'v', "Show verbose messages" },
+	{ "renderer", 'r',
+	  "Use specific renderer ('auto', 'opengl', 'opengles', 'vulkan', 'metal', 'sdl', 'null')",
+	  "<option>"},
+	{}
 };
 
-bool check_arg(Arguments& arg, char* argument)
+bool check_arg(Argument& arg, char* argument)
 {
 	// Note: Any method with a short argument requires a long argument
 	return "--"s+arg.longarg == argument || (arg.shortarg != 0 ? "-"s+arg.shortarg == argument : false);
+}
+
+int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx) {
+	switch (idx) {
+		case 1:
+			g_settings.verbose = true;
+			break;
+
+		case 3:
+			g_settings.verbose = true;
+			break;
+
+		case 4: {
+			if (argvidx - 1 >= argc)
+				return 1;
+
+			std::string renderer = argv[argvidx + 1];
+			g_settings.renderer = VideoSystem::get_video_system(renderer);
+			break;
+		}
+	}
+
+	return 0;
 }
 
 /**
@@ -67,65 +109,51 @@ bool check_arg(Arguments& arg, char* argument)
  *  and std::monostate for the callback, or else you will loop forever.
  * @return -1 on an invalid argument, 0 on success, 1 if the callback of an argument executed successfully
  */
-int parse_arguments(int argc, char** argv, Arguments args[])
+int parse_arguments(int argc, char** argv, Argument args[])
 {
+	if (argc <= 1)
+		return 0;
+
 	bool invalid_argument = false;
-	if (argc > 1)
+	int argv_idx = 1;
+	for (argv_idx = 1; argv_idx < argc; ++argv_idx)
 	{
-		for (int argv_idx = 1; argv_idx < argc; ++argv_idx)
+		for (int i = 0;; ++i)
 		{
-			for (int i = 0;; ++i)
+			if (args[i].longarg == nullptr && args[i].shortarg == 0 && args[i].desc == nullptr)
 			{
-				if (args[i].longarg == nullptr && args[i].shortarg == 0 && args[i].desc == nullptr)
-				{
-					argv_idx = argc+1;
-					invalid_argument = true;
-					break;
-				}
-
-				// std::monostate
-				if (args[i].cb.index() == 0)
-					continue;
-
-				try {
-					auto fun = std::get<std::function<int(int,char**)>>(args[i].cb);
-					if (check_arg(args[i], argv[argv_idx]))
-					{
-						if (fun(argc, argv) == 1)
-							return 1;
-						break;
-					}
-				} catch (std::bad_variant_access const& ex) { }
-
-				try {
-					auto fun = std::get<std::function<int(int,char**,std::string)>>(args[i].cb);
-					if (check_arg(args[i], argv[argv_idx]))
-					{
-						if (fun(argc, argv, argv[argv_idx]) == 1)
-							return 1;
-						argv_idx++;
-						break;
-					}
-				} catch (std::bad_variant_access const& ex) {  }
+				//invalid_argument = true;
+				break;
 			}
+
+			if (args[i].longarg == nullptr)
+				continue;
+
+			if (!check_arg(args[i], argv[argv_idx]))
+				continue;
+
+			apply_argument(argc, argv, argv_idx, args, i);
 		}
+
+		if (invalid_argument)
+			break;
 	}
 	
-	if (argc > 1 && invalid_argument)
+	if (invalid_argument)
 	{
-		std::cout << std::format("Invalid argument \"{}\".", argv[1]) << "\n" << std::endl;
+		std::cout << std::format("Invalid argument \"{}\".", argv[argv_idx]) << "\n" << std::endl;
 		print_help(std::cerr, argc, argv, args);
-		return -1;
+		return 1;
 	}
 	
 	return 0;
 }
 
-void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int opt_width /*= 30*/)
+void print_help(std::ostream& cout, int argc, char** argv, Argument args[], int opt_width /*= 30*/)
 {
 	cout << std::left;
 	cout << std::format("Usage: {} [OPTIONS] [LEVELFILE]", argv[0]) << "\n";
-	// Get 
+
 	for (int i = 0;; ++i)
 	{
 		bool is_header = args[i].paramhint == nullptr && args[i].longarg == nullptr && args[i].shortarg == 0;
@@ -158,11 +186,19 @@ void print_help(std::ostream& cout, int argc, char** argv, Arguments args[], int
 	
 int main(int argc, char** argv)
 {
-	if (parse_arguments(argc, argv, st_args) == 0)
+	int result = parse_arguments(argc, argv, st_args);
+	if (result != 0)
+		return result;
+
+	if (g_settings.show_help)
 	{
-		g_game.run();
-		// Simple loop for now
-		//window.create_window(0, "SuperTux Milestone 3");
+		print_help(std::cout, argc, argv, st_args);
+		return 0;
 	}
+
+	g_game.run();
+	// Simple loop for now
+	//window.create_window(0, "SuperTux Milestone 3");
+
 	return 0;
 }
