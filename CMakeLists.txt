@@ -19,7 +19,7 @@ pkg_check_modules(SDL3_image sdl3-image)
 #find_package(SDL3_ttf REQUIRED)
 pkg_check_modules(SDL3_ttf sdl3-ttf)
 
-file(GLOB_RECURSE SUPERTUX_SRC src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
+file(GLOB_RECURSE SUPERTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
 
 add_executable(SuperTux ${SUPERTUX_SRC})
 target_include_directories(SuperTux PRIVATE src BGFX BIMG BX)

@@ -186,6 +186,8 @@ void print_help(std::ostream& cout, int argc, char** argv, Argument args[], int 
 	
 int main(int argc, char** argv)
 {
+	g_settings = std::make_unique<Settings>();
+
 	int result = parse_arguments(argc, argv, st_args);
 	if (result != 0)
 		return result;

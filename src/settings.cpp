@@ -14,19 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef HEADER_SUPERTUX_SETTINGS_HPP
-#define HEADER_SUPERTUX_SETTINGS_HPP
+#include "settings.hpp"
 
-#include <memory>
-
-#include "video/video_system.hpp"
-
-struct Settings {
-	bool show_help;
-	bool verbose;
-	VideoSystem::Backend renderer = VideoSystem::VIDEO_AUTO;
-};
-
-extern std::unique_ptr<Settings> g_settings;
-
-#endif // HEADER_SUPERTUX_SETTINGS_HPP
+std::unique_ptr<Settings> g_settings = std::make_unique<Settings>();
