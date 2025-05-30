@@ -23,7 +23,7 @@ public:
 	Texture();
 	virtual ~Texture();
 	
-	void from_image
+	void from_image();
 };
 
 #endif

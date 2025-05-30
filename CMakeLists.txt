@@ -6,7 +6,10 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 include(bgfx)
 
+# TODO my module function
 find_package(SDL3 REQUIRED)
+# Kept getting compile-time errors with the packages... reverting to pkg-config
+pkg_check_modules(SDL3_image sdl3-image)
 #find_package(SDL3_ttf REQUIRED)
 pkg_check_modules(SDL3_ttf sdl3-ttf)
 
@@ -14,7 +17,7 @@ file(GLOB_RECURSE SUPERTUX_SRC src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
 	
 add_executable(SuperTux ${SUPERTUX_SRC})
 target_include_directories(SuperTux PRIVATE src BGFX BIMG BX)
-target_link_libraries(SuperTux PRIVATE BGFX SDL3::SDL3 ${SDL3_ttf_LINK_LIBRARIES} BIMG BX)
+target_link_libraries(SuperTux PRIVATE BGFX SDL3::SDL3 ${SDL3_image_LINK_LIBRARIES} ${SDL3_ttf_LINK_LIBRARIES} BIMG BX)
 message("${harfbuzz_COMPILE_OPTIONS} ${plutosvg_FOUND}")
 set_target_properties(SuperTux PROPERTIES OUTPUT_NAME supertux3)
 

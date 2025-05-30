@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include <string>
 
-class SDLException : std::runtime_error
+class SDLException : public std::runtime_error
 {
 public:
 	SDLException(const std::string& what = "") :
