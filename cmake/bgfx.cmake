@@ -19,7 +19,7 @@ target_include_directories(BX PUBLIC
 	${BX_DIRECTORY}/include/compat/linux
 	${BX_DIRECTORY}/3rdparty)
 target_compile_definitions(BX PUBLIC
-	BX_CONFIG_DEBUG=1)
+	BX_CONFIG_DEBUG=0)
 
 # BIMG
 project(BIMG LANGUAGES CXX C)

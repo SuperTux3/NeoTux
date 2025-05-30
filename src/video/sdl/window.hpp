@@ -27,7 +27,7 @@ class SDLWindow
 {
 public:
 	SDLWindow();
-	~SDLWindow() = default;
+	~SDLWindow();
 	
 	void set_title(const std::string& title);
 	void set_icon(const std::string& icon);

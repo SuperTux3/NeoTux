@@ -17,13 +17,15 @@
 #ifndef HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
 #define HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
 
+#include <string>
+
 class Texture
 {
 public:
 	Texture();
 	virtual ~Texture();
 	
-	void from_image();
+	void from_image(const std::string& filename);
 };
 
 #endif

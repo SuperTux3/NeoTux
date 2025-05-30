@@ -164,6 +164,5 @@ int main(int argc, char** argv)
 		// Simple loop for now
 		//window.create_window(0, "SuperTux Milestone 3");
 	}
-
 	return 0;
 }

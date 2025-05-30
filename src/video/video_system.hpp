@@ -82,6 +82,8 @@ public:
 	virtual void set_title(const std::string& title) = 0;
 	virtual void set_icon(const SDL_Surface& icon) = 0;
 	//virtual SDLSurfacePtr make_screenshot() = 0;
+	
+	virtual void shutdown() = 0;
 
 	void do_take_screenshot();
 

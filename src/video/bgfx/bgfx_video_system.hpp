@@ -63,6 +63,8 @@ public:
 	void set_title(const std::string& title) {};
 	void set_icon(const SDL_Surface& icon) {};
 	//SDLSurfacePtr make_screenshot() {};
+	
+	void shutdown();
 
 	void do_take_screenshot();
 
@@ -70,6 +72,9 @@ private:
 	enum VideoSystem::Backend m_backend;
 	
 	void init(VideoSystem::Backend backend);
+	
+private:
+	bool m_is_shutdown;
 	
 	BGFXVideoSystem(const BGFXVideoSystem&) = delete;
 	BGFXVideoSystem& operator=(const BGFXVideoSystem&) = delete;

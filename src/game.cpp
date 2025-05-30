@@ -51,6 +51,7 @@ Game::handle_events()
 		{
 			case SDL_EVENT_QUIT:
 				m_quit = true;
+				g_video_system->shutdown();
 				break;
 			case SDL_EVENT_WINDOW_RESIZED:
 			{
