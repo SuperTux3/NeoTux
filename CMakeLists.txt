@@ -1,31 +1,47 @@
 cmake_minimum_required(VERSION 3.14)
-project(SuperTux LANGUAGES CXX)
-#set_property(TARGET SuperTux PROPERTY CXX_STANDARD 20
+project(NeoTux LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	add_compile_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
 	add_link_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
 endif()
 
-include(bgfx)
-
-# TODO my module function
+# TODO: my module function
 find_package(SDL3 REQUIRED)
 find_package(PkgConfig REQUIRED)
-# Kept getting compile-time errors with the packages... reverting to pkg-config
-pkg_check_modules(SDL3_image sdl3-image)
-#find_package(SDL3_ttf REQUIRED)
-pkg_check_modules(SDL3_ttf sdl3-ttf)
+pkg_check_modules(SDL3_image REQUIRED IMPORTED_TARGET sdl3-image)
+pkg_check_modules(SDL3_ttf REQUIRED IMPORTED_TARGET sdl3-ttf)
 
-file(GLOB_RECURSE SUPERTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
+include(FetchContent)
 
-add_executable(SuperTux ${SUPERTUX_SRC})
-target_include_directories(SuperTux PRIVATE src BGFX BIMG BX)
-target_link_libraries(SuperTux PRIVATE BGFX SDL3::SDL3 ${SDL3_image_LINK_LIBRARIES} ${SDL3_ttf_LINK_LIBRARIES} BIMG BX)
-message("${harfbuzz_COMPILE_OPTIONS} ${plutosvg_FOUND}")
-set_target_properties(SuperTux PROPERTIES OUTPUT_NAME supertux3)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+	cmake_policy(SET CMP0135 NEW)
+endif()
 
+set(BGFX_VERSION "v1.129.8914-493" CACHE STRING "Version of bgfx.cmake to use")
+FetchContent_Declare(
+	bgfx
+	URL https://github.com/bkaradzic/bgfx.cmake/releases/download/${BGFX_VERSION}/bgfx.cmake.${BGFX_VERSION}.tar.gz
+)
 
-set_property(TARGET SuperTux PROPERTY CXX_STANDARD 20)
+set(BGFX_BUILD_EXAMPLES OFF)
+set(BGFX_BUILD_TOOLS OFF)
+FetchContent_MakeAvailable(bgfx)
+
+file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
+
+add_executable(NeoTux ${NEOTUX_SRC})
+target_include_directories(NeoTux PRIVATE src)
+target_link_libraries(NeoTux PRIVATE
+	SDL3::SDL3
+	PkgConfig::SDL3_image
+	PkgConfig::SDL3_ttf
+	bgfx
+)
+
+# TODO: change this to neotux
+set_target_properties(NeoTux PROPERTIES OUTPUT_NAME supertux3)
+
+set_property(TARGET NeoTux PROPERTY CXX_STANDARD 20)
