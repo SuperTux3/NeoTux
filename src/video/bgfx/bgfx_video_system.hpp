@@ -24,6 +24,7 @@
 #include <SDL3/SDL.h>
 #include "math/size.hpp"
 #include "../video_system.hpp"
+#include "video/bgfx/bgfx_program.hpp"
 //#include "video/sampler.hpp"
 //#include "video/texture_ptr.hpp"
 
@@ -74,6 +75,7 @@ private:
 	void init(VideoSystem::Backend backend);
 	
 private:
+	BGFXProgram m_program;
 	bool m_is_shutdown;
 	
 	BGFXVideoSystem(const BGFXVideoSystem&) = delete;

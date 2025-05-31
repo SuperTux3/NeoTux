@@ -14,17 +14,13 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_VIDEO_BGFX_TEXTURE_HPP
-#define SUPERTUX_SRC_VIDEO_BGFX_TEXTURE_HPP
+#include "bgfx_texture.hpp"
+#include <SDL3_image/SDL_image.h>
 
-#include "video/texture.hpp"
-
-class BGFXTexture : public Texture
+void
+BGFXTexture::load_file(const std::string& filename)
 {
-	BGFXTexture();
-	virtual ~BGFXTexture() = default;
-	
-	void load_file(const std::string& filename);
-};
-
-#endif
+	SDL_Surface* surface = Texture::create_surface(filename);
+	size.width  = surface->w;
+	size.height = surface->h;
+}

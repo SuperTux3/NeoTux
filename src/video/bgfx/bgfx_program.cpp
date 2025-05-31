@@ -14,17 +14,24 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_VIDEO_BGFX_TEXTURE_HPP
-#define SUPERTUX_SRC_VIDEO_BGFX_TEXTURE_HPP
+#include "bgfx_program.hpp"
 
-#include "video/texture.hpp"
-
-class BGFXTexture : public Texture
+BGFXProgram::BGFXProgram(const std::string& frag_shader, const std::string& vert_shader) :
+	m_files{frag_shader, vert_shader}
 {
-	BGFXTexture();
-	virtual ~BGFXTexture() = default;
-	
-	void load_file(const std::string& filename);
-};
+	load_program();
+}
 
-#endif
+void
+BGFXProgram::load_program()
+{
+	const std::string& frag_shader = m_files[0];
+	const std::string& vert_shader = m_files[1];
+	m_program = bgfx::createProgram();
+}
+
+void
+BGFXProgram::add_shader(const std::string& filename)
+{
+	
+}

@@ -30,6 +30,7 @@ using namespace std::string_literals;
 
 BGFXVideoSystem::BGFXVideoSystem(BGFXVideoSystem::Backend backend) :
 	m_backend{VideoSystem::Backend::VIDEO_NULL},
+	m_program{"../data/shaders/"},
 	m_is_shutdown{false}
 {
 	init(backend);
@@ -133,15 +134,15 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 		                                        SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER,
 		                                        NULL);
 
-		void* wsurface = SDL_GetPointerProperty(sdlprops,
-		                                        SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER,
-		                                        NULL);
+		// void* wsurface = SDL_GetPointerProperty(sdlprops,
+		//                                         SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER,
+		//                                         NULL);
 
-		if (!(wsurface && wdisplay))
+		if (!wdisplay)
 			throw std::runtime_error("Error with Wayland");
 
 		binit.platformData.ndt = wdisplay;
-		binit.platformData.nwh = wsurface;
+		//binit.platformData.nwh = wsurface;
 	}
 #endif
 	bgfx::renderFrame(); // Doing this before init does all gpu stuff in a single thread
@@ -150,6 +151,8 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 	
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x505050ff);
 	on_resize(800, 600);
+	
+	//bgfx::VertexLayout
 
 	m_backend = backend;
 }

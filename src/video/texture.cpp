@@ -23,10 +23,6 @@ Texture::Texture()
 void
 Texture::load_file(const std::string& filename)
 {
-	SDL_Surface* surface = create_surface(filename);
-	size.width  = surface->w;
-	size.height = surface->h;
-
 }
 
 SDL_Surface*

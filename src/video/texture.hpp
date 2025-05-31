@@ -29,7 +29,7 @@ public:
 	
 	
 	void load_file(const std::string& filename);
-private:
+protected:
 	static SDL_Surface* create_surface(const std::string& filename);
 
 	Size size;	
