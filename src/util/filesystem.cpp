@@ -14,25 +14,19 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "bgfx_program.hpp"
+#include "filesystem.hpp"
 
-BGFXProgram::BGFXProgram(const std::string& frag_shader, const std::string& vert_shader) :
-	m_files{frag_shader, vert_shader}
+#ifndef DATA_DIR
+#define DATA_DIR ""
+#endif
+
+namespace FS
 {
-	load_program();
+
+std::string
+path(const std::string& file)
+{
+	return std::string(DATA_DIR) + "/" + file;
 }
 
-void
-BGFXProgram::load_program()
-{
-	const std::string& frag_shader = m_files[0];
-	const std::string& vert_shader = m_files[1];
-//	m_program = bgfx::createProgram(
-//		bgfx::createShader());
-}
-
-void
-BGFXProgram::add_shader(const std::string& filename)
-{
-	
 }

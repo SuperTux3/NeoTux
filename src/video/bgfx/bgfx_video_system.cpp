@@ -30,7 +30,7 @@ using namespace std::string_literals;
 
 BGFXVideoSystem::BGFXVideoSystem(BGFXVideoSystem::Backend backend) :
 	m_backend{VideoSystem::Backend::VIDEO_NULL},
-	m_program{"../data/shaders/"},
+	m_program{"data/shaders/frag.glsl", "data/shaders/vert.glsl"},
 	m_is_shutdown{false}
 {
 	init(backend);

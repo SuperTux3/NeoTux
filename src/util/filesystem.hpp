@@ -14,25 +14,14 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "bgfx_program.hpp"
+#ifndef SUPERTUX_SRC_UTIL_FILESYSTEM_HPP
+#define SUPERTUX_SRC_UTIL_FILESYSTEM_HPP
 
-BGFXProgram::BGFXProgram(const std::string& frag_shader, const std::string& vert_shader) :
-	m_files{frag_shader, vert_shader}
+#include <string>
+
+namespace FS
 {
-	load_program();
+	std::string path(const std::string& file);
 }
 
-void
-BGFXProgram::load_program()
-{
-	const std::string& frag_shader = m_files[0];
-	const std::string& vert_shader = m_files[1];
-//	m_program = bgfx::createProgram(
-//		bgfx::createShader());
-}
-
-void
-BGFXProgram::add_shader(const std::string& filename)
-{
-	
-}
+#endif

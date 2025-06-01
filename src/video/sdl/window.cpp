@@ -17,6 +17,7 @@
 #include "window.hpp"
 #include "sdl_exception.hpp"
 #include <SDL3_image/SDL_image.h>
+#include "util/filesystem.hpp"
 
 SDLWindow::SDLWindow() :
 	m_sdl_window{nullptr, SDL_DestroyWindow}
@@ -36,7 +37,7 @@ SDLWindow::create_window(u32 flags, const std::string& title)
 {
 	m_sdl_window.reset(SDL_CreateWindow(title.c_str(), 800, 600, flags));
 	
-	set_icon("../data/images/engine/supertux-256x256.png");
+	set_icon(FS::path("data/images/engine/supertux-256x256.png"));
 }
 
 void

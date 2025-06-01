@@ -8,6 +8,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	add_link_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
 endif()
 
+set(DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Location of the data directory (shaders, levels, images...)")
+
 # TODO: my module function
 find_package(SDL3 REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -27,14 +29,34 @@ FetchContent_Declare(
 )
 
 set(BGFX_BUILD_EXAMPLES OFF)
-set(BGFX_BUILD_TOOLS OFF)
+set(BGFX_BUILD_TOOLS ON)
 FetchContent_MakeAvailable(bgfx)
+include("${CMAKE_BINARY_DIR}/_deps/bgfx-src/cmake/bgfxToolUtils.cmake")
 
 file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
 
-add_executable(NeoTux ${NEOTUX_SRC})
+bgfx_compile_shaders(
+	TYPE VERTEX
+	SHADERS "${DATA_DIR}/shaders/vert.glsl"
+	VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
+	OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
+)
+
+bgfx_compile_shaders(
+	TYPE FRAGMENT
+	SHADERS "${DATA_DIR}/shaders/frag.glsl"
+	VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
+	OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
+)
+
+message("${CMAKE_BINARY_DIR}")
+
+add_executable(NeoTux ${NEOTUX_SRC} "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
 target_include_directories(NeoTux PRIVATE src)
-target_link_libraries(NeoTux PRIVATE
+target_compile_definitions(NeoTux PUBLIC
+	DATA_DIR="${DATA_DIR}"
+)
+target_link_libraries(NeoTux PUBLIC
 	SDL3::SDL3
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf
