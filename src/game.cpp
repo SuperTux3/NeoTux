@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <util/logger.hpp>
+#include <format>
 #include "game.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/video_system.hpp"
@@ -36,8 +38,23 @@ Game::update()
 void
 Game::run()
 {
-	g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
+	switch (g_settings->renderer)
+	{
+		case VideoSystem::VIDEO_NULL:
+			break;
+		case VideoSystem::VIDEO_SDL:
+			//g_video_system = std::make_unique<SDLVideoSystem>();
+			break;
+		case VideoSystem::VIDEO_BGFX_OPENGL:
+		case VideoSystem::VIDEO_BGFX_OPENGLES:
+		case VideoSystem::VIDEO_BGFX_VULKAN:
+		case VideoSystem::VIDEO_BGFX_METAL:
+		default:
+			g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
+	}
+	Logger::info(std::format("Using {} backend", VideoSystem::get_video_string(g_settings->renderer)));
 	
+
 	while (!m_quit)
 	{
 		handle_events();
@@ -47,6 +64,8 @@ Game::run()
 void
 Game::handle_events()
 {
+	if (!g_video_system)
+		return;
 	SDL_Event ev;
 	while (SDL_PollEvent(&ev))
 	{

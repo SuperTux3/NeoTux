@@ -50,7 +50,7 @@ public:
 	static std::unique_ptr<VideoSystem> create(VideoSystem::Backend video_system);
 
 	static Backend get_video_system(const std::string &video);
-	static std::string get_video_string(Backend video);
+	static const char * get_video_string(Backend video);
 
 	struct Info final
 	{

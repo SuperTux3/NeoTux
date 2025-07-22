@@ -18,7 +18,29 @@
 
 std::unique_ptr<VideoSystem> g_video_system;
 
-VideoSystem::Backend VideoSystem::get_video_system(const std::string& video)
+const char *
+VideoSystem::get_video_string(VideoSystem::Backend backend)
+{
+	switch (backend)
+	{
+	case VideoSystem::VIDEO_BGFX_OPENGL:
+		return "OpenGL (BGFX)";
+	case VideoSystem::VIDEO_BGFX_OPENGLES:
+		return "OpenGLES (BGFX)";
+	case VideoSystem::VIDEO_BGFX_VULKAN:
+		return "Vulkan (BGFX)";
+	case VideoSystem::VIDEO_BGFX_METAL:
+		return "Metal (BGFX)";
+	case VideoSystem::VIDEO_SDL:
+		return "SDL3";
+	case VideoSystem::VIDEO_NULL:
+		return "null";
+	}
+	return "???";
+}
+
+VideoSystem::Backend
+VideoSystem::get_video_system(const std::string &video)
 {
 	if (video == "opengl")
 		return VideoSystem::VIDEO_BGFX_OPENGL;
