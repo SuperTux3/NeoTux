@@ -20,11 +20,9 @@
 #include <string>
 #include <vector>
 #include <string_view>
-#include <bgfx/bgfx.h>
 #include <SDL3/SDL.h>
 #include "math/size.hpp"
 #include "../video_system.hpp"
-#include "video/bgfx/bgfx_program.hpp"
 //#include "video/sampler.hpp"
 //#include "video/texture_ptr.hpp"
 
@@ -40,7 +38,7 @@ class SDLVideoSystem : public VideoSystem
 {
 
 public:
-	SDLVideoSystem(VideoSystem::Backend backend);
+	SDLVideoSystem();
 	virtual ~SDLVideoSystem();
 	
 
@@ -70,9 +68,7 @@ public:
 	void do_take_screenshot();
 
 private:
-	enum VideoSystem::Backend m_backend;
-	
-	void init(VideoSystem::Backend backend);
+	void init();
 	
 private:
 	bool m_is_shutdown;

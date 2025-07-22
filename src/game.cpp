@@ -17,6 +17,7 @@
 #include <util/logger.hpp>
 #include <format>
 #include "game.hpp"
+#include "video/sdl/sdl_video_system.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/video_system.hpp"
 #include "settings.hpp"
@@ -43,7 +44,7 @@ Game::run()
 		case VideoSystem::VIDEO_NULL:
 			break;
 		case VideoSystem::VIDEO_SDL:
-			//g_video_system = std::make_unique<SDLVideoSystem>();
+			g_video_system = std::make_unique<SDLVideoSystem>();
 			break;
 		case VideoSystem::VIDEO_BGFX_OPENGL:
 		case VideoSystem::VIDEO_BGFX_OPENGLES:
