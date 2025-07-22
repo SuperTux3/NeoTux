@@ -14,10 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <format>
 #include "window.hpp"
 #include "sdl_exception.hpp"
 #include <SDL3_image/SDL_image.h>
 #include "util/filesystem.hpp"
+#include "util/logger.hpp"
 
 SDLWindow::SDLWindow() :
 	m_sdl_window{nullptr, SDL_DestroyWindow}
@@ -37,7 +39,7 @@ SDLWindow::create_window(u32 flags, const std::string& title)
 {
 	m_sdl_window.reset(SDL_CreateWindow(title.c_str(), 800, 600, flags));
 	
-	set_icon(FS::path("data/images/engine/supertux-256x256.png"));
+	set_icon(FS::path("images/engine/supertux-256x256.png"));
 }
 
 void
@@ -46,6 +48,7 @@ SDLWindow::set_icon(const std::string& filename)
 	SDL_Surface* icon;
 	try
 	{
+		Logger::info(std::format("Loading {}", filename));
 		icon = IMG_Load(filename.c_str());
 		if (SDL_SetWindowIcon(m_sdl_window.get(), icon) == false)
 			throw SDLException("SDL_SetWindowIcon");
