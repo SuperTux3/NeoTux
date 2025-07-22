@@ -27,7 +27,6 @@ public:
 	Texture();
 	virtual ~Texture() = default;
 	
-	
 	void load_file(const std::string& filename);
 protected:
 	static SDL_Surface* create_surface(const std::string& filename);

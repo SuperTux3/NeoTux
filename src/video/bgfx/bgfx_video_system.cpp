@@ -107,7 +107,7 @@ BGFXVideoSystem::init(VideoSystem::Backend backend)
 	binit.resolution.width = 800;
 	binit.resolution.height = 600;
 	
-	window.create_window(flags, "SuperTux");
+	create_window(flags);
 	
 #ifdef SDL_PLATFORM_UNIX
 	SDL_Window* sdlwin = window.m_sdl_window.get();

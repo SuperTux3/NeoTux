@@ -17,6 +17,7 @@
 #include "sdl_video_system.hpp"
 
 SDLVideoSystem::SDLVideoSystem()
+	: m_sdl_renderer(nullptr, &SDL_DestroyRenderer)
 {
 	init();
 }
@@ -35,12 +36,15 @@ SDLVideoSystem::get_name() const
 void
 SDLVideoSystem::init()
 {
-	
+	create_window(0);
+	m_sdl_renderer.reset(SDL_CreateRenderer(window.m_sdl_window.get(), NULL));
+	//flip();
 }
 
 void
 SDLVideoSystem::flip()
 {
+	SDL_RenderPresent(m_sdl_renderer.get());
 }
 
 void

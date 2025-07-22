@@ -70,6 +70,8 @@ public:
 private:
 	void init();
 	
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;
+	
 private:
 	bool m_is_shutdown;
 	

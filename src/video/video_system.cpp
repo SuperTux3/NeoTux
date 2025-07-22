@@ -57,3 +57,9 @@ VideoSystem::get_video_system(const std::string &video)
 	else
 		return VideoSystem::VIDEO_AUTO;
 }
+
+void
+VideoSystem::create_window(int flags)
+{
+	window.create_window(flags, "SuperTux");
+}

@@ -63,6 +63,8 @@ public:
 public:
 	VideoSystem() = default;
 	virtual ~VideoSystem() = default;
+	
+	void create_window(int flags);
 
 	/** Return a human readable name of the current video system */
 	virtual std::string_view get_name() const = 0;

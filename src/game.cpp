@@ -59,6 +59,8 @@ Game::run()
 	while (!m_quit)
 	{
 		handle_events();
+		g_video_system->flip();
+		SDL_Delay(100);
 	}
 }
 
