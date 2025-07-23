@@ -67,7 +67,7 @@ public:
 
 	void do_take_screenshot();
 
-private:
+public:
 	void init();
 	
 	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;
