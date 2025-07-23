@@ -40,6 +40,25 @@ Game::update()
 
 #include "video/sdl/sdl_video_system.hpp"
 #include "video/sdl/texture.hpp"
+
+static void
+draw_textures()
+{
+	int i = 0;
+	Size winsize = g_video_system->get_window_size();
+	for (auto const &pair: g_texture_manager.m_textures)
+	{
+		TextureRef tex = pair.second;
+		SDL_FRect dest = { (float)((i*40)%winsize.width), (float)((i*40)/winsize.width)*40, 40, 40 };
+		SDL_Texture *texture = static_cast<SDLTexture*>(tex)->get_sdl_texture();
+		SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, &dest);
+		
+		
+		++i;
+	}
+}
+
+
 void
 Game::run()
 {
@@ -63,14 +82,19 @@ Game::run()
 	while (!m_quit)
 	{
 		handle_events();
+		SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
 		
+		g_texture_manager.add("images/creatures/mr_bomb/left-0.png");
+		g_texture_manager.add("images/creatures/nolok/walk-0.png");
+		g_texture_manager.add("images/creatures/owl/carry-0.png");
+		g_texture_manager.add("images/creatures/penny/stand-0.png");
+		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
 		TextureRef ref = g_texture_manager.add("images/engine/supertux.png");
 		
-		SDL_Texture *texture = static_cast<SDLTexture*>(ref)->get_sdl_texture();
-		SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, NULL);
+		draw_textures();		
 		
 		g_video_system->flip();
-		SDL_Delay(100);
+		SDL_Delay(10);
 	}
 }
 

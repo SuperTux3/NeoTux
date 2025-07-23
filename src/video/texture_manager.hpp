@@ -31,7 +31,7 @@ public:
 	
 	TextureRef add(const std::string &filename);
 	
-private:
+public:
 	std::unordered_map<std::string, TextureRef> m_textures;
 };
 
