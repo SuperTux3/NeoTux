@@ -19,9 +19,11 @@
 #include "game.hpp"
 #include "video/sdl/sdl_video_system.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
+#include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include "settings.hpp"
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL.h>
 
 Game g_game{};
 
@@ -36,6 +38,8 @@ Game::update()
 	
 }
 
+#include "video/sdl/sdl_video_system.hpp"
+#include "video/sdl/texture.hpp"
 void
 Game::run()
 {
@@ -53,12 +57,18 @@ Game::run()
 		default:
 			g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
 	}
-	Logger::info(std::format("Using {} backend", VideoSystem::get_video_string(g_settings->renderer)));
+	Logger::info(std::format("Using {} backend", VideoSystem::video_system_to_str(g_settings->renderer)));
 	
 
 	while (!m_quit)
 	{
 		handle_events();
+		
+		TextureRef ref = g_texture_manager.add("images/engine/supertux.png");
+		
+		SDL_Texture *texture = static_cast<SDLTexture*>(ref)->get_sdl_texture();
+		SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, NULL);
+		
 		g_video_system->flip();
 		SDL_Delay(100);
 	}

@@ -19,7 +19,7 @@
 std::unique_ptr<VideoSystem> g_video_system;
 
 const char *
-VideoSystem::get_video_string(VideoSystem::Backend backend)
+VideoSystem::video_system_to_str(VideoSystem::Backend backend)
 {
 	switch (backend)
 	{
@@ -40,7 +40,7 @@ VideoSystem::get_video_string(VideoSystem::Backend backend)
 }
 
 VideoSystem::Backend
-VideoSystem::get_video_system(const std::string &video)
+VideoSystem::str_to_video_system(const std::string &video)
 {
 	if (video == "opengl")
 		return VideoSystem::VIDEO_BGFX_OPENGL;

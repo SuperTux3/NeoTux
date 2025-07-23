@@ -51,6 +51,12 @@ BGFXVideoSystem::shutdown()
 	}
 }
 
+VideoSystem::Backend
+BGFXVideoSystem::get_video_system() const
+{
+	return m_backend;
+}
+
 std::string_view BGFXVideoSystem::get_name() const
 {
 	switch (m_backend)

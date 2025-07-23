@@ -14,32 +14,27 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
+#define SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
+
+#include <string>
+#include <unordered_map>
 #include "texture.hpp"
-#include <SDL3_image/SDL_image.h>
-#include "video/sdl/texture.hpp"
-#include "video/video_system.hpp"
 
-Texture::Texture()
-{}
+using TextureRef = Texture*;
 
-void
-Texture::load_file(const std::string& filename)
+class TextureManager
 {
-}
+public:
+	TextureManager();
+	~TextureManager();
+	
+	TextureRef add(const std::string &filename);
+	
+private:
+	std::unordered_map<std::string, TextureRef> m_textures;
+};
 
-Texture*
-Texture::create(const std::string &filename)
-{
-	switch (g_video_system->get_video_system())
-	{
-	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(filename);
-	}
-}
+extern TextureManager g_texture_manager;
 
-SDL_Surface*
-Texture::create_surface(const std::string& filename)
-{
-	SDL_Surface* image = IMG_Load(filename.c_str());
-	return image;
-}
+#endif

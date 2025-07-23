@@ -14,32 +14,29 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "texture.hpp"
-#include <SDL3_image/SDL_image.h>
-#include "video/sdl/texture.hpp"
-#include "video/video_system.hpp"
+#include "texture_manager.hpp"
+#include "util/filesystem.hpp"
 
-Texture::Texture()
-{}
+TextureManager g_texture_manager{};
 
-void
-Texture::load_file(const std::string& filename)
+TextureManager::TextureManager()
+{
+	
+}
+
+TextureManager::~TextureManager()
 {
 }
 
-Texture*
-Texture::create(const std::string &filename)
+TextureRef
+TextureManager::add(const std::string &filename)
 {
-	switch (g_video_system->get_video_system())
+	if (m_textures.contains(filename))
+		return m_textures[filename];
+	else
 	{
-	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(filename);
+		TextureRef tex = Texture::create(FS::path(filename));
+		m_textures.insert({filename, tex});
+		return tex;
 	}
-}
-
-SDL_Surface*
-Texture::create_surface(const std::string& filename)
-{
-	SDL_Surface* image = IMG_Load(filename.c_str());
-	return image;
 }

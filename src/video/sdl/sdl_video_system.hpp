@@ -51,6 +51,7 @@ public:
 
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
+	Backend get_video_system() const;
 	const Viewport& get_viewport() const {};
 	void apply_config() {};
 	void flip();

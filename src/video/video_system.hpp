@@ -49,8 +49,8 @@ public:
 
 	static std::unique_ptr<VideoSystem> create(VideoSystem::Backend video_system);
 
-	static Backend get_video_system(const std::string &video);
-	static const char * get_video_string(Backend video);
+	static Backend str_to_video_system(const std::string &video);
+	static const char * video_system_to_str(Backend video);
 
 	struct Info final
 	{
@@ -59,12 +59,14 @@ public:
 		const std::string description;
 	};
 	static std::vector<Info> get_available_video_systems();
-
+	
 public:
 	VideoSystem() = default;
 	virtual ~VideoSystem() = default;
 	
 	void create_window(int flags);
+	
+	virtual Backend get_video_system() const = 0;
 
 	/** Return a human readable name of the current video system */
 	virtual std::string_view get_name() const = 0;

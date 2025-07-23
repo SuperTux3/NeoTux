@@ -43,7 +43,7 @@ public:
 	BGFXVideoSystem(VideoSystem::Backend backend);
 	virtual ~BGFXVideoSystem();
 	
-
+	Backend get_video_system() const;
 	/** Return a human readable name of the current video system */
 	std::string_view get_name() const override;
 

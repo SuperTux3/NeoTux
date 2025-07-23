@@ -26,7 +26,7 @@ SDLTexture::SDLTexture(std::string filename) :
 	
 	m_sdl_texture.reset(SDL_CreateTextureFromSurface(video->m_sdl_renderer.get(), surface));
 	
-	SDL_DestroySurface(surface);	
+	SDL_DestroySurface(surface);
 }
 
 SDLTexture::~SDLTexture()

@@ -32,6 +32,12 @@ SDLVideoSystem::get_name() const
 	return "SDL";
 }
 
+VideoSystem::Backend
+SDLVideoSystem::get_video_system() const
+{
+	return VIDEO_SDL;
+}
+
 
 void
 SDLVideoSystem::init()

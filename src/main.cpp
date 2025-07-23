@@ -91,7 +91,7 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 				return 1;
 
 			std::string renderer = argv[argvidx + 1];
-			g_settings->renderer = VideoSystem::get_video_system(renderer);
+			g_settings->renderer = VideoSystem::str_to_video_system(renderer);
 			break;
 		}
 	}
