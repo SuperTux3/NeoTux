@@ -61,7 +61,7 @@ public:
 	static std::vector<Info> get_available_video_systems();
 	
 public:
-	VideoSystem() = default;
+	VideoSystem(Painter* painter) :m_painter{painter} {};
 	virtual ~VideoSystem() = default;
 	
 	void create_window(int flags);

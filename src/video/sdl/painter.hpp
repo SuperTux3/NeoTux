@@ -14,53 +14,23 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "video/sdl/painter.hpp"
-#include "sdl_video_system.hpp"
+#ifndef SUPERTUX_SRC_VIDEO_SDL_PAINTER_HPP
+#define SUPERTUX_SRC_VIDEO_SDL_PAINTER_HPP
 
-SDLVideoSystem::SDLVideoSystem() :
-	VideoSystem{new SDLPainter(static_cast<VideoSystem*>(this))},
-	m_sdl_renderer(nullptr, &SDL_DestroyRenderer)
+#include "video/painter.hpp"
+#include "math/rect.hpp"
+#include "texture.hpp"
+
+class SDLPainter : public Painter
 {
-	init();
-}
+public:
+	SDLPainter(VideoSystem *video);
+	~SDLPainter() = default;
+	
+	void draw(TextureRef texture, Rectf src, Rectf dest);
+private:
+	VideoSystem *m_video_system;
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;
+};
 
-SDLVideoSystem::~SDLVideoSystem()
-{
-}
-
-std::string_view
-SDLVideoSystem::get_name() const
-{
-	return "SDL";
-}
-
-VideoSystem::Backend
-SDLVideoSystem::get_video_system() const
-{
-	return VIDEO_SDL;
-}
-
-
-void
-SDLVideoSystem::init()
-{
-	create_window(0);
-	//m_sdl_renderer.reset(SDL_CreateRenderer(window.m_sdl_window.get(), NULL));
-	//flip();
-}
-
-void
-SDLVideoSystem::flip()
-{
-	//SDL_RenderPresent(m_sdl_renderer.get());
-}
-
-void
-SDLVideoSystem::on_resize(int w, int h)
-{
-}
-
-void
-SDLVideoSystem::shutdown()
-{
-}
+#endif

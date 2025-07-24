@@ -51,7 +51,7 @@ draw_textures()
 		TextureRef tex = pair.second;
 		SDL_FRect dest = { (float)((i*40)%winsize.width), (float)((i*40)/winsize.width)*40, 40, 40 };
 		SDL_Texture *texture = static_cast<SDLTexture*>(tex)->get_sdl_texture();
-		SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, &dest);
+		//SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, &dest);
 		
 		
 		++i;
@@ -67,7 +67,7 @@ Game::run()
 		case VideoSystem::VIDEO_NULL:
 			break;
 		case VideoSystem::VIDEO_SDL:
-			g_video_system = std::make_unique<SDLVideoSystem>();
+			g_video_system.reset(new SDLVideoSystem{});
 			break;
 		case VideoSystem::VIDEO_BGFX_OPENGL:
 		case VideoSystem::VIDEO_BGFX_OPENGLES:
@@ -85,7 +85,7 @@ Game::run()
 			continue;
 		handle_events();
 
-		SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
+		//SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
 		
 		g_texture_manager.add("images/creatures/mr_bomb/left-0.png");
 		g_texture_manager.add("images/creatures/nolok/walk-0.png");

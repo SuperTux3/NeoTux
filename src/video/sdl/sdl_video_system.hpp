@@ -47,6 +47,7 @@ public:
 	Renderer* get_back_renderer() const {};
 	Renderer& get_renderer() const {};
 	Renderer& get_lightmap() const {};
+	//Painter* get_painter();
 
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
@@ -69,8 +70,6 @@ public:
 
 public:
 	void init();
-	
-	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;
 	
 private:
 	bool m_is_shutdown;

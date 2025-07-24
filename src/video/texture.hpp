@@ -18,6 +18,7 @@
 #define HEADER_SUPERTUX_VIDEO_TEXTURE_HPP
 
 #include "math/size.hpp"
+#include "math/rect.hpp"
 #include <SDL3/SDL_surface.h>
 #include <string>
 
@@ -28,6 +29,7 @@ public:
 	virtual ~Texture() = default;
 	
 	void load_file(const std::string &filename);
+	//virtual void draw(Texture* texture, Rectf src, Rectf dest) = 0;
 	static Texture* create(const std::string &filename);
 protected:
 	static SDL_Surface* create_surface(const std::string &filename);

@@ -14,53 +14,16 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "video/sdl/painter.hpp"
-#include "sdl_video_system.hpp"
+#include "painter.hpp"
 
-SDLVideoSystem::SDLVideoSystem() :
-	VideoSystem{new SDLPainter(static_cast<VideoSystem*>(this))},
+SDLPainter::SDLPainter(VideoSystem *video) :
+	m_video_system(video),
 	m_sdl_renderer(nullptr, &SDL_DestroyRenderer)
-{
-	init();
-}
-
-SDLVideoSystem::~SDLVideoSystem()
-{
-}
-
-std::string_view
-SDLVideoSystem::get_name() const
-{
-	return "SDL";
-}
-
-VideoSystem::Backend
-SDLVideoSystem::get_video_system() const
-{
-	return VIDEO_SDL;
-}
-
+{}
 
 void
-SDLVideoSystem::init()
+SDLPainter::draw(TextureRef texture, Rectf src, Rectf dest)
 {
-	create_window(0);
-	//m_sdl_renderer.reset(SDL_CreateRenderer(window.m_sdl_window.get(), NULL));
-	//flip();
+
 }
 
-void
-SDLVideoSystem::flip()
-{
-	//SDL_RenderPresent(m_sdl_renderer.get());
-}
-
-void
-SDLVideoSystem::on_resize(int w, int h)
-{
-}
-
-void
-SDLVideoSystem::shutdown()
-{
-}
