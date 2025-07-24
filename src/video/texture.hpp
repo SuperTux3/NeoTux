@@ -35,4 +35,6 @@ protected:
 	Size size;	
 };
 
+using TextureRef = Texture*;
+
 #endif

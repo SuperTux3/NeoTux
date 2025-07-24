@@ -81,7 +81,10 @@ Game::run()
 
 	while (!m_quit)
 	{
+		if (!g_video_system)
+			continue;
 		handle_events();
+
 		SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
 		
 		g_texture_manager.add("images/creatures/mr_bomb/left-0.png");

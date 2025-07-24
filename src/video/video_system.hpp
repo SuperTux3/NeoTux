@@ -22,10 +22,10 @@
 #include <SDL3/SDL.h>
 #include "math/size.hpp"
 #include "sdl/window.hpp"
+#include "video/painter.hpp"
 //#include "video/sampler.hpp"
 //#include "video/texture_ptr.hpp"
 
-class Rect;
 class Renderer;
 class SDLSurfacePtr;
 class Sampler;
@@ -95,6 +95,8 @@ public:
 
 protected:
 	SDLWindow window;
+	
+	std::unique_ptr<Painter> m_painter;
 
 private:
 	VideoSystem(const VideoSystem&) = delete;

@@ -14,25 +14,19 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
-#define SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
+#ifndef SUPERTUX_SRC_VIDEO_PAINTER_HPP
+#define SUPERTUX_SRC_VIDEO_PAINTER_HPP
 
-#include <string>
-#include <unordered_map>
+#include "math/rect.hpp"
 #include "texture.hpp"
 
-class TextureManager
+class Painter
 {
 public:
-	TextureManager();
-	~TextureManager();
+	Painter();
+	virtual ~Painter() = default;
 	
-	TextureRef add(const std::string &filename);
-	
-public:
-	std::unordered_map<std::string, TextureRef> m_textures;
+	virtual void draw(TextureRef texture, Rectf src, Rectf dest) = 0;
 };
-
-extern TextureManager g_texture_manager;
 
 #endif
