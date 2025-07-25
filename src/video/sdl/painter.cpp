@@ -14,8 +14,10 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <SDL3/SDL_render.h>
 #include "painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
+#include "video/sdl/texture.hpp"
 
 SDLPainter::SDLPainter(VideoSystem *video) :
 	m_video_system(video),
@@ -26,7 +28,12 @@ SDLPainter::SDLPainter(VideoSystem *video) :
 void
 SDLPainter::draw(TextureRef texture, Rectf src, Rectf dest)
 {
-
+	SDLTexture *sdltex = static_cast<SDLTexture*>(texture);
+	SDL_FRect src_sdl = src.to_sdl_frect();
+	SDL_FRect dest_sdl = dest.to_sdl_frect();
+	//SDLVideoSystem *video = static_cast<SDLVideoSystem*>(m_
+	SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
+		&src_sdl, &dest_sdl);
 }
 
 void

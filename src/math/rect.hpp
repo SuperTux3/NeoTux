@@ -18,6 +18,7 @@
 #ifndef HEADER_SUPERTUX_MATH_RECT_HPP
 #define HEADER_SUPERTUX_MATH_RECT_HPP
 
+#include <SDL3/SDL_rect.h>
 #include "size.hpp"
 
 template <typename T>
@@ -48,6 +49,20 @@ public:
 		right(left + size.width),
 		bottom(top + size.height)
 	{}
+	
+	T get_width() const
+	{
+		return right - left;
+	}
+	T get_height() const
+	{
+		return bottom - top;
+	}
+	
+	SDL_FRect to_sdl_frect()
+	{
+		return { left, top, get_width(), get_height() };
+	}
 	
 public:
 	T left;
