@@ -58,22 +58,6 @@ BGFXVideoSystem::get_video_system() const
 	return m_backend;
 }
 
-std::string_view BGFXVideoSystem::get_name() const
-{
-	switch (m_backend)
-	{
-	case VideoSystem::Backend::VIDEO_BGFX_OPENGL:
-		return "OpenGL";
-	case VideoSystem::Backend::VIDEO_BGFX_METAL:
-		return "Metal";
-	case VideoSystem::Backend::VIDEO_BGFX_VULKAN:
-		return "Vulkan";
-	case VideoSystem::Backend::VIDEO_NULL:
-	default:
-		return "Null";
-	}
-}
-
 void
 BGFXVideoSystem::init(VideoSystem::Backend backend)
 {

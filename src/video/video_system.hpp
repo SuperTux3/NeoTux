@@ -69,8 +69,6 @@ public:
 	virtual Backend get_video_system() const = 0;
 
 	/** Return a human readable name of the current video system */
-	virtual std::string_view get_name() const = 0;
-
 	virtual Renderer* get_back_renderer() const = 0;
 	virtual Renderer& get_renderer() const = 0;
 	virtual Renderer& get_lightmap() const = 0;

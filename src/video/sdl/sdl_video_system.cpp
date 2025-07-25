@@ -26,12 +26,6 @@ SDLVideoSystem::~SDLVideoSystem()
 {
 }
 
-std::string_view
-SDLVideoSystem::get_name() const
-{
-	return "SDL";
-}
-
 VideoSystem::Backend
 SDLVideoSystem::get_video_system() const
 {
