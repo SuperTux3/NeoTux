@@ -40,11 +40,6 @@ public:
 	SDLVideoSystem();
 	virtual ~SDLVideoSystem();
 	
-	Renderer* get_back_renderer() const {};
-	Renderer& get_renderer() const {};
-	Renderer& get_lightmap() const {};
-	//Painter* get_painter();
-
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
 	Backend get_video_system() const;
@@ -68,8 +63,6 @@ public:
 	void init();
 	
 private:
-	bool m_is_shutdown;
-	
 	SDLVideoSystem(const SDLVideoSystem&) = delete;
 	SDLVideoSystem& operator=(const SDLVideoSystem&) = delete;
 };

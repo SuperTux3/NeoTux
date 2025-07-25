@@ -66,6 +66,12 @@ VideoSystem::create_window(int flags)
 	window.create_window(flags | SDL_WINDOW_RESIZABLE, "SuperTux");
 }
 
+Painter*
+VideoSystem::get_painter() const
+{
+	return m_painter.get();
+}
+
 Size
 VideoSystem::get_window_size() const
 {

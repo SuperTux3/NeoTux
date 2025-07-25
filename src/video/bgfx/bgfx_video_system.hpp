@@ -44,10 +44,6 @@ public:
 	
 	Backend get_video_system() const;
 
-	Renderer* get_back_renderer() const {};
-	Renderer& get_renderer() const {};
-	Renderer& get_lightmap() const {};
-
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
 	const Viewport& get_viewport() const {};

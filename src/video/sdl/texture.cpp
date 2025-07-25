@@ -24,7 +24,7 @@ SDLTexture::SDLTexture(std::string filename) :
 {
 	SDL_Surface *surface = create_surface(filename);
 	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
-	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->m_painter.get());
+	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->get_painter());
 	
 	m_sdl_texture.reset(SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface));
 	

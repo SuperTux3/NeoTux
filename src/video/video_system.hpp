@@ -69,9 +69,7 @@ public:
 	virtual Backend get_video_system() const = 0;
 
 	/** Return a human readable name of the current video system */
-	virtual Renderer* get_back_renderer() const = 0;
-	virtual Renderer& get_renderer() const = 0;
-	virtual Renderer& get_lightmap() const = 0;
+	Painter* get_painter() const;
 
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
