@@ -50,9 +50,11 @@ draw_textures()
 	{
 		TextureRef tex = pair.second;
 		SDL_FRect dest = { (float)((i*40)%winsize.width), (float)((i*40)/winsize.width)*40, 40, 40 };
-		SDL_Texture *texture = static_cast<SDLTexture*>(tex)->get_sdl_texture();
 		//SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, &dest);
 		
+		Painter* painter = g_video_system->get_painter();
+		
+		painter->draw(tex, std::nullopt, dest);
 		
 		++i;
 	}

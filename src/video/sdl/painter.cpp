@@ -26,14 +26,18 @@ SDLPainter::SDLPainter(VideoSystem *video) :
 {}
 
 void
-SDLPainter::draw(TextureRef texture, Rectf src, Rectf dest)
+SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest)
 {
 	SDLTexture *sdltex = static_cast<SDLTexture*>(texture);
-	SDL_FRect src_sdl = src.to_sdl_frect();
-	SDL_FRect dest_sdl = dest.to_sdl_frect();
+	SDL_FRect src_sdl;
+	if (src)
+		src_sdl = src->to_sdl_frect();
+	SDL_FRect dest_sdl;
+	if (dest)
+		dest_sdl = dest->to_sdl_frect();
 	//SDLVideoSystem *video = static_cast<SDLVideoSystem*>(m_
 	SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
-		&src_sdl, &dest_sdl);
+		src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
 }
 
 void

@@ -17,6 +17,7 @@
 #ifndef SUPERTUX_SRC_VIDEO_PAINTER_HPP
 #define SUPERTUX_SRC_VIDEO_PAINTER_HPP
 
+#include <optional>
 #include "math/rect.hpp"
 #include "texture.hpp"
 
@@ -26,7 +27,7 @@ public:
 	Painter() = default;
 	virtual ~Painter() = default;
 	
-	virtual void draw(TextureRef texture, Rectf src, Rectf dest) = 0;
+	virtual void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest) = 0;
 	virtual void flip() = 0;
 };
 

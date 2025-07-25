@@ -50,6 +50,13 @@ public:
 		bottom(top + size.height)
 	{}
 	
+	Rect_t(SDL_FRect frect) :
+		left(frect.x),
+		top(frect.y),
+		right(frect.x + frect.w),
+		bottom(frect.y + frect.h)
+	{}
+	
 	T get_width() const
 	{
 		return right - left;
