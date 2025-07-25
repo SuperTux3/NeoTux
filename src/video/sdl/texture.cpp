@@ -17,14 +17,16 @@
 #include "texture.hpp"
 #include "video/video_system.hpp"
 #include "sdl_video_system.hpp"
+#include "video/sdl/painter.hpp"
 
 SDLTexture::SDLTexture(std::string filename) : 
 	m_sdl_texture{nullptr, SDL_DestroyTexture}
 {
 	SDL_Surface *surface = create_surface(filename);
 	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
+	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->m_painter.get());
 	
-	m_sdl_texture.reset(SDL_CreateTextureFromSurface(video->m_sdl_renderer.get(), surface));
+	m_sdl_texture.reset(SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface));
 	
 	SDL_DestroySurface(surface);
 }

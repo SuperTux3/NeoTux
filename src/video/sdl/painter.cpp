@@ -15,10 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "painter.hpp"
+#include "video/sdl/sdl_video_system.hpp"
 
 SDLPainter::SDLPainter(VideoSystem *video) :
 	m_video_system(video),
-	m_sdl_renderer(nullptr, &SDL_DestroyRenderer)
+	m_sdl_renderer(SDL_CreateRenderer(video->window.m_sdl_window.get(), NULL),
+		&SDL_DestroyRenderer)
 {}
 
 void
@@ -27,3 +29,8 @@ SDLPainter::draw(TextureRef texture, Rectf src, Rectf dest)
 
 }
 
+void
+SDLPainter::flip()
+{
+	SDL_RenderPresent(m_sdl_renderer.get());
+}

@@ -17,9 +17,7 @@
 #include "video/sdl/painter.hpp"
 #include "sdl_video_system.hpp"
 
-SDLVideoSystem::SDLVideoSystem() :
-	VideoSystem{new SDLPainter(static_cast<VideoSystem*>(this))},
-	m_sdl_renderer(nullptr, &SDL_DestroyRenderer)
+SDLVideoSystem::SDLVideoSystem()
 {
 	init();
 }
@@ -45,14 +43,16 @@ void
 SDLVideoSystem::init()
 {
 	create_window(0);
+	m_painter.reset(new SDLPainter(static_cast<VideoSystem*>(this)));
 	//m_sdl_renderer.reset(SDL_CreateRenderer(window.m_sdl_window.get(), NULL));
-	//flip();
+	flip();
 }
 
 void
 SDLVideoSystem::flip()
 {
 	//SDL_RenderPresent(m_sdl_renderer.get());
+	m_painter->flip();
 }
 
 void

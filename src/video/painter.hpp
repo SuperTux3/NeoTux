@@ -23,10 +23,11 @@
 class Painter
 {
 public:
-	Painter();
+	Painter() = default;
 	virtual ~Painter() = default;
 	
 	virtual void draw(TextureRef texture, Rectf src, Rectf dest) = 0;
+	virtual void flip() = 0;
 };
 
 #endif

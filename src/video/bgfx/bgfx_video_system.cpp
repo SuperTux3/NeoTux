@@ -33,6 +33,7 @@ BGFXVideoSystem::BGFXVideoSystem(BGFXVideoSystem::Backend backend) :
 	m_program{"data/shaders/frag.glsl", "data/shaders/vert.glsl"},
 	m_is_shutdown{false}
 {
+	m_painter = nullptr;
 	init(backend);
 }
 

@@ -21,6 +21,8 @@
 #include "math/rect.hpp"
 #include "texture.hpp"
 
+struct VideoSystem;
+
 class SDLPainter : public Painter
 {
 public:
@@ -28,7 +30,8 @@ public:
 	~SDLPainter() = default;
 	
 	void draw(TextureRef texture, Rectf src, Rectf dest);
-private:
+	void flip();
+public:
 	VideoSystem *m_video_system;
 	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;
 };

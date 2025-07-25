@@ -61,7 +61,7 @@ public:
 	static std::vector<Info> get_available_video_systems();
 	
 public:
-	VideoSystem(Painter* painter) :m_painter{painter} {};
+	VideoSystem() = default;
 	virtual ~VideoSystem() = default;
 	
 	void create_window(int flags);
@@ -93,7 +93,7 @@ public:
 
 	void do_take_screenshot();
 
-protected:
+public:
 	SDLWindow window;
 	
 	std::unique_ptr<Painter> m_painter;
