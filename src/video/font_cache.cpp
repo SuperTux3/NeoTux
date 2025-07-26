@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "font_cache.hpp"
+#include <iostream>
 
 FontCache::FontCache(std::string_view fontpath, int font_size) :
 	m_font(fontpath, font_size),

@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <SDL3/SDL_render.h>
+#include "math/size.hpp"
 #include "video/texture.hpp"
 
 struct SDL_Texture;
@@ -27,7 +28,7 @@ class SDLTexture : public Texture
 {
 public:
 	SDLTexture(std::string filename);
-	SDLTexture(SDL_Surface * const surface);
+	SDLTexture(SDL_Surface * const surface, bool destroy_surface = false);
 	~SDLTexture() = default;
 	
 	SDL_Texture * get_sdl_texture() { return m_sdl_texture.get(); }

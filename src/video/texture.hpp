@@ -32,10 +32,12 @@ public:
 	//virtual void draw(Texture* texture, Rectf src, Rectf dest) = 0;
 	static Texture* create(const std::string &filename);
 	static Texture* create(SDL_Surface *surface);
+	
+	Size get_size() const { return size; }
 protected:
 	static SDL_Surface* create_surface(const std::string &filename);
 
-	Size size;	
+	Size size;
 };
 
 using TextureRef = Texture*;

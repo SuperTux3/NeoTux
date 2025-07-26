@@ -101,7 +101,8 @@ Game::run()
 		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
 		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
 		
-		painter->draw(g_font_cache.load("Hello world", {255, 255, 255, 255}), std::nullopt, SDL_FRect{50,50,160,40}); 
+		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
+		painter->draw(text, std::nullopt, SDL_FRect{50,50,text->get_size().width,text->get_size().height}); 
 		
 		draw_textures();		
 		

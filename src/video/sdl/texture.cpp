@@ -19,23 +19,21 @@
 #include "sdl_video_system.hpp"
 #include "video/sdl/painter.hpp"
 
-SDLTexture::SDLTexture(std::string filename) : 
-	m_sdl_texture{nullptr, SDL_DestroyTexture}
-{
-	SDL_Surface *surface = create_surface(filename);
-	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
-	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->get_painter());
-	
-	m_sdl_texture.reset(SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface));
-	
-	SDL_DestroySurface(surface);
-}
+SDLTexture::SDLTexture(std::string filename) :
+	SDLTexture{create_surface(filename), true}
+{}
 
-SDLTexture::SDLTexture(SDL_Surface * const surface) :
+SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = false */) :
 	m_sdl_texture{nullptr, SDL_DestroyTexture}
 {
 	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
 	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->get_painter());
-	m_sdl_texture.reset(SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface));
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface);
+	size.width = surface->w;
+	size.height = surface->h;
+	m_sdl_texture.reset(texture);
+	
+	if (destroy_surface)
+		SDL_DestroySurface(surface);
 }
 
