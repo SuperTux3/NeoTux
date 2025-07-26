@@ -89,12 +89,12 @@ Game::run()
 
 		//SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
 		
-		g_texture_manager.add("images/creatures/mr_bomb/left-0.png");
-		g_texture_manager.add("images/creatures/nolok/walk-0.png");
-		g_texture_manager.add("images/creatures/owl/carry-0.png");
-		g_texture_manager.add("images/creatures/penny/stand-0.png");
+		g_texture_manager.load("images/creatures/mr_bomb/left-0.png");
+		g_texture_manager.load("images/creatures/nolok/walk-0.png");
+		g_texture_manager.load("images/creatures/owl/carry-0.png");
+		g_texture_manager.load("images/creatures/penny/stand-0.png");
 		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
-		TextureRef ref = g_texture_manager.add("images/engine/supertux.png");
+		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
 		
 		draw_textures();		
 		

@@ -27,7 +27,7 @@ public:
 	TextureManager();
 	~TextureManager();
 	
-	TextureRef add(const std::string &filename);
+	TextureRef load(const std::string &filename);
 	
 public:
 	std::unordered_map<std::string, TextureRef> m_textures;

@@ -29,7 +29,7 @@ TextureManager::~TextureManager()
 }
 
 TextureRef
-TextureManager::add(const std::string &filename)
+TextureManager::load(const std::string &filename)
 {
 	if (m_textures.contains(filename))
 		return m_textures[filename];
