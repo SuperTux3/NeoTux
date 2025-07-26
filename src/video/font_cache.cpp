@@ -14,43 +14,27 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "texture.hpp"
-#include <SDL3_image/SDL_image.h>
-#include "video/sdl/texture.hpp"
-#include "video/video_system.hpp"
+#include "font_cache.hpp"
 
-Texture::Texture()
+FontCache::FontCache(std::string_view fontpath, int font_size) :
+	m_font(fontpath, font_size),
+	m_strings()
 {}
 
-void
-Texture::load_file(const std::string& filename)
+TextureRef
+FontCache::load(const std::string &msg, SDL_Color color)
 {
-}
-
-Texture*
-Texture::create(const std::string &filename)
-{
-	switch (g_video_system->get_video_system())
+	if (m_strings.contains(msg))
+		return m_strings[msg];
+	else
 	{
-	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(filename);
+		SDL_Surface *surface = m_font.render_text_solid(msg, color);
+		// TODO error handling
+
+		TextureRef tex = Texture::create(surface);
+
+		SDL_DestroySurface(surface);
+		return tex;
 	}
 }
 
-Texture*
-Texture::create(SDL_Surface *surface)
-{
-	switch (g_video_system->get_video_system())
-	{
-	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(surface);
-	}
-}
-
-
-SDL_Surface*
-Texture::create_surface(const std::string& filename)
-{
-	SDL_Surface* image = IMG_Load(filename.c_str());
-	return image;
-}

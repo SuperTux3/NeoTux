@@ -38,6 +38,12 @@ TTFFont::TTFFont(std::string_view filename,
 	}
 }
 
+SDL_Surface*
+TTFFont::render_text_solid(const std::string &msg, SDL_Color color)
+{
+	return TTF_RenderText_Solid(m_font.get(), msg.c_str(), msg.length(), color);
+}
+
 float
 TTFFont::get_text_width(std::string_view text) const
 {

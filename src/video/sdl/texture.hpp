@@ -27,7 +27,8 @@ class SDLTexture : public Texture
 {
 public:
 	SDLTexture(std::string filename);
-	virtual ~SDLTexture();
+	SDLTexture(SDL_Surface * const surface);
+	~SDLTexture() = default;
 	
 	SDL_Texture * get_sdl_texture() { return m_sdl_texture.get(); }
 private:

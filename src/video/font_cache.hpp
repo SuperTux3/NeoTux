@@ -14,43 +14,23 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef SUPERTUX_SRC_VIDEO_FONT_CACHE_HPP
+#define SUPERTUX_SRC_VIDEO_FONT_CACHE_HPP
+
 #include "texture.hpp"
-#include <SDL3_image/SDL_image.h>
-#include "video/sdl/texture.hpp"
-#include "video/video_system.hpp"
+#include <unordered_map>
+#include "sdl/ttf_font.hpp"
 
-Texture::Texture()
-{}
-
-void
-Texture::load_file(const std::string& filename)
+class FontCache
 {
-}
+public:
+	FontCache(std::string_view fontpath, int font_size);
+	~FontCache() = default;
+	
+	TextureRef load(const std::string &message, SDL_Color color);
+private:
+	TTFFont m_font;
+	std::unordered_map<std::string /*message*/, TextureRef> m_strings;
+};
 
-Texture*
-Texture::create(const std::string &filename)
-{
-	switch (g_video_system->get_video_system())
-	{
-	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(filename);
-	}
-}
-
-Texture*
-Texture::create(SDL_Surface *surface)
-{
-	switch (g_video_system->get_video_system())
-	{
-	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(surface);
-	}
-}
-
-
-SDL_Surface*
-Texture::create_surface(const std::string& filename)
-{
-	SDL_Surface* image = IMG_Load(filename.c_str());
-	return image;
-}
+#endif

@@ -31,6 +31,11 @@ SDLTexture::SDLTexture(std::string filename) :
 	SDL_DestroySurface(surface);
 }
 
-SDLTexture::~SDLTexture()
-{}
+SDLTexture::SDLTexture(SDL_Surface * const surface) :
+	m_sdl_texture{nullptr, SDL_DestroyTexture}
+{
+	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
+	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->get_painter());
+	m_sdl_texture.reset(SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface));
+}
 

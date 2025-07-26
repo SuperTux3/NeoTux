@@ -31,6 +31,7 @@ public:
 	void load_file(const std::string &filename);
 	//virtual void draw(Texture* texture, Rectf src, Rectf dest) = 0;
 	static Texture* create(const std::string &filename);
+	static Texture* create(SDL_Surface *surface);
 protected:
 	static SDL_Surface* create_surface(const std::string &filename);
 

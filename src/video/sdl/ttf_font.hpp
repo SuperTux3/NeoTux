@@ -27,6 +27,8 @@ public:
 	TTFFont(std::string_view filename, int font_size, float line_spacing = 1.0f, int shadow_size = 0, int border = 0);
 	~TTFFont() = default;
 	
+	SDL_Surface* render_text_solid(const std::string &msg, SDL_Color color);
+	
 	float get_line_spacing() const { return m_line_spacing; }
 	float get_height() const;
 	
