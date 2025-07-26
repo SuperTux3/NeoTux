@@ -17,6 +17,7 @@
 #ifndef HEADER_SUPERTUX_VIDEO_TTF_FONT_HPP
 #define HEADER_SUPERTUX_VIDEO_TTF_FONT_HPP
 
+#include <stdexcept>
 #include <string_view>
 #include <memory>
 #include <SDL3_ttf/SDL_ttf.h>

@@ -24,7 +24,7 @@
 class SDLException : public std::runtime_error
 {
 public:
-	SDLException(const std::string& what = "") :
+	SDLException(const std::string &what = "") :
 		sdl_error{SDL_GetError()},
 		std::runtime_error(what + ": " + SDL_GetError())
 	{}

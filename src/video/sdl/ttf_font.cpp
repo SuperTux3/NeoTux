@@ -18,6 +18,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <string>
 #include "sdl_exception.hpp"
+#include "util/logger.hpp"
 
 using namespace std::string_literals;
 
@@ -31,11 +32,14 @@ TTFFont::TTFFont(std::string_view filename,
 	m_shadow_size{shadow_size},
 	m_border{border}
 {
+	if (!TTF_Init())
+		throw SDLException("TTF_Init()");
 	TTF_Font* font = TTF_OpenFont(filename.data(), font_size);
-	if (!m_font)
+	if (!font)
 	{
 		throw SDLException("Couldn't load TTFFont");
 	}
+	m_font.reset(font);
 }
 
 SDL_Surface*

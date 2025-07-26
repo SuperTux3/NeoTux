@@ -17,15 +17,19 @@
 #include <util/logger.hpp>
 #include <format>
 #include "game.hpp"
+#include "util/filesystem.hpp"
 #include "video/sdl/sdl_video_system.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
+#include "video/font_cache.hpp"
 #include "settings.hpp"
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL.h>
 
 Game g_game{};
+
+static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 Game::Game() :
 	m_quit(false)
@@ -80,11 +84,12 @@ Game::run()
 	}
 	Logger::info(std::format("Using {} backend", VideoSystem::video_system_to_str(g_settings->renderer)));
 	
-
 	while (!m_quit)
 	{
 		if (!g_video_system)
 			continue;
+		Painter* painter = g_video_system->get_painter();
+
 		handle_events();
 
 		//SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
@@ -95,6 +100,8 @@ Game::run()
 		g_texture_manager.load("images/creatures/penny/stand-0.png");
 		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
 		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
+		
+		painter->draw(g_font_cache.load("Hello world", {255, 255, 255, 255}), std::nullopt, SDL_FRect{50,50,160,40}); 
 		
 		draw_textures();		
 		

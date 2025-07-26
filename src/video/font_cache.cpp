@@ -34,6 +34,7 @@ FontCache::load(const std::string &msg, SDL_Color color)
 		TextureRef tex = Texture::create(surface);
 
 		SDL_DestroySurface(surface);
+		m_strings.insert({msg, tex});
 		return tex;
 	}
 }
