@@ -34,6 +34,7 @@ Game g_game{};
 static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 Game::Game() :
+	m_input_manager(),
 	m_quit(false)
 {
 }
@@ -144,5 +145,7 @@ Game::handle_events()
 				g_video_system->on_resize(ev.window.data1, ev.window.data2);
 			}
 		}
+		m_input_manager.handle_event(ev);
 	}
+	
 }

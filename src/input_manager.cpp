@@ -14,26 +14,19 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef HEADER_SUPERTUX_GAME_HPP
-#define HEADER_SUPERTUX_GAME_HPP
-
 #include "input_manager.hpp"
+#include "sdl_exception.hpp"
+#include <SDL3/SDL_init.h>
+#include <SDL3/SDL_events.h>
 
-class Game
+InputManager::InputManager()
 {
-public:
-	Game();
-	~Game() = default;
-	
-	void run();
-	void update();
-	
-	void handle_events();
-private:
-	InputManager m_input_manager;
-	bool m_quit;
-};
+	if (!SDL_Init(SDL_INIT_GAMEPAD))
+		throw SDLException("SDL_Init(SDL_INIT_GAMEPAD)");
+}
 
-extern Game g_game;
-
-#endif
+void
+InputManager::handle_event(const SDL_Event &ev)
+{
+	
+}
