@@ -20,6 +20,7 @@
 #include "math/size.hpp"
 #include "math/rect.hpp"
 #include <SDL3/SDL_surface.h>
+#include <cstdint>
 #include <string>
 
 class Texture
@@ -34,9 +35,12 @@ public:
 	static Texture* create(SDL_Surface *surface);
 	
 	Size get_size() const { return size; }
+	void poke_last_used();
+	uint64_t get_last_used() const { return m_time; }
 protected:
 	static SDL_Surface* create_surface(const std::string &filename);
-
+	
+	uint64_t m_time;
 	Size size;
 };
 

@@ -90,11 +90,14 @@ Game::run()
 	Size winsize = g_video_system->get_window_size();
 	Camera camera(winsize.width, winsize.height);
 	
+	g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
+	
 	int i;
 	while (!m_quit)
 	{
 		if (!g_video_system)
 			continue;
+		g_font_cache.try_gc();
 		Painter* painter = g_video_system->get_painter();
 		painter->register_camera(&camera);
 		handle_events();

@@ -15,12 +15,47 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "font_cache.hpp"
+#include "util/logger.hpp"
 #include <iostream>
 
 FontCache::FontCache(std::string_view fontpath, int font_size) :
 	m_font(fontpath, font_size),
 	m_strings()
 {}
+
+bool
+FontCache::try_gc()
+{
+	static int64_t last_cleanup = 0;
+	if (last_cleanup == 0)
+		last_cleanup = SDL_GetTicks();
+	constexpr int64_t GC_TIME = 3 * 1000;
+	constexpr int64_t GC_INTERVAL = 5 * 1000;
+	bool did_cleanup = false;
+	int64_t curr = SDL_GetTicks();
+	
+	if (last_cleanup >= curr - GC_INTERVAL)
+	{
+		return false;
+	}
+	Logger::debug("Trying Font cleanup...");
+	last_cleanup = curr;
+
+	// TODO better way?
+gc_loop:
+	for (auto it = m_strings.begin(); it != m_strings.end(); ++it)
+	{
+		TextureRef tex = it->second;
+		if ((int64_t)tex->get_last_used() < curr - GC_TIME)
+		{
+			Logger::debug("Cleaned up \"" + it->first + "\"");
+			m_strings.erase(it);
+			did_cleanup = true;
+			goto gc_loop;
+		}
+	}
+	return did_cleanup;
+}
 
 TextureRef
 FontCache::load(const std::string &msg, SDL_Color color)
@@ -33,6 +68,7 @@ FontCache::load(const std::string &msg, SDL_Color color)
 		// TODO error handling
 
 		TextureRef tex = Texture::create(surface);
+		tex->poke_last_used();
 
 		SDL_DestroySurface(surface);
 		m_strings.insert({msg, tex});

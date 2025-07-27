@@ -15,11 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "texture.hpp"
+#include <SDL3/SDL_timer.h>
 #include <SDL3_image/SDL_image.h>
 #include "video/sdl/texture.hpp"
 #include "video/video_system.hpp"
 
-Texture::Texture()
+Texture::Texture() :
+	m_time(0)
 {}
 
 void
@@ -47,6 +49,11 @@ Texture::create(SDL_Surface *surface)
 	}
 }
 
+void
+Texture::poke_last_used()
+{
+	m_time = SDL_GetTicks();
+}
 
 SDL_Surface*
 Texture::create_surface(const std::string& filename)
@@ -54,3 +61,5 @@ Texture::create_surface(const std::string& filename)
 	SDL_Surface* image = IMG_Load(filename.c_str());
 	return image;
 }
+
+

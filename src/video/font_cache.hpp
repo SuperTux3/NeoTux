@@ -28,6 +28,7 @@ public:
 	~FontCache() = default;
 	
 	TextureRef load(const std::string &message, SDL_Color color);
+	bool try_gc();
 private:
 	TTFFont m_font;
 	std::unordered_map<std::string /*message*/, TextureRef> m_strings;
