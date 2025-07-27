@@ -97,8 +97,8 @@ Game::run()
 		painter->register_camera(&camera);
 		handle_events();
 		
-		camera.x = sin((float)i/10.f)*100.f - 200;
-		camera.y = cos((float)i/20.f)*100.f - 200;
+		camera.x = sin((float)i/10.f)*100.f - 200 - sin((float)i/300.f)*55;
+		camera.y = cos((float)i/20.f)*100.f - 200 - tan((float)i/100.f)*55;
 
 		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
 		
@@ -112,6 +112,9 @@ Game::run()
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
 		
+		
+		camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
+		camera.y = cos((float)i/20.f)*80.f - 200 - tan((float)i/80.f)*35;
 		draw_textures();		
 		
 		g_video_system->flip();
