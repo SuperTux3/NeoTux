@@ -33,6 +33,8 @@ public:
 	virtual void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest) = 0;
 	virtual void flip() = 0;
 	
+	bool in_camera_bounds(std::optional<Rectf> dest);
+	
 	void register_camera(Camera *camera);
 	void unregister_camera();
 protected:

@@ -31,17 +31,8 @@ SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rec
 {
 	SDLTexture *sdltex = static_cast<SDLTexture*>(texture);
 	
-	if (m_camera)
-	{
-		if (dest->bottom - m_camera->y < 0)
-			return;
-		if (dest->top - m_camera->y > m_camera->height)
-			return;
-		if (dest->right - m_camera->x < 0)
-			return;
-		if (dest->left - m_camera->x > m_camera->width)
-			return;
-	}
+	if (!in_camera_bounds(dest))
+		return;
 	
 	SDL_FRect src_sdl;
 	if (src)

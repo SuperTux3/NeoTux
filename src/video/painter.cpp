@@ -15,6 +15,22 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "painter.hpp"
+#include "camera.hpp"
+
+bool
+Painter::in_camera_bounds(std::optional<Rectf> dest)
+{
+	if (!m_camera || !dest)
+		return true;
+	
+	if (dest->bottom - m_camera->y < 0 ||
+	    dest->top - m_camera->y > m_camera->height ||
+		dest->right - m_camera->x < 0 ||
+		dest->left - m_camera->x > m_camera->width)
+		return false;
+	
+	return true;
+}
 
 void
 Painter::register_camera(Camera *camera)
