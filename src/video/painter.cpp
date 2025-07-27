@@ -14,29 +14,17 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_VIDEO_PAINTER_HPP
-#define SUPERTUX_SRC_VIDEO_PAINTER_HPP
+#include "painter.hpp"
 
-#include <optional>
-//#include "camera.hpp"
-#include "math/rect.hpp"
-#include "texture.hpp"
-
-class Camera;
-
-class Painter
+void
+Painter::register_camera(Camera *camera)
 {
-public:
-	Painter() = default;
-	virtual ~Painter() = default;
-	
-	virtual void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest) = 0;
-	virtual void flip() = 0;
-	
-	void register_camera(Camera *camera);
-	void unregister_camera();
-protected:
-	Camera *m_camera;
-};
+	m_camera = camera;
+}
 
-#endif
+void
+Painter::unregister_camera()
+{
+	m_camera = nullptr;
+}
+

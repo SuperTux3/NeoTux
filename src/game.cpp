@@ -17,7 +17,9 @@
 #include <util/logger.hpp>
 #include <format>
 #include "game.hpp"
+#include "camera.hpp"
 #include "util/filesystem.hpp"
+#include "video/sdl/painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
 #include "video/bgfx/bgfx_video_system.hpp"
 #include "video/texture_manager.hpp"
@@ -84,15 +86,21 @@ Game::run()
 	}
 	Logger::info(std::format("Using {} backend", VideoSystem::video_system_to_str(g_settings->renderer)));
 	
+	Camera camera;
+	
+	int i;
 	while (!m_quit)
 	{
 		if (!g_video_system)
 			continue;
 		Painter* painter = g_video_system->get_painter();
-
+		painter->register_camera(&camera);
 		handle_events();
+		
+		camera.x = sin((float)i/10.f)*100.f - 200;
+		camera.y = cos((float)i/20.f)*100.f - 200;
 
-		//SDL_RenderClear(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get());
+		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
 		
 		g_texture_manager.load("images/creatures/mr_bomb/left-0.png");
 		g_texture_manager.load("images/creatures/nolok/walk-0.png");
@@ -102,12 +110,14 @@ Game::run()
 		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
 		
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
-		painter->draw(text, std::nullopt, SDL_FRect{50,50,text->get_size().width,text->get_size().height}); 
+		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
 		
 		draw_textures();		
 		
 		g_video_system->flip();
 		SDL_Delay(10);
+		
+		++i;
 	}
 }
 

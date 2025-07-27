@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <SDL3/SDL_render.h>
+#include "camera.hpp"
 #include "painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
 #include "video/sdl/texture.hpp"
@@ -35,6 +36,11 @@ SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rec
 	SDL_FRect dest_sdl;
 	if (dest)
 		dest_sdl = dest->to_sdl_frect();
+	if (m_camera)
+	{
+		dest_sdl.x -= m_camera->x;
+		dest_sdl.y -= m_camera->y;
+	}
 	//SDLVideoSystem *video = static_cast<SDLVideoSystem*>(m_
 	SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
 		src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
