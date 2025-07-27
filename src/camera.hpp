@@ -20,11 +20,17 @@
 class Camera
 {
 public:
-	Camera() = default;
+	Camera(unsigned w, unsigned h) :
+		x{0},
+		y{0},
+		width{w},
+		height{h} {};
 	~Camera() = default;
 	
 	int x;
 	int y;
+	unsigned width;
+	unsigned height;
 };
 
 #endif

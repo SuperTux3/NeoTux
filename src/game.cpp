@@ -85,8 +85,9 @@ Game::run()
 			g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
 	}
 	Logger::info(std::format("Using {} backend", VideoSystem::video_system_to_str(g_settings->renderer)));
-	
-	Camera camera;
+
+	Size winsize = g_video_system->get_window_size();
+	Camera camera(winsize.width, winsize.height);
 	
 	int i;
 	while (!m_quit)
@@ -97,8 +98,8 @@ Game::run()
 		painter->register_camera(&camera);
 		handle_events();
 		
-		camera.x = sin((float)i/10.f)*100.f - 200 - sin((float)i/300.f)*55;
-		camera.y = cos((float)i/20.f)*100.f - 200 - tan((float)i/100.f)*55;
+		camera.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
+		camera.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;
 
 		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
 		
