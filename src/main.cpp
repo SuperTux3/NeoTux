@@ -20,8 +20,11 @@
 #include <iostream>
 #include <functional>
 #include <variant>
+#include "config.h"
 #include "util/logger.hpp"
+#ifdef NEOTUX_BGFX
 #include "video/bgfx/bgfx_video_system.hpp"
+#endif
 #include "video/sdl/window.hpp"
 #include "video/video_system.hpp"
 #include "settings.hpp"

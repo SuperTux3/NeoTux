@@ -44,7 +44,7 @@ public:
 		VIDEO_BGFX_METAL,
 		VIDEO_NULL,
 
-		VIDEO_AUTO = VIDEO_BGFX_VULKAN
+		VIDEO_AUTO = VIDEO_SDL // TODO: Change to BGFX once that is stable.
 	};
 
 	static std::unique_ptr<VideoSystem> create(VideoSystem::Backend video_system);

@@ -16,8 +16,9 @@
 
 #include "filesystem.hpp"
 
-#ifndef DATA_DIR
-#define DATA_DIR ""
+#include "config.h"
+#ifndef NEOTUX_DATA_DIR
+#define NEOTUX_DATA_DIR ""
 #endif
 
 namespace FS
@@ -26,7 +27,7 @@ namespace FS
 std::string
 path(const std::string& file)
 {
-	return std::string(DATA_DIR) + "/" + file;
+	return std::string(NEOTUX_DATA_DIR) + "/" + file;
 }
 
 }

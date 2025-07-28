@@ -1,0 +1,2 @@
+#cmakedefine NEOTUX_BGFX
+#cmakedefine NEOTUX_DATA_DIR "@NEOTUX_DATA_DIR@"

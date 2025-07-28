@@ -16,12 +16,15 @@
 
 #include <util/logger.hpp>
 #include <format>
+#include "config.h"
 #include "game.hpp"
 #include "camera.hpp"
 #include "util/filesystem.hpp"
 #include "video/sdl/painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
+#ifdef NEOTUX_BGFX
 #include "video/bgfx/bgfx_video_system.hpp"
+#endif
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include "video/font_cache.hpp"
@@ -77,22 +80,23 @@ Game::run()
 			break;
 		case VideoSystem::VIDEO_SDL:
 			g_video_system.reset(new SDLVideoSystem{});
-			break;
+		    break;
 		case VideoSystem::VIDEO_BGFX_OPENGL:
 		case VideoSystem::VIDEO_BGFX_OPENGLES:
 		case VideoSystem::VIDEO_BGFX_VULKAN:
-		case VideoSystem::VIDEO_BGFX_METAL:
+	    case VideoSystem::VIDEO_BGFX_METAL:
 		default:
-			g_video_system = std::make_unique<BGFXVideoSystem>(g_settings->renderer);
+		    g_video_system = std::make_unique<SDLVideoSystem>();
 	}
-	Logger::info(std::format("Using {} backend", VideoSystem::video_system_to_str(g_settings->renderer)));
+	Logger::info(std::format("Using {} backend",
+	                         VideoSystem::video_system_to_str(g_settings->renderer)));
 
 	Size winsize = g_video_system->get_window_size();
 	Camera camera(winsize.width, winsize.height);
 	
-	TextureRef bye = g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
+	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	
-	int i;
+	int i = 0;
 	while (!m_quit)
 	{
 		if (!g_video_system)

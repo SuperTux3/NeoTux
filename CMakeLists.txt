@@ -22,46 +22,57 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 	cmake_policy(SET CMP0135 NEW)
 endif()
 
-set(BGFX_VERSION "v1.129.8914-493" CACHE STRING "Version of bgfx.cmake to use")
-FetchContent_Declare(
-	bgfx
-	URL https://github.com/bkaradzic/bgfx.cmake/releases/download/${BGFX_VERSION}/bgfx.cmake.${BGFX_VERSION}.tar.gz
-)
+option(NEOTUX_BGFX "Use BGFX library for NeoTux." OFF)
+if(NEOTUX_BGFX)
+	set(BGFX_VERSION "v1.129.8914-493" CACHE STRING "Version of bgfx.cmake to use")
+	FetchContent_Declare(
+		bgfx
+		URL https://github.com/bkaradzic/bgfx.cmake/releases/download/${BGFX_VERSION}/bgfx.cmake.${BGFX_VERSION}.tar.gz
+	)
 
-set(BGFX_BUILD_EXAMPLES OFF)
-set(BGFX_BUILD_TOOLS ON)
-FetchContent_MakeAvailable(bgfx)
-include("${CMAKE_BINARY_DIR}/_deps/bgfx-src/cmake/bgfxToolUtils.cmake")
+	set(BGFX_BUILD_EXAMPLES OFF)
+	set(BGFX_BUILD_TOOLS ON)
+	FetchContent_MakeAvailable(bgfx)
+	include("${CMAKE_BINARY_DIR}/_deps/bgfx-src/cmake/bgfxToolUtils.cmake")
+
+	bgfx_compile_shaders(
+		TYPE VERTEX
+		SHADERS "${DATA_DIR}/shaders/vert.glsl"
+		VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
+		OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
+	)
+
+	bgfx_compile_shaders(
+		TYPE FRAGMENT
+		SHADERS "${DATA_DIR}/shaders/frag.glsl"
+		VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
+		OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
+	)
+endif()
+
+set(NEOTUX_DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
 
 file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
 
-bgfx_compile_shaders(
-	TYPE VERTEX
-	SHADERS "${DATA_DIR}/shaders/vert.glsl"
-	VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
-	OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
-)
+if(NOT NEOTUX_BGFX)
+	list(FILTER NEOTUX_SRC EXCLUDE REGEX bgfx/)
+endif()
 
-bgfx_compile_shaders(
-	TYPE FRAGMENT
-	SHADERS "${DATA_DIR}/shaders/frag.glsl"
-	VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
-	OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
-)
-
-message("${CMAKE_BINARY_DIR}")
-
-add_executable(NeoTux ${NEOTUX_SRC} "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
+add_executable(NeoTux ${NEOTUX_SRC} )
 target_include_directories(NeoTux PRIVATE src)
-target_compile_definitions(NeoTux PUBLIC
-	DATA_DIR="${DATA_DIR}"
-)
 target_link_libraries(NeoTux PUBLIC
 	SDL3::SDL3
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf
-	bgfx
 )
+
+if(NEOTUX_BGFX)
+	target_sources(NeoTux PRIVATE "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
+	target_link_libraries(NeoTux PUBLIC bgfx)
+endif()
+
+configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
+target_include_directories(NeoTux PRIVATE ${PROJECT_BINARY_DIR})
 
 # TODO: change this to neotux
 set_target_properties(NeoTux PROPERTIES OUTPUT_NAME supertux3)

@@ -16,6 +16,10 @@
 
 #ifndef SUPERTUX_SRC_VIDEO_BGFX_BGFX_SHADER_HPP
 #define SUPERTUX_SRC_VIDEO_BGFX_BGFX_SHADER_HPP
+
+#include "config.h"
+
+#ifdef NEOTUX_BGFX
 #include <vector>
 #include <string>
 #include <bgfx/bgfx.h>
@@ -35,4 +39,5 @@ private:
 	std::vector<std::string> m_files;
 };
 
+#endif
 #endif
