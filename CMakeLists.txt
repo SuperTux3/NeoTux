@@ -22,6 +22,14 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 	cmake_policy(SET CMP0135 NEW)
 endif()
 
+set(SFSEXP_VERSION "1.4.1" CACHE STRING "Version of SfSexp to use")
+FetchContent_Declare(
+	sfsexp
+	URL https://github.com/mjsottile/sfsexp/releases/download/v${SFSEXP_VERSION}/sfsexp-${SFSEXP_VERSION}.tar.gz
+)
+FetchContent_MakeAvailable(sfsexp)
+include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
+
 option(NEOTUX_BGFX "Use BGFX library for NeoTux." OFF)
 if(NEOTUX_BGFX)
 	set(BGFX_VERSION "v1.129.8914-493" CACHE STRING "Version of bgfx.cmake to use")
@@ -61,6 +69,7 @@ endif()
 add_executable(NeoTux ${NEOTUX_SRC} )
 target_include_directories(NeoTux PRIVATE src)
 target_link_libraries(NeoTux PUBLIC
+	SFSEXP
 	SDL3::SDL3
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf

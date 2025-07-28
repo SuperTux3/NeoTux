@@ -1,0 +1,8 @@
+project(SFSEXP LANGUAGES C)
+
+set(SFSEXP_DIRECTORY "${CMAKE_BINARY_DIR}/_deps/sfsexp-src")
+file(GLOB_RECURSE SFSEXP_SRC
+	${SFSEXP_DIRECTORY}/src/*.c
+	${SFSEXP_DIRECTORY}/src/*.h)
+
+add_library(SFSEXP ${SFSEXP_SRC})
