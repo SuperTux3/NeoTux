@@ -32,11 +32,11 @@ TextureRef
 TextureManager::load(const std::string &filename)
 {
 	if (m_textures.contains(filename))
-		return m_textures[filename];
+		return m_textures[filename].get();
 	else
 	{
 		TextureRef tex = Texture::create(FS::path(filename));
-		m_textures.insert({filename, tex});
+		m_textures.insert({filename, std::unique_ptr<Texture>(tex)});
 		return tex;
 	}
 }

@@ -45,7 +45,7 @@ FontCache::try_gc()
 gc_loop:
 	for (auto it = m_strings.begin(); it != m_strings.end(); ++it)
 	{
-		TextureRef tex = it->second;
+		TextureRef tex = it->second.get();
 		if ((int64_t)tex->get_last_used() < curr - GC_TIME)
 		{
 			Logger::debug("Cleaned up \"" + it->first + "\"");
@@ -62,7 +62,7 @@ FontCache::load(const std::string &msg, SDL_Color color)
 {
 	if (m_strings.contains(msg))
 	{
-		TextureRef tex = m_strings[msg];
+		TextureRef tex = m_strings[msg].get();
 		tex->poke_last_used();
 		return tex;
 	}
@@ -75,7 +75,7 @@ FontCache::load(const std::string &msg, SDL_Color color)
 		tex->poke_last_used();
 
 		SDL_DestroySurface(surface);
-		m_strings.insert({msg, tex});
+		m_strings.insert({msg, std::unique_ptr<Texture>(tex)});
 		return tex;
 	}
 }

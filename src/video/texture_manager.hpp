@@ -17,6 +17,7 @@
 #ifndef SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
 #define SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include "texture.hpp"
@@ -30,7 +31,7 @@ public:
 	TextureRef load(const std::string &filename);
 	
 public:
-	std::unordered_map<std::string, TextureRef> m_textures;
+	std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;
 };
 
 extern TextureManager g_texture_manager;

@@ -31,7 +31,7 @@ public:
 	bool try_gc();
 private:
 	TTFFont m_font;
-	std::unordered_map<std::string /*message*/, TextureRef> m_strings;
+	std::unordered_map<std::string /*message*/, std::unique_ptr<Texture>> m_strings;
 };
 
 #endif

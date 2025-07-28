@@ -58,7 +58,7 @@ draw_textures()
 	Size winsize = g_video_system->get_window_size();
 	for (auto const &pair: g_texture_manager.m_textures)
 	{
-		TextureRef tex = pair.second;
+		TextureRef tex = pair.second.get();
 		SDL_FRect dest = { (float)((i*40)%winsize.width), (float)((i*40)/winsize.width)*40, 40, 40 };
 		//SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, &dest);
 		
