@@ -29,8 +29,8 @@ FontCache::try_gc()
 	static int64_t last_cleanup = 0;
 	if (last_cleanup == 0)
 		last_cleanup = SDL_GetTicks();
-	constexpr int64_t GC_TIME = 3 * 1000;
-	constexpr int64_t GC_INTERVAL = 5 * 1000;
+	constexpr int64_t GC_TIME = 20 * 1000;
+	constexpr int64_t GC_INTERVAL = 30 * 1000;
 	bool did_cleanup = false;
 	int64_t curr = SDL_GetTicks();
 	
@@ -61,7 +61,11 @@ TextureRef
 FontCache::load(const std::string &msg, SDL_Color color)
 {
 	if (m_strings.contains(msg))
-		return m_strings[msg];
+	{
+		TextureRef tex = m_strings[msg];
+		tex->poke_last_used();
+		return tex;
+	}
 	else
 	{
 		SDL_Surface *surface = m_font.render_text_solid(msg, color);
