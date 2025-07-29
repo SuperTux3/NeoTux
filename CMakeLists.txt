@@ -58,6 +58,14 @@ if(NEOTUX_BGFX)
 	)
 endif()
 
+set(BUILD_TESTING OFF CACHE BOOL Enable tests)
+if(BUILD_TESTING)
+  #include(SuperTux/BuildTests)
+  set(CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+  enable_testing()
+  add_subdirectory(tests)
+endif()
+
 set(NEOTUX_DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
 
 file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
