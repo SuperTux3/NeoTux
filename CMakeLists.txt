@@ -75,7 +75,7 @@ if(NOT NEOTUX_BGFX)
 endif()
 
 add_executable(NeoTux ${NEOTUX_SRC} )
-target_include_directories(NeoTux PRIVATE src)
+target_include_directories(NeoTux PRIVATE src SFSEXP)
 target_link_libraries(NeoTux PUBLIC
 	SFSEXP
 	SDL3::SDL3

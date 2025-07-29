@@ -10,7 +10,7 @@ function(make_unit_test test_name)
   endif()
   add_executable(${test_name} ${mtargs_SOURCE} ${mtargs_EXTERNAL})
   target_compile_features(${test_name} PRIVATE cxx_std_17)
-  target_include_directories(${test_name} PUBLIC ${NeoTux_SOURCE_DIR}/src ${mtargs_INCLUDES})
+  target_include_directories(${test_name} PUBLIC ${NeoTux_SOURCE_DIR}/src ${mtargs_INCLUDES} ${PROJECT_BINARY_DIR})
   if (mtargs_DEFINITIONS)
     target_compile_definitions(${test_name} PUBLIC ${mtargs_DEFINITIONS})
   endif()
@@ -30,9 +30,12 @@ endfunction(make_unit_test)
 #   LIBRARIES SDL2 DEFINITIONS GLM_ENABLE_EXPERIMENTAL)
 
 make_unit_test(SexpTest SOURCE sexp_test.cpp
-	LIBRARIES SFSEXP)
+	LIBRARIES SFSEXP
+	EXTERNAL util/sexp.cpp)
 
 #message("ALL TESTS: ${all_test_targets}")
+
+set(NEOTUX_UNITTESTS_DIR "${PROJECT_SOURCE_DIR}/tests/unit" CACHE PATH "Where NeoTux will look for unit test data.")
 
 add_custom_target(tests DEPENDS ${all_test_targets})
 add_custom_command(TARGET tests POST_BUILD COMMAND ctest -C $<CONFIGURATION> --output-on-failure)
