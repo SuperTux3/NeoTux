@@ -89,7 +89,7 @@ Game::run()
 		    g_video_system = std::make_unique<SDLVideoSystem>();
 	}
 	Logger::info(std::format("Using {} backend",
-	                         VideoSystem::video_system_to_str(g_settings->renderer)));
+	                         VideoSystem::video_system_to_str(g_video_system->get_video_system())));
 
 	Size winsize = g_video_system->get_window_size();
 	Camera camera(winsize.width, winsize.height);
