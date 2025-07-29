@@ -29,6 +29,7 @@
 class SexpElt
 {
 public:
+	using value_t = std::variant<SexpElt, std::string_view, std::monostate>;
 	SexpElt() = default;
 	//SexpElt(SexpElt &) {};
 	SexpElt(sexp_t *);
@@ -45,7 +46,7 @@ public:
 	
 	std::string_view get_value() { return m_val; }
 	
-	std::variant<SexpElt, std::string_view, std::monostate> get()
+	value_t get()
 	{
 		if (m_elt->ty == SEXP_VALUE)
 			return m_val;
