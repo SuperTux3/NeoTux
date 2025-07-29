@@ -29,7 +29,9 @@
 class SexpElt
 {
 public:
-	using value_t = std::variant<SexpElt, std::string_view, std::monostate>;
+	// std::string_view doesn't support stringstream, so use std::string for now
+	using string_t = std::string;
+	using value_t = std::variant<SexpElt, string_t, std::monostate>;
 	SexpElt() = default;
 	//SexpElt(SexpElt &) {};
 	SexpElt(sexp_t *);
@@ -44,22 +46,32 @@ public:
 		return std::nullopt;
 	}
 	
-	std::string_view get_value() { return m_val; }
+	string_t get_value() { return m_elt->ty == SEXP_VALUE ? m_elt->val : string_t(); }
+	
+	double get_number();
+	long get_int();
 	
 	value_t get()
 	{
 		if (m_elt->ty == SEXP_VALUE)
-			return m_val;
+			return get_value();
 		else if (m_elt->list)
 			return SexpElt(m_elt->list);
 		return std::monostate{};
 	}
 	std::optional<SexpElt> next();
+	bool next_inplace();
 private:
-	std::string_view m_val;
 	sexp_t *m_elt;
 };
 
+
+/* 
+ * Only supports 1 s-exp (typically the root one) at the moment
+ *  because the game never uses multiple s-exp in a file anyway
+ *
+ * So (one) \n (two (three four)) is not valid yet.
+ */
 class SexpParser
 {
 public:

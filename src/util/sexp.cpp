@@ -15,18 +15,16 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <fstream>
 #include <string>
+#include <format>
 #include "sexp.hpp"
 
 SexpElt::SexpElt(sexp_t *me) :
-	m_elt(me),
-	m_val()
-{
-	if (me->ty == SEXP_VALUE)
-		m_val = me->val;
-}
+	m_elt(me)
+{}
 
 std::optional<SexpElt>
 SexpElt::next()
@@ -35,6 +33,33 @@ SexpElt::next()
 		return SexpElt(m_elt->next);
 		
 	return std::nullopt;
+}
+
+bool
+SexpElt::next_inplace()
+{
+	if (!m_elt->next)
+		return false;
+	
+	m_elt = m_elt->next;
+	return true;
+}
+
+long
+SexpElt::get_int()
+{
+	return std::stol(get_value());
+}
+
+double
+SexpElt::get_number()
+{
+	// Using istringstream due to issues with std::from_chars with FreeBSD/clang(?)
+	std::istringstream iss(get_value());
+	iss.imbue(std::locale::classic());
+	double result;
+	iss >> result;
+	return result;
 }
 
 // ============================================= //
@@ -59,7 +84,7 @@ SexpParser::read_file(const std::string &filename)
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
 	auto size = file.tellg();
 	file.seekg(0, std::ios::beg);
-	
+		
 	std::vector<char> buffer(size);
 	if (file.read(buffer.data(), size))
 		;
