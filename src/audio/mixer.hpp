@@ -29,7 +29,7 @@ public:
 	void shutdown();
 	void play_music(const std::string &filename);
 private:
-	std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)> m_music;
+	std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> m_music;
 };
 
 #endif
