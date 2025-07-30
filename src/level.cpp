@@ -56,16 +56,6 @@ Level::Level(SexpElt root) :
 		if (elt.next_inplace())
 			if (elt.get_int() != 3)
 				Logger::warn(std::format("Level format != 3 (Got: {}). Expect bad!", elt.get_int()));
-
-		elt = root.find_car("name");
-		if (elt.next_inplace())
-		{
-			if (elt.is_list() && elt.get_list().get_value() == "_")
-				elt = elt.get_list().next();
-
-			m_name = elt.get_value();
-			Logger::debug("Name: " + m_name);
-		}
 #endif
 		
 		root.next_inplace();

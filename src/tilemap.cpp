@@ -32,7 +32,7 @@ Tilemap::Tilemap(SexpElt root) :
 		m_size.height = elt.get_int();
 	elt = root.find_car("z-pos", 1);
 	if (elt.next_inplace())
-		m_size.height = elt.get_int();
+		m_zpos = elt.get_int();
 	
 	Logger::debug(std::format("Tilemap info\n\t"
 	                          "Width: {}\n\t"
