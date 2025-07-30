@@ -15,7 +15,7 @@ find_package(SDL3 REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL3_image REQUIRED IMPORTED_TARGET sdl3-image)
 pkg_check_modules(SDL3_ttf REQUIRED IMPORTED_TARGET sdl3-ttf)
-pkg_check_modules(SDL3_mixer REQUIRED IMPORTED_TARGET sdl3-mixer)
+#pkg_check_modules(SDL3_mixer REQUIRED IMPORTED_TARGET sdl3-mixer)
 
 include(FetchContent)
 
@@ -30,6 +30,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sfsexp)
 include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
+
+FetchContent_Declare(
+	SDL3_mixer
+	URL https://github.com/libsdl-org/SDL_mixer/archive/68764f35899e133b402336843c046d75136eaf08.tar.gz
+	#URL https://github.com/mjsottile/sfsexp/releases/download/v${SFSEXP_VERSION}/sfsexp-${SFSEXP_VERSION}.tar.gz
+)
+FetchContent_MakeAvailable(SDL3_mixer)
 
 option(NEOTUX_BGFX "Use BGFX library for NeoTux." OFF)
 if(NEOTUX_BGFX)
@@ -76,13 +83,13 @@ if(NOT NEOTUX_BGFX)
 endif()
 
 add_executable(NeoTux ${NEOTUX_SRC} )
-target_include_directories(NeoTux PRIVATE src SFSEXP PkgConfig::SDL3_mixer)
+target_include_directories(NeoTux PRIVATE src SFSEXP SDL3_mixer)
 target_link_libraries(NeoTux PUBLIC
 	SFSEXP
 	SDL3::SDL3
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf
-	PkgConfig::SDL3_mixer
+	SDL3_mixer
 )
 
 if(NEOTUX_BGFX)
