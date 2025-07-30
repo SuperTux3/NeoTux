@@ -18,6 +18,7 @@
 #define SUPERTUX_SRC_AUDIO_MIXER_HPP
 
 #include <memory>
+#include <vector>
 #include <SDL3_mixer/SDL_mixer.h>
 
 class Mixer
@@ -27,9 +28,11 @@ public:
 	~Mixer() = default;
 	
 	void shutdown();
+	void play_sound(const std::string &filename);
 	void play_music(const std::string &filename);
 private:
 	std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> m_music;
+	std::vector<std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_soundcache;
 };
 
 #endif

@@ -106,7 +106,7 @@ Game::run()
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	m_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
-	int i = 0;
+	int i = 0, j = 1;
 	while (!m_quit)
 	{
 		if (!g_video_system)
@@ -132,6 +132,11 @@ Game::run()
 		
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
+		
+		if ((i % 32) == 0)
+		{
+			m_mixer.play_sound("sounds/bigjump.wav");
+		}
 		
 		
 		camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;

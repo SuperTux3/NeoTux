@@ -22,7 +22,8 @@
 #include "mixer.hpp"
 
 Mixer::Mixer() :
-	m_music(nullptr, Mix_FreeMusic)
+	m_music(nullptr, Mix_FreeMusic),
+	m_soundcache()
 {
 	SDL_AudioSpec spec;
 	spec.freq = MIX_DEFAULT_FREQUENCY;
@@ -44,8 +45,23 @@ void
 Mixer::shutdown()
 {
 	m_music.reset();
+	m_soundcache.clear();
 }
 
+// TODO Cache sounds
+void
+Mixer::play_sound(const std::string &filename)
+{
+	Mix_Chunk *chunk;
+	chunk = Mix_LoadWAV(FS::path(filename).c_str());
+	
+	if (!chunk)
+		throw SDLException("Couldn't load chunk");
+	
+	Mix_PlayChannel(0, chunk, false);
+	
+	m_soundcache.push_back(std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>(chunk, Mix_FreeChunk));
+}
 
 void
 Mixer::play_music(const std::string &filename)
