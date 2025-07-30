@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <SDL3/SDL_audio.h>
 #include <SDL3_mixer/SDL_mixer.h>
 #include <format>
 #include "sdl_exception.hpp"
@@ -22,7 +23,7 @@
 #include "mixer.hpp"
 
 Mixer::Mixer() :
-	m_music(nullptr, Mix_FreeMusic)
+	m_music(nullptr, Mix_FreeChunk)
 {
 	SDL_AudioSpec spec;
 	spec.freq = MIX_DEFAULT_FREQUENCY;
@@ -46,19 +47,20 @@ Mixer::shutdown()
 	m_music.reset();
 }
 
-
 void
 Mixer::play_music(const std::string &filename)
 {
-	Mix_Music *music;
-	music = Mix_LoadMUS(FS::path(filename).c_str());
+	Mix_Chunk *music;
+	music = Mix_LoadWAV(FS::path(filename).c_str());
 	
 	if (!music)
 	{
 		throw SDLException("Couldn't load music");
 	}
 	
-	Mix_FadeInMusic(music, true, 2000);
+	//Mix_FadeInMusic(music, true, 2000);
+	Mix_FadeInChannel(0, music, true, 2000);
+	//Mix_FadeInMusic(music, true, 2000);
 	
 	m_music.reset(music);
 }
