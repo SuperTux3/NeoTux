@@ -24,24 +24,31 @@
 #include <format>
 #include "sexp.hpp"
 
+SexpElt::SexpElt() :
+	m_elt(nullptr)
+{}
+
 SexpElt::SexpElt(sexp_t *me) :
 	m_elt(me)
 {}
 
-std::optional<SexpElt>
+SexpElt
 SexpElt::next()
 {
 	if (m_elt->next)
 		return SexpElt(m_elt->next);
 		
-	return std::nullopt;
+	return SexpElt();
 }
 
 bool
 SexpElt::next_inplace()
 {
 	if (!m_elt->next)
+	{
+		m_elt = nullptr;
 		return false;
+	}
 	
 	m_elt = m_elt->next;
 	return true;
@@ -63,6 +70,40 @@ SexpElt::get_number()
 	iss >> result;
 	return result;
 }
+
+// max_depth is decreased each recursion until it hits 0
+static SexpElt
+find_in_list(SexpElt curr, const std::string &name, int max_depth)
+{
+	SexpElt tmp;
+	bool is_car = true;
+	if (max_depth == 0)
+		return SexpElt();
+	while (curr)
+	{
+		if (is_car && curr.is_value() && curr.get_value() == name)
+			return curr;
+		if (curr.is_list())
+		{
+			tmp = find_in_list(curr.get_list(), name, max_depth - 1);
+			if (tmp)
+				return tmp;
+		}
+		
+		curr.next_inplace();
+		is_car = false;
+	}
+	
+	return SexpElt();
+}
+
+
+SexpElt
+SexpElt::find_car(const std::string &name, int max_depth)
+{
+	return find_in_list(*this, name, max_depth < 0 ? max_depth : max_depth + 1);
+}
+
 
 // ============================================= //
 

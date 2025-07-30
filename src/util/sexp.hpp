@@ -32,19 +32,22 @@ public:
 	// std::string_view doesn't support stringstream, so use std::string for now
 	using string_t = std::string;
 	using value_t = std::variant<SexpElt, string_t, std::monostate>;
-	SexpElt() = default;
+	SexpElt();
 	//SexpElt(SexpElt &) {};
 	SexpElt(sexp_t *);
 	~SexpElt() = default;
 	
-	bool is_list() { return m_elt->ty == SEXP_LIST; }
-	bool is_value() { return m_elt->ty == SEXP_VALUE; }
-	std::optional<SexpElt> get_list()
+	bool is_list() const { return m_elt->ty == SEXP_LIST; }
+	bool is_value() const { return m_elt->ty == SEXP_VALUE; }
+	bool is_valid() const { return m_elt; }
+	operator bool() const { return is_valid(); }
+	SexpElt get_list()
 	{
 		if (m_elt->list)
 			return SexpElt(m_elt->list);
-		return std::nullopt;
+		return SexpElt();
 	}
+	SexpElt find_car(const std::string& name, int max_depth = -1);
 	
 	string_t get_value() { return m_elt->ty == SEXP_VALUE ? m_elt->val : string_t(); }
 	
@@ -59,7 +62,7 @@ public:
 			return SexpElt(m_elt->list);
 		return std::monostate{};
 	}
-	std::optional<SexpElt> next();
+	SexpElt next();
 	bool next_inplace();
 private:
 	sexp_t *m_elt;
