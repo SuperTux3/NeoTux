@@ -44,7 +44,7 @@ SexpElt::next()
 bool
 SexpElt::next_inplace()
 {
-	if (!m_elt->next)
+	if (!m_elt || !m_elt->next)
 	{
 		m_elt = nullptr;
 		return false;
