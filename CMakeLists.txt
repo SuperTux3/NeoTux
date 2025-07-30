@@ -83,13 +83,13 @@ if(NOT NEOTUX_BGFX)
 endif()
 
 add_executable(NeoTux ${NEOTUX_SRC} )
-target_include_directories(NeoTux PRIVATE src SFSEXP SDL3_mixer)
+target_include_directories(NeoTux PRIVATE src)
 target_link_libraries(NeoTux PUBLIC
 	SFSEXP
 	SDL3::SDL3
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf
-	SDL3_mixer
+	SDL3_mixer::SDL3_mixer
 )
 
 if(NEOTUX_BGFX)
