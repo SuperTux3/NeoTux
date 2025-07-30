@@ -3,11 +3,6 @@ project(NeoTux LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
-	add_compile_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
-	add_link_options(-O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
-endif()
-
 set(DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Location of the data directory (shaders, levels, images...)")
 
 # TODO: my module function
@@ -95,6 +90,12 @@ target_link_libraries(NeoTux PUBLIC
 if(NEOTUX_BGFX)
 	target_sources(NeoTux PRIVATE "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
 	target_link_libraries(NeoTux PUBLIC bgfx)
+endif()
+
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+	target_compile_options(NeoTux PUBLIC -O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
+	target_link_options(NeoTux PUBLIC -O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
 endif()
 
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
