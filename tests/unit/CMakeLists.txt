@@ -17,6 +17,7 @@ function(make_unit_test test_name)
   if (mtargs_LIBRARIES)
     target_link_libraries(${test_name} PUBLIC ${mtargs_LIBRARIES})
   endif()
+  set_property(TARGET ${test_name} PROPERTY CXX_STANDARD 20)
   set(all_test_targets "${all_test_targets};${test_name}" CACHE INTERNAL "")
   add_test(NAME ${test_name}
     COMMAND ${test_name})

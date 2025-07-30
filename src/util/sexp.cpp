@@ -16,7 +16,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <vector>
+#include <format>
 #include <fstream>
 #include <string>
 #include <format>
@@ -82,8 +84,12 @@ SexpElt
 SexpParser::read_file(const std::string &filename)
 {
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
+	if (!file.is_open())
+		throw std::runtime_error(std::format("Couldn't open file: \"{}\"", filename));
 	auto size = file.tellg();
 	file.seekg(0, std::ios::beg);
+	
+	
 		
 	std::vector<char> buffer(size);
 	if (file.read(buffer.data(), size))
