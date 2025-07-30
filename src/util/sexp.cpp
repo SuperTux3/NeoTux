@@ -75,6 +75,8 @@ SexpElt
 SexpParser::read_data(const std::vector<char> &data)
 {
 	sexp_t *sexp = parse_sexp((char*)data.data(), data.size());
+	if (!sexp)
+		throw std::runtime_error("Failed to parse S-Expression");
 	m_sexp.reset(sexp);
 	
 	return SexpElt(sexp);
@@ -88,13 +90,19 @@ SexpParser::read_file(const std::string &filename)
 		throw std::runtime_error(std::format("Couldn't open file: \"{}\"", filename));
 	auto size = file.tellg();
 	file.seekg(0, std::ios::beg);
-	
-	
 		
 	std::vector<char> buffer(size);
 	if (file.read(buffer.data(), size))
 		;
 	//	return false;
 	
-	return read_data(buffer);
+	try
+	{
+		return read_data(buffer);
+	}
+	catch (std::exception &e)
+	{
+		throw std::runtime_error(std::format("{} for file \"{}\"", e.what(), filename));
+	}
+	
 }
