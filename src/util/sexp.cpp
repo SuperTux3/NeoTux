@@ -35,7 +35,7 @@ SexpElt::SexpElt(sexp_t *me) :
 SexpElt
 SexpElt::next()
 {
-	if (m_elt->next)
+	if (m_elt && m_elt->next)
 		return SexpElt(m_elt->next);
 		
 	return SexpElt();
