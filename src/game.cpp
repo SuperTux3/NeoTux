@@ -19,6 +19,7 @@
 #include "config.h"
 #include "game.hpp"
 #include "camera.hpp"
+#include "level_reader.hpp"
 #include "util/filesystem.hpp"
 #include "video/sdl/painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
@@ -105,6 +106,9 @@ Game::run()
 	
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	m_mixer.play_music("music/antarctic/chipdisko.ogg");
+	
+	LevelReader reader;
+	reader.open("levels/via_nostalgica.stl");
 	
 	int i = 0, j = 1;
 	while (!m_quit)
