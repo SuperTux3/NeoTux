@@ -15,9 +15,9 @@ main()
 	s = parser.read_file(NEOTUX_UNITTESTS_DIR "/test_expressions");
 	
 	assert(s.is_list() == true);
-	s = s.get_list().value();
+	s = s.get_list();
 	assert(s.is_list() == true);
-	s = s.get_list().value();
+	s = s.get_list();
 	assert(s.get_value() == "enter");
 	s.next_inplace();
 	
