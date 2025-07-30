@@ -14,21 +14,24 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_LEVEL_READER_HPP
-#define SUPERTUX_SRC_LEVEL_READER_HPP
+#ifndef SUPERTUX_SRC_SECTOR_HPP
+#define SUPERTUX_SRC_SECTOR_HPP
 
-#include "level.hpp"
+#include <string>
+#include <vector>
+#include "tilemap.hpp"
 #include "util/sexp.hpp"
 
-class LevelReader
+class Sector
 {
 public:
-	LevelReader();
-	~LevelReader() = default;
+	Sector(SexpElt root);
+	~Sector() = default;
 	
-	Level* open(const std::string &filename);
 private:
-	SexpParser m_parser;
+	std::string m_name;
+	
+	std::vector<Tilemap> m_tilemaps;
 };
 
 #endif

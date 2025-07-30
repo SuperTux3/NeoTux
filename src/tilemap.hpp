@@ -14,21 +14,25 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_LEVEL_READER_HPP
-#define SUPERTUX_SRC_LEVEL_READER_HPP
+#ifndef SUPERTUX_SRC_TILEMAP_HPP
+#define SUPERTUX_SRC_TILEMAP_HPP
 
-#include "level.hpp"
+#include <vector>
+#include <string>
+#include "math/size.hpp"
+#include "tile.hpp"
 #include "util/sexp.hpp"
 
-class LevelReader
+class Tilemap
 {
 public:
-	LevelReader();
-	~LevelReader() = default;
+	Tilemap(SexpElt elt);
+	~Tilemap() = default;
 	
-	Level* open(const std::string &filename);
 private:
-	SexpParser m_parser;
+	Size m_size;
+	std::vector<Tile> m_tiles;
+	long m_zpos;
 };
 
 #endif

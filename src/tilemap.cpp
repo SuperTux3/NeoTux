@@ -14,21 +14,29 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_LEVEL_READER_HPP
-#define SUPERTUX_SRC_LEVEL_READER_HPP
+#include "tilemap.hpp"
+#include "util/logger.hpp"
+#include <format>
 
-#include "level.hpp"
-#include "util/sexp.hpp"
-
-class LevelReader
+Tilemap::Tilemap(SexpElt root) :
+	m_size(),
+	m_tiles(),
+	m_zpos()
 {
-public:
-	LevelReader();
-	~LevelReader() = default;
+	SexpElt elt;
+	elt = root.find_car("width", 1);
+	if (elt.next_inplace())
+		m_size.width = elt.get_int();
+	elt = root.find_car("height", 1);
+	if (elt.next_inplace())
+		m_size.height = elt.get_int();
+	elt = root.find_car("z-pos", 1);
+	if (elt.next_inplace())
+		m_size.height = elt.get_int();
 	
-	Level* open(const std::string &filename);
-private:
-	SexpParser m_parser;
-};
+	Logger::debug(std::format("Tilemap info\n\t"
+	                          "Width: {}\n\t"
+							  "Height: {}\n\t"
+							  "z-pos: {}", m_size.width, m_size.height, m_zpos));
+}
 
-#endif

@@ -14,21 +14,17 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_LEVEL_READER_HPP
-#define SUPERTUX_SRC_LEVEL_READER_HPP
+#ifndef SUPERTUX_SRC_TILE_HPP
+#define SUPERTUX_SRC_TILE_HPP
 
-#include "level.hpp"
-#include "util/sexp.hpp"
-
-class LevelReader
+class Tile
 {
 public:
-	LevelReader();
-	~LevelReader() = default;
-	
-	Level* open(const std::string &filename);
+	Tile() = default;
+	~Tile() = default;
+
 private:
-	SexpParser m_parser;
+	unsigned long m_id;
 };
 
 #endif

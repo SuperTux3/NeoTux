@@ -14,21 +14,28 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_LEVEL_READER_HPP
-#define SUPERTUX_SRC_LEVEL_READER_HPP
+#ifndef SUPERTUX_SRC_LEVEL_HPP
+#define SUPERTUX_SRC_LEVEL_HPP
 
-#include "level.hpp"
+#include <string>
+#include <vector>
+#include "sector.hpp"
 #include "util/sexp.hpp"
 
-class LevelReader
+// Level <- Sector[] <- Tilemap[] <- Tile
+class Level
 {
 public:
-	LevelReader();
-	~LevelReader() = default;
+	Level(SexpElt elt);
+	~Level();
 	
-	Level* open(const std::string &filename);
+	const std::string& get_name() { return m_name; }
 private:
-	SexpParser m_parser;
+	std::vector<Sector> m_sectors;
+	
+	std::string m_name;
+	std::string m_author;
+	std::string m_license;
 };
 
 #endif

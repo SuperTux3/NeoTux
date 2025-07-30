@@ -23,11 +23,12 @@ LevelReader::LevelReader() :
 	m_parser()
 {}
 
-void*
+Level*
 LevelReader::open(const std::string &filename)
 {
 	std::string name;
-	SexpElt root, elt, tiles;
+	SexpElt root;
+	Level *level;
 	
 	root = m_parser.read_file(FS::path(filename));
 	
@@ -39,24 +40,7 @@ LevelReader::open(const std::string &filename)
 	if (root.get_value() == "supertux-level")
 		Logger::debug("Claims to be a supertux level...");
 	
-	elt = root.find_car("version");
-	if (elt.next_inplace())
-		if (elt.get_int() != 3)
-			Logger::warn(std::format("Level format != 3 (Got: {}). Expect bad!", elt.get_int()));
+	level = new Level(root);
 	
-	elt = root.find_car("name");
-	if (elt.next_inplace())
-	{
-		if (elt.is_list() && elt.get_list().get_value() == "_")
-			elt = elt.get_list().next();
-		
-		name = elt.get_value();
-		Logger::debug("Name: " + name);
-	}	
-	
-	tiles = root.find_car("tiles");
-	if (tiles)
-		;
-	
-	return nullptr;
+	return level;
 }
