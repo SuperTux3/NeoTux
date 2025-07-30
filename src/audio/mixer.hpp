@@ -14,29 +14,22 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef HEADER_SUPERTUX_GAME_HPP
-#define HEADER_SUPERTUX_GAME_HPP
+#ifndef SUPERTUX_SRC_AUDIO_MIXER_HPP
+#define SUPERTUX_SRC_AUDIO_MIXER_HPP
 
-#include "audio/mixer.hpp"
-#include "input_manager.hpp"
+#include <memory>
+#include <SDL3_mixer/SDL_mixer.h>
 
-class Game
+class Mixer
 {
 public:
-	Game();
-	~Game() = default;
+	Mixer();
+	~Mixer() = default;
 	
-	void run();
-	void update();
 	void shutdown();
-	
-	void handle_events();
+	void play_music(const std::string &filename);
 private:
-	Mixer m_mixer;
-	InputManager m_input_manager;
-	bool m_quit;
+	std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> m_music;
 };
-
-extern Game g_game;
 
 #endif

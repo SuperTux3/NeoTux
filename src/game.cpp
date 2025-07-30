@@ -48,6 +48,15 @@ Game::update()
 	
 }
 
+void
+Game::shutdown()
+{
+	m_mixer.shutdown();
+	g_video_system->shutdown();
+	SDL_Quit();
+}
+
+
 #include "video/sdl/sdl_video_system.hpp"
 #include "video/sdl/texture.hpp"
 
@@ -95,6 +104,7 @@ Game::run()
 	Camera camera(winsize.width, winsize.height);
 	
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
+	m_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
 	int i = 0;
 	while (!m_quit)
@@ -133,6 +143,7 @@ Game::run()
 		
 		++i;
 	}
+	
 }
 
 void
@@ -147,7 +158,6 @@ Game::handle_events()
 		{
 			case SDL_EVENT_QUIT:
 				m_quit = true;
-				g_video_system->shutdown();
 				break;
 			case SDL_EVENT_WINDOW_RESIZED:
 			{

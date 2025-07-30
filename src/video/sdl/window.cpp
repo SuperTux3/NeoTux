@@ -31,7 +31,6 @@ SDLWindow::SDLWindow() :
 
 SDLWindow::~SDLWindow()
 {
-	SDL_Quit();
 }
 
 void
