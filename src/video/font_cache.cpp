@@ -32,7 +32,6 @@ FontCache::try_gc()
 	// Make GC more aggressive when there are more strings (can happen with constant string updates)
 	int64_t GC_TIME = (1 + 15.0/(int)(((m_strings.size())/32.f)+1)) * 1000.f;
 	int64_t GC_INTERVAL = GC_TIME;
-	std::cout << GC_TIME << std::endl;
 	bool did_cleanup = false;
 	int64_t curr = SDL_GetTicks();
 	
