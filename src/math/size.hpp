@@ -27,7 +27,8 @@ public:
 	{}
 	
 	Size_t(T width, T height) :
-		width(width, height)
+		width(width),
+		height(height)
 	{}
 	
 	explicit Size_t(const Size_t<float>& rhs) :
