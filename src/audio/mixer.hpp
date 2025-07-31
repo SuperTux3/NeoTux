@@ -32,7 +32,7 @@ public:
 	void play_sound(const std::string &filename);
 	void play_music(const std::string &filename);
 private:
-	std::unordered_map<std::string, std::unique_ptr<Mix_Chunk>> m_cache;
+	std::unordered_map<std::string, std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_cache;
 	std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> m_music;
 	//std::vector<std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_soundcache;
 };

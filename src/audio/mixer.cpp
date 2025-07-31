@@ -58,11 +58,11 @@ Mixer::play_sound(const std::string &filename)
 	Mix_Chunk *chunk;
 	if (m_cache.contains(filename))
 	{
-		chunk = m_cache[filename].get();
+		chunk = m_cache.at(filename).get();
 	}
 	else {
 		chunk = Mix_LoadWAV(FS::path(filename).c_str());
-		m_cache.insert({filename, std::unique_ptr<Mix_Chunk>(chunk)});
+		m_cache.insert({filename, std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>(chunk, Mix_FreeChunk)});
 	}
 	
 	if (!chunk)
