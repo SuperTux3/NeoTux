@@ -189,12 +189,12 @@ Game::run()
 		camera.x = 0;
 		camera.y = 0;
 		
-#ifndef NDEBUG
+//#ifndef NDEBUG
 		TextureRef draws = g_font_cache.load(std::format("Draws: {}", painter->get_draw_count()), {255, 255, 255, 255});
 		painter->draw(draws, std::nullopt, SDL_FRect{0, 0, (float)draws->get_size().width,(float)draws->get_size().height});
 		TextureRef total_draws = g_font_cache.load(std::format("Total Draws: {}", painter->get_total_draw_count()), {255, 255, 255, 255});
 		painter->draw(total_draws, std::nullopt, SDL_FRect{0, (float)draws->get_size().height, (float)total_draws->get_size().width,(float)total_draws->get_size().height});
-#endif
+//#endif
 		
 		g_video_system->flip();
 		SDL_Delay(10);
