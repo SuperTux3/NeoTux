@@ -99,7 +99,8 @@ Game::run()
 	                         VideoSystem::video_system_to_str(g_video_system->get_video_system())));
 
 	Size winsize = g_video_system->get_window_size();
-	Camera camera(winsize.width, winsize.height);
+	g_camera.width = winsize.width;
+	g_camera.height = winsize.height;
 	
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
@@ -124,11 +125,11 @@ Game::run()
 		Painter* painter = g_video_system->get_painter();
 		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
 		painter->clear();
-		painter->register_camera(&camera);
+		painter->register_camera(&g_camera);
 		handle_events();
 		
-		camera.x = 5;
-		camera.y = 5;
+		g_camera.x = 5;
+		g_camera.y = 5;
 		
 		// Draw tiles
 		for (int x = 0; x < tilemap->get_size().width; ++x)
@@ -156,8 +157,8 @@ Game::run()
 			}
 		}
 		
-		camera.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
-		camera.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;
+		g_camera.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
+		g_camera.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;
 		
 		g_texture_manager.load("images/creatures/mr_bomb/left-0.png");
 		g_texture_manager.load("images/creatures/nolok/walk-0.png");
@@ -173,12 +174,12 @@ Game::run()
 			g_mixer.play_sound("sounds/bigjump.wav");
 		}
 		
-		camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
-		camera.y = cos((float)i/20.f)*80.f - 200 - tan((float)i/80.f)*35;
+		g_camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
+		g_camera.y = cos((float)i/20.f)*80.f - 200 - tan((float)i/80.f)*35;
 		draw_textures();
 		
-		camera.x = 0;
-		camera.y = 0;
+		g_camera.x = 0;
+		g_camera.y = 0;
 		
 //#ifndef NDEBUG
 		TextureRef draws = g_font_cache.load(std::format("Draws: {}", painter->get_draw_count()), {255, 255, 255, 255});
@@ -212,6 +213,8 @@ Game::handle_events()
 			case SDL_EVENT_WINDOW_RESIZED:
 			{
 				g_video_system->on_resize(ev.window.data1, ev.window.data2);
+				g_camera.width  = ev.window.data1;
+				g_camera.height = ev.window.data2;
 			}
 		}
 		g_input_manager.handle_event(ev);

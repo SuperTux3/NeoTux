@@ -14,24 +14,6 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_CAMERA_HPP
-#define SUPERTUX_SRC_CAMERA_HPP
+#include "camera.hpp"
 
-struct Camera
-{
-	Camera(unsigned w, unsigned h) :
-		x{0},
-		y{0},
-		width{w},
-		height{h} {};
-	~Camera() = default;
-	
-	int x;
-	int y;
-	unsigned width;
-	unsigned height;
-};
-
-extern Camera g_camera;
-
-#endif
+Camera g_camera(0,0);
