@@ -58,10 +58,6 @@ Game::shutdown()
 	SDL_Quit();
 }
 
-
-#include "video/sdl/sdl_video_system.hpp"
-#include "video/sdl/texture.hpp"
-
 static void
 draw_textures()
 {
