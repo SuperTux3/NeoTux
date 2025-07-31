@@ -1,0 +1,84 @@
+//  SuperTux 
+//  Copyright (C) 2025 Hyland B. <me@ow.swag.toys> 
+// 
+//  This program is free software: you can redistribute it and/or modify 
+//  it under the terms of the GNU General Public License as published by 
+//  the Free Software Foundation, either version 3 of the License, or 
+//  (at your option) any later version. 
+// 
+//  This program is distributed in the hope that it will be useful, 
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+//  GNU General Public License for more details. 
+// 
+//  You should have received a copy of the GNU General Public License 
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#include <format>
+#include "tiles_reader.hpp"
+#include "util/filesystem.hpp"
+#include "util/logger.hpp"
+
+TilesReader::TilesReader() :
+	m_parser()
+{}
+
+void
+TilesReader::open(std::string filename)
+{
+	if (filename.empty())
+		filename = "images/tiles.strf";
+	SexpElt root, elt, telt;
+	
+	root = m_parser.read_file(FS::path(filename));
+	
+	if (!root.is_list())
+		return;
+	
+	root = root.get_list();
+	
+	if (root.get_value() == "supertux-tiles")
+		Logger::debug("Claims to be supertux tile ids");
+	
+	while (root.next_inplace())
+	{
+		if (!root.is_list())
+			continue;
+		elt = root.get_list();
+		if (elt.is_value())
+		{
+			TileInfo *tileinfo;
+			if (elt.get_value() == "tile")
+			{
+			}
+			else if (elt.get_value() == "tiles")
+			{
+				long width = 0, height = 0;
+				telt = elt.find_car("width");
+				if (telt)
+					width = telt.next().get_int();
+				telt = elt.find_car("height");
+				if (telt)
+					height = telt.next().get_int();
+				
+				telt = elt.find_car("ids");
+				if (!telt)
+					continue;
+				
+				tileinfo = new TileInfo(Size(width, height), nullptr);
+				// This manages memory instead
+				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
+				
+				for (int i = 0; telt.next_inplace(); ++i)
+				{
+					TileInfo::id_t id = telt.get_int();
+					if (id == 0)
+						continue;
+					unsigned x = i % width;
+					unsigned y = i / height;
+					m_tiles.emplace(id, TileMeta{x, y, tileinfo});
+				}
+			}
+		}
+	}
+}
