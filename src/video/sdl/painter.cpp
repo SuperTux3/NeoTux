@@ -52,6 +52,19 @@ SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rec
 }
 
 void
+SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
+{
+	if (!in_camera_bounds(dest))
+		return;
+	
+	SDL_FRect dest_sdl;
+	dest_sdl = dest.to_sdl_frect();
+	
+	SDL_RenderFillRect(m_sdl_renderer.get(), &dest_sdl);
+	bump_draw_count();
+}
+
+void
 SDLPainter::flip()
 {
 	SDL_RenderPresent(m_sdl_renderer.get());

@@ -17,6 +17,7 @@
 #ifndef SUPERTUX_SRC_VIDEO_PAINTER_HPP
 #define SUPERTUX_SRC_VIDEO_PAINTER_HPP
 
+#include <SDL3/SDL_pixels.h>
 #include <optional>
 //#include "camera.hpp"
 #include "math/rect.hpp"
@@ -31,6 +32,7 @@ public:
 	virtual ~Painter() = default;
 	
 	virtual void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest) = 0;
+	virtual void draw_fill_rect(Rectf dest, SDL_Color color) = 0;
 	virtual void flip() = 0;
 	
 	bool in_camera_bounds(std::optional<Rectf> dest);

@@ -30,6 +30,7 @@ public:
 	~SDLPainter() = default;
 	
 	void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest);
+	void draw_fill_rect(Rectf dest, SDL_Color color);
 	void flip();
 public:
 	VideoSystem *m_video_system;
