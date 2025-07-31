@@ -48,10 +48,12 @@ SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rec
 	//SDLVideoSystem *video = static_cast<SDLVideoSystem*>(m_
 	SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
 		src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
+	bump_draw_count();
 }
 
 void
 SDLPainter::flip()
 {
 	SDL_RenderPresent(m_sdl_renderer.get());
+	reset_draw_count();
 }

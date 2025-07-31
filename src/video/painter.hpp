@@ -37,6 +37,16 @@ public:
 	
 	void register_camera(Camera *camera);
 	void unregister_camera();
+	
+#ifndef NDEBUG
+	inline unsigned long get_draw_count() const { return m_draw_count; }
+	inline unsigned long get_total_draw_count() const { return m_total_draw_count; }
+	inline void bump_draw_count() { ++m_draw_count; ++m_total_draw_count; }
+	inline void reset_draw_count() { m_draw_count = 0; }
+	unsigned long m_draw_count = 0;
+	unsigned long m_total_draw_count = 0;
+#endif
+
 protected:
 	Camera *m_camera;
 };

@@ -93,7 +93,6 @@ public:
 	SDLWindow window;
 	
 	std::unique_ptr<Painter> m_painter;
-
 private:
 	VideoSystem(const VideoSystem&) = delete;
 	VideoSystem& operator=(const VideoSystem&) = delete;
