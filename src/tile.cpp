@@ -14,18 +14,11 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_TILE_HPP
-#define SUPERTUX_SRC_TILE_HPP
+#include "tile.hpp"
+#include "video/texture_manager.hpp"
 
-class Tile
+Tile::Tile(unsigned long tile_id) :
+	m_id(tile_id)
 {
-public:
-	Tile(unsigned long id);
-	~Tile() = default;
-
-	unsigned long get_id() const { return m_id; }
-private:
-	unsigned long m_id;
-};
-
-#endif
+	
+}

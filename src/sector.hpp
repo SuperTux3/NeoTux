@@ -28,6 +28,11 @@ public:
 	Sector(SexpElt root);
 	~Sector() = default;
 	
+	
+	Tilemap& get_tilemap(size_t idx) { return m_tilemaps[idx]; }
+	Tilemap* get_tilemap_by_zpos(long zpos);
+	const size_t num_tilemaps() const { return m_tilemaps.size(); }
+	Tilemap& operator[](size_t idx) { return get_tilemap(idx); }
 private:
 	std::string m_name;
 	

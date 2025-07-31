@@ -27,9 +27,12 @@ class Level
 {
 public:
 	Level(SexpElt elt);
-	~Level();
+	~Level() = default;
 	
-	const std::string& get_name() { return m_name; }
+	const std::string& get_name() const { return m_name; }
+	Sector &get_sector(size_t idx) { return m_sectors[idx]; }
+	const size_t num_sectors() const { return m_sectors.size(); }
+	Sector &operator[](size_t idx) { return get_sector(idx); }
 private:
 	std::vector<Sector> m_sectors;
 	

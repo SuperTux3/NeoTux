@@ -34,9 +34,25 @@ Tilemap::Tilemap(SexpElt root) :
 	if (elt.next_inplace())
 		m_zpos = elt.get_int();
 	
+	elt = root.find_car("tiles", 1);
+	while (elt.next_inplace())
+	{
+		long tile_id = elt.get_int();
+		// TODO chunking
+		m_tiles.emplace_back(tile_id);
+	}
+	
+	
 	Logger::debug(std::format("Tilemap info\n\t"
 	                          "Width: {}\n\t"
 							  "Height: {}\n\t"
-							  "z-pos: {}", m_size.width, m_size.height, m_zpos));
+							  "z-pos: {}\n\t"
+							  "# of tiles: {}", m_size.width, m_size.height, m_zpos, m_tiles.size()));
+}
+
+const Tile&
+Tilemap::get_tile(unsigned long x, unsigned long y)
+{
+	return m_tiles.at(x + (y * m_size.width));
 }
 

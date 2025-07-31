@@ -48,8 +48,6 @@ Level::Level(SexpElt root) :
 				m_sectors.emplace_back(elt);
 			}
 		}
-		
-		
 
 #if 0
 		elt = root.find_car("version");

@@ -47,3 +47,16 @@ Sector::Sector(SexpElt root)
 		root.next_inplace();
 	}
 }
+
+Tilemap*
+Sector::get_tilemap_by_zpos(long zpos)
+{
+	for (Tilemap &tilemap : m_tilemaps)
+	{
+		if (tilemap.get_zpos() == zpos)
+			return &tilemap;
+	}
+	
+	return nullptr;
+}
+

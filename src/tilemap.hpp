@@ -29,6 +29,9 @@ public:
 	Tilemap(SexpElt elt);
 	~Tilemap() = default;
 	
+	const Tile &get_tile(unsigned long x, unsigned long y);
+	long get_zpos() const { return m_zpos; }
+	Size get_size() const { return m_size; }
 private:
 	Size m_size;
 	std::vector<Tile> m_tiles;

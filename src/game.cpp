@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <optional>
 #include <util/logger.hpp>
 #include <format>
 #include "config.h"
@@ -106,9 +107,11 @@ Game::run()
 	
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	m_mixer.play_music("music/antarctic/chipdisko.ogg");
-	
+
 	LevelReader reader;
-	reader.open("levels/via_nostalgica.stl");
+	Level *level = reader.open("levels/via_nostalgica.stl");
+	Sector &sector = level->get_sector(0);
+	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	
 	int i = 0, j = 1;
 	while (!m_quit)
@@ -117,22 +120,59 @@ Game::run()
 			continue;
 		g_font_cache.try_gc();
 	
-
+		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
+		
 		Painter* painter = g_video_system->get_painter();
+		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
 		painter->register_camera(&camera);
 		handle_events();
 		
+		camera.x = 5;
+		camera.y = 5;
+		
+		// Draw tiles
+		for (int x = 0; x < tilemap->get_size().width; ++x)
+		{
+			for (int y = 0; y < tilemap->get_size().height; ++y)
+			{
+				const Tile &tile = tilemap->get_tile(x, y);
+				if (tile.get_id() != 0)
+				{
+					painter->draw(ref, std::nullopt,
+						SDL_FRect(x * 10 + (sin((float)i/120.f)*2000.f - 1300),
+							y * 10,
+							10,
+							10));
+				}
+			}
+		}
+		camera.y = -200;
+		
+		// Draw tiles
+		for (int x = 0; x < tilemap->get_size().width; ++x)
+		{
+			for (int y = 0; y < tilemap->get_size().height; ++y)
+			{
+				const Tile &tile = tilemap->get_tile(x, y);
+				if (tile.get_id() != 0)
+				{
+					painter->draw(ref, std::nullopt,
+						SDL_FRect(x * 10 + (sin((float)i/120.f)*2000.f - 1300),
+							y * 10,
+							10,
+							10));
+				}
+			}
+		}
+		
 		camera.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
 		camera.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;
-
-		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
 		
 		g_texture_manager.load("images/creatures/mr_bomb/left-0.png");
 		g_texture_manager.load("images/creatures/nolok/walk-0.png");
 		g_texture_manager.load("images/creatures/owl/carry-0.png");
 		g_texture_manager.load("images/creatures/penny/stand-0.png");
 		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
-		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
 		
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
@@ -142,10 +182,10 @@ Game::run()
 			m_mixer.play_sound("sounds/bigjump.wav");
 		}
 		
-		
 		camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
 		camera.y = cos((float)i/20.f)*80.f - 200 - tan((float)i/80.f)*35;
-		draw_textures();		
+		draw_textures();
+
 		
 		g_video_system->flip();
 		SDL_Delay(10);
@@ -153,6 +193,7 @@ Game::run()
 		++i;
 	}
 	
+	delete level;
 }
 
 void
