@@ -40,7 +40,6 @@ Game g_game{};
 static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 Game::Game() :
-	m_input_manager(),
 	m_quit(false)
 {
 }
@@ -54,7 +53,7 @@ Game::update()
 void
 Game::shutdown()
 {
-	m_mixer.shutdown();
+	g_mixer.shutdown();
 	g_video_system->shutdown();
 	SDL_Quit();
 }
@@ -107,7 +106,7 @@ Game::run()
 	Camera camera(winsize.width, winsize.height);
 	
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
-	m_mixer.play_music("music/antarctic/chipdisko.ogg");
+	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 
 	TilesReader tiles_reader;
 	tiles_reader.open();	
@@ -175,7 +174,7 @@ Game::run()
 		
 		if ((i % 1200) == 0)
 		{
-			m_mixer.play_sound("sounds/bigjump.wav");
+			g_mixer.play_sound("sounds/bigjump.wav");
 		}
 		
 		camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
@@ -219,7 +218,7 @@ Game::handle_events()
 				g_video_system->on_resize(ev.window.data1, ev.window.data2);
 			}
 		}
-		m_input_manager.handle_event(ev);
+		g_input_manager.handle_event(ev);
 	}
 	
 }

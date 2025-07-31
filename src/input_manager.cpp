@@ -19,6 +19,8 @@
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_events.h>
 
+InputManager g_input_manager;
+
 InputManager::InputManager()
 {
 	if (!SDL_Init(SDL_INIT_GAMEPAD))

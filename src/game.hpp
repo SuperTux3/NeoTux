@@ -33,7 +33,6 @@ public:
 	void handle_events();
 private:
 	Mixer m_mixer;
-	InputManager m_input_manager;
 	bool m_quit;
 };
 

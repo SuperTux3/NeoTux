@@ -28,4 +28,6 @@ public:
 	void handle_event(const SDL_Event &ev);
 };
 
+extern InputManager g_input_manager;
+
 #endif

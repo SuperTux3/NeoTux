@@ -21,6 +21,8 @@
 #include "util/logger.hpp"
 #include "mixer.hpp"
 
+Mixer g_mixer;
+
 Mixer::Mixer() :
 	m_music(nullptr, Mix_FreeMusic),
 	m_soundcache()

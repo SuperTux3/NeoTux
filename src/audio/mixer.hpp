@@ -35,4 +35,6 @@ private:
 	std::vector<std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_soundcache;
 };
 
+extern Mixer g_mixer;
+
 #endif
