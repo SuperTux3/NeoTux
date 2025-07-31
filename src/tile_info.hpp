@@ -24,11 +24,13 @@ struct TileInfo
 {
 	using id_t = unsigned long;
 	Size size;
-	Texture* image;
+	std::string image;
 };
 
 struct TileMeta
 {
+	Rectf get_src_rect(TextureRef tex);
+	
 	unsigned x;
 	unsigned y;
 	TileInfo *info;

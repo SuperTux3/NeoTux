@@ -48,8 +48,23 @@ TilesReader::open(std::string filename)
 		if (elt.is_value())
 		{
 			TileInfo *tileinfo;
+			std::string image;
 			if (elt.get_value() == "tile")
 			{
+				TileInfo::id_t id = 0;
+				telt = elt.find_car("id");
+				if (telt)
+					id = telt.next().get_int();
+				
+				telt = elt.find_car("images");
+				if (telt)
+					image = telt.next().get_value();
+				
+				tileinfo = new TileInfo(Size(1,1), image);
+				// This manages memory instead
+				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
+				m_tiles.emplace(id, TileMeta{0, 0, tileinfo});
+				
 			}
 			else if (elt.get_value() == "tiles")
 			{
@@ -60,12 +75,15 @@ TilesReader::open(std::string filename)
 				telt = elt.find_car("height");
 				if (telt)
 					height = telt.next().get_int();
+				telt = elt.find_car("images");
+				if (telt)
+					image = telt.next().get_value();
 				
 				telt = elt.find_car("ids");
 				if (!telt)
 					continue;
 				
-				tileinfo = new TileInfo(Size(width, height), nullptr);
+				tileinfo = new TileInfo(Size(width, height), image);
 				// This manages memory instead
 				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
 				
@@ -75,7 +93,9 @@ TilesReader::open(std::string filename)
 					if (id == 0)
 						continue;
 					unsigned x = i % width;
-					unsigned y = i / height;
+					unsigned y = i / width;
+					std::cout << std::format("x: {} | y: {} | {}", x, y, id) << std::endl;
+					
 					m_tiles.emplace(id, TileMeta{x, y, tileinfo});
 				}
 			}

@@ -14,26 +14,11 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_TILES_READER_HPP
-#define SUPERTUX_SRC_TILES_READER_HPP
-
-#include <string>
-#include <unordered_map>
 #include "tile_info.hpp"
-#include "util/sexp.hpp"
 
-class TilesReader
+Rectf
+TileMeta::get_src_rect(TextureRef tex)
 {
-public:
-	TilesReader();
-	~TilesReader() = default;
-	
-	void open(std::string filename = "");
-public:
-	std::unordered_map<TileInfo::id_t, TileMeta> m_tiles;
-private:
-	std::vector<std::unique_ptr<TileInfo>> m_tileinfo;
-	SexpParser m_parser;
-};
+	return SDL_FRect(x * 32, y * 32, 32, 32);
+}
 
-#endif

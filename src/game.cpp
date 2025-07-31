@@ -142,29 +142,20 @@ Game::run()
 				const Tile &tile = tilemap->get_tile(x, y);
 				if (tile.get_id() != 0)
 				{
-					painter->draw(ref, std::nullopt,
-						SDL_FRect(x * 10 + (sin((float)i/120.f)*2000.f - 1300),
-							y * 10,
-							10,
-							10));
-				}
-			}
-		}
-		camera.y = -200;
-		
-		// Draw tiles
-		for (int x = 0; x < tilemap->get_size().width; ++x)
-		{
-			for (int y = 0; y < tilemap->get_size().height; ++y)
-			{
-				const Tile &tile = tilemap->get_tile(x, y);
-				if (tile.get_id() != 0)
-				{
-					painter->draw(ref, std::nullopt,
-						SDL_FRect(x * 10 + (sin((float)i/120.f)*2000.f - 1300),
-							y * 10,
-							10,
-							10));
+					try{
+					TileMeta &tilemeta = tiles_reader.m_tiles.at(tile.get_id());
+					if (tilemeta.info->image.empty())
+						continue;
+					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);
+					painter->draw(tex,
+						tilemeta.get_src_rect(tex),
+						SDL_FRect(x * 20 + (sin((float)i/260.f)*3600.f - 3500),
+							y * 20,
+							20,
+							20));
+					}catch(...) {
+						continue;
+					}
 				}
 			}
 		}
