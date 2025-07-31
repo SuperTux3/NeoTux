@@ -18,6 +18,7 @@
 #define SUPERTUX_SRC_INPUT_MANAGER_HPP
 
 #include <SDL3/SDL_events.h>
+#include <string>
 
 class InputManager
 {
@@ -26,6 +27,23 @@ public:
 	~InputManager() = default;
 	
 	void handle_event(const SDL_Event &ev);
+	
+	unsigned get_mouse_x() const { return m_mouse_x; }
+	unsigned get_mouse_y() const { return m_mouse_y; }
+	bool is_mouse_down() const { return m_mouse_down; }
+	bool get_mouse_scrolled() const { return m_mouse_scroll_x != 0 || m_mouse_scroll_y != 0; }
+	int get_scroll_x() const { return m_mouse_scroll_x; }
+	int get_scroll_y() const { return m_mouse_scroll_y; }
+	unsigned get_mouse_button() const { return m_mouse_btn; }
+	
+	void reset();
+	
+	std::string to_string() const;
+private:
+	unsigned m_mouse_x, m_mouse_y;
+	bool m_mouse_down;
+	unsigned m_mouse_btn;
+	int m_mouse_scroll_x, m_mouse_scroll_y;
 };
 
 extern InputManager g_input_manager;

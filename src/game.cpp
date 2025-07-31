@@ -20,6 +20,7 @@
 #include "config.h"
 #include "game.hpp"
 #include "camera.hpp"
+#include "input_manager.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
 #include "util/filesystem.hpp"
@@ -187,9 +188,13 @@ Game::run()
 		TextureRef total_draws = g_font_cache.load(std::format("Total Draws: {}", painter->get_total_draw_count()), {255, 255, 255, 255});
 		painter->draw(total_draws, std::nullopt, SDL_FRect{0, (float)draws->get_size().height, (float)total_draws->get_size().width,(float)total_draws->get_size().height});
 //#endif
+
+		Logger::debug(g_input_manager.to_string());
 		
 		g_video_system->flip();
 		SDL_Delay(10);
+		
+		g_input_manager.reset();
 		
 		++i;
 	}
