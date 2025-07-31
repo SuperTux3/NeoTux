@@ -172,7 +172,7 @@ Game::run()
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
 		
-		if ((i % 32) == 0)
+		if ((i % 1200) == 0)
 		{
 			m_mixer.play_sound("sounds/bigjump.wav");
 		}

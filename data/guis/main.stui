@@ -1,0 +1,2 @@
+(supertux-gui
+	(button (text "hello")))
