@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
 #include <SDL3_mixer/SDL_mixer.h>
 
 class Mixer
@@ -31,8 +32,9 @@ public:
 	void play_sound(const std::string &filename);
 	void play_music(const std::string &filename);
 private:
+	std::unordered_map<std::string, std::unique_ptr<Mix_Chunk>> m_cache;
 	std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> m_music;
-	std::vector<std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_soundcache;
+	//std::vector<std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_soundcache;
 };
 
 extern Mixer g_mixer;
