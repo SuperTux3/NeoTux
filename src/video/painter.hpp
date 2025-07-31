@@ -34,6 +34,7 @@ public:
 	virtual void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest) = 0;
 	virtual void draw_fill_rect(Rectf dest, SDL_Color color) = 0;
 	virtual void flip() = 0;
+	virtual void clear() = 0;
 	
 	bool in_camera_bounds(std::optional<Rectf> dest);
 	

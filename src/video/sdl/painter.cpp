@@ -70,3 +70,10 @@ SDLPainter::flip()
 	SDL_RenderPresent(m_sdl_renderer.get());
 	reset_draw_count();
 }
+
+void
+SDLPainter::clear()
+{
+	SDL_RenderClear(m_sdl_renderer.get());
+}
+

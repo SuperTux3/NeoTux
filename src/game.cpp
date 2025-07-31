@@ -128,6 +128,7 @@ Game::run()
 		
 		Painter* painter = g_video_system->get_painter();
 		SDL_RenderClear(static_cast<SDLPainter*>(painter)->m_sdl_renderer.get());
+		painter->clear();
 		painter->register_camera(&camera);
 		handle_events();
 		

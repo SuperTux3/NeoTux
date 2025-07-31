@@ -32,6 +32,7 @@ public:
 	void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest);
 	void draw_fill_rect(Rectf dest, SDL_Color color);
 	void flip();
+	void clear();
 public:
 	VideoSystem *m_video_system;
 	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;
