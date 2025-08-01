@@ -24,7 +24,9 @@ SDLPainter::SDLPainter(VideoSystem *video) :
 	m_video_system(video),
 	m_sdl_renderer(SDL_CreateRenderer(video->window.m_sdl_window.get(), NULL),
 		&SDL_DestroyRenderer)
-{}
+{
+	SDL_SetRenderDrawBlendMode(m_sdl_renderer.get(), SDL_BLENDMODE_BLEND);
+}
 
 void
 SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest)
@@ -68,7 +70,6 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 void
 SDLPainter::flip()
 {
-
 	SDL_RenderPresent(m_sdl_renderer.get());
 	reset_draw_count();
 }
