@@ -1,2 +1,2 @@
 (supertux-gui
-	(box 60 20 420 420))
+	(box (rectf 60 20 420 420)))

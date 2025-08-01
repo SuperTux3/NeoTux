@@ -30,6 +30,8 @@ public:
 	static std::string_view class_id() { return "box"; }
 	
 	static Widget *construct(SexpElt elt);
+	
+	static Rectf parse_sexp(SexpElt &elt);
 
 	virtual void draw() override;
 	virtual void update() override {};
@@ -46,6 +48,7 @@ public:
 	inline bool hovered() { return m_is_hovered; }
   
 private:
+	uint8_t r, g, b;
 	float m_padding_w, m_padding_h;
 	bool m_is_hovered;
 };

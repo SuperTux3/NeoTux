@@ -24,6 +24,9 @@ BoxWidget::BoxWidget(const Rectf& props, float padding_w, float padding_h) :
 	m_padding_h{padding_h},
 	m_is_hovered{false}
 {
+	r = rand();
+	g = rand();
+	b = rand();
 }
 
 BoxWidget::BoxWidget(const Rectf& props, float padding) :
@@ -39,25 +42,44 @@ BoxWidget::box()
 void
 BoxWidget::draw()
 {
-	g_video_system->get_painter()->draw_fill_rect(*this, {0, 255, 0, 150});
+	g_video_system->get_painter()->draw_fill_rect(*this, {r, g, b, 150});
+}
+
+Rectf
+BoxWidget::parse_sexp(SexpElt &elt)
+{
+	SexpElt root;
+	//elt.next_inplace();
+	if (!elt)
+		return {};
+	if (elt.is_list())
+		root = elt.get_list();
+	if (!root || root.get_value() != "rectf")
+		return {};
+	
+	long a, b, c, d;
+
+	// TODO better arg parsing
+	root.next_inplace();
+	a = root.get_int();
+	root.next_inplace();
+	b = root.get_int();
+	root.next_inplace();
+	c = root.get_int();
+	root.next_inplace();
+	d = root.get_int();
+	
+	SDL_FRect frect((float)a, (float)b, (float)c, (float)d);
+	
+	elt.next_inplace();
+	
+	return Rectf(frect);
 }
 
 Widget*
 BoxWidget::construct(SexpElt elt)
 {
-	long a,b,c,d;
-	
-	// TODO better arg parsing
-	a = elt.get_int();
-	elt.next_inplace();
-	b = elt.get_int();
-	elt.next_inplace();
-	c = elt.get_int();
-	elt.next_inplace();
-	d = elt.get_int();
-	elt.next_inplace();
-	
-	Rectf props{SDL_FRect{(float)a,(float)b,(float)c,(float)d}};
+	Rectf props = BoxWidget::parse_sexp(elt);
 	return new BoxWidget(props);
 }
 
