@@ -20,13 +20,7 @@
 #include "widget.hpp"
 #include "util/logger.hpp"
 
-static std::unordered_map<std::string, Widget::factory_functor> _registered_widgets{};
-
-void
-Widget::register_widget(std::string name, factory_functor fun)
-{
-	_registered_widgets.emplace(std::move(name), fun);
-}
+std::unordered_map<std::string_view, Widget::factory_functor> _registered_widgets{};
 
 Widget::factory_functor
 Widget::get_widget_cstor(const std::string &name)

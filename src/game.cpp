@@ -119,7 +119,8 @@ Game::run()
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	
 	// Setup guis
-	Widget::register_widget("box", BoxWidget::construct);
+	Widget::register_widget<BoxWidget>();
+	//Widget::register_widget("box", BoxWidget::construct);
 	GuiReader gui_reader;
 	Widget *box = gui_reader.open("guis/main.stui");
 	//BoxWidget box(SDL_FRect{20, 20, 120, 40});

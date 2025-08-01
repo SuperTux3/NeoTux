@@ -27,6 +27,8 @@ public:
 	ContainerWidget(const Rectf &props);
 	~ContainerWidget() = default;
 	
+	static std::string_view class_id() { return "container"; }
+	
 	void add(BoxWidget *box);
 	
 	virtual void draw() override;

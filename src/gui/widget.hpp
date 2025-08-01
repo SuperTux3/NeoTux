@@ -20,6 +20,9 @@
 #include <functional>
 #include "util/sexp.hpp"
 
+struct Widget;
+extern std::unordered_map<std::string_view, std::function<Widget*(SexpElt)>> _registered_widgets;
+
 class Widget
 {
 public:
@@ -27,9 +30,17 @@ public:
 	
 	Widget() = default;
 	virtual ~Widget() = default;
+	
+	static std::string_view class_id() { return "widget"; }
 
 	// factory stuff
-	static void register_widget(std::string name, factory_functor fun);
+	template <typename T>
+	static void register_widget()
+	{
+		std::string_view id = T::class_id();
+		_registered_widgets.emplace(id, &T::construct);
+	}
+	
 	static factory_functor get_widget_cstor(const std::string &name);
 	static Widget* create(SexpElt elt);
 
@@ -44,5 +55,6 @@ public:
 	virtual bool on_key_up() { return false; }
 	virtual bool on_key_down() { return false; }
 };
+
 
 #endif

@@ -27,6 +27,8 @@ public:
 	BoxWidget(const Rectf& box_props, float padding_w, float padding_h);
 	BoxWidget(BoxWidget&&) = default;
 	
+	static std::string_view class_id() { return "box"; }
+	
 	static Widget *construct(SexpElt elt);
 
 	virtual void draw() override;
