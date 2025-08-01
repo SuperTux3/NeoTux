@@ -47,6 +47,11 @@ SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rec
 		dest_sdl.x -= m_camera->x;
 		dest_sdl.y -= m_camera->y;
 	}
+	if (m_do_clip)
+	{
+		dest_sdl.x -= m_clip.left;
+		dest_sdl.y -= m_clip.top;
+	}
 	//SDLVideoSystem *video = static_cast<SDLVideoSystem*>(m_
 	SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
 		src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
@@ -59,13 +64,34 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 	if (!in_camera_bounds(dest))
 		return;
 	
-	SDL_FRect dest_sdl;
-	dest_sdl = dest.to_sdl_frect();
+	SDL_FRect dest_sdl = dest.to_sdl_frect();
+	if (m_do_clip)
+	{
+		dest_sdl.x -= m_clip.left;
+		dest_sdl.y -= m_clip.top;
+	}
 	
 	SDL_SetRenderDrawColor(m_sdl_renderer.get(), color.r, color.g, color.b, color.a);
 	SDL_RenderFillRect(m_sdl_renderer.get(), &dest_sdl);
 	bump_draw_count();
 }
+
+void
+SDLPainter::begin_clip(Rect clip)
+{
+	Painter::begin_clip(std::move(clip));
+	const SDL_Rect sdl_clip = m_clip.to_sdl_rect();
+	
+	SDL_SetRenderViewport(m_sdl_renderer.get(), &sdl_clip);
+}
+
+void
+SDLPainter::end_clip()
+{
+	SDL_SetRenderViewport(m_sdl_renderer.get(), nullptr);
+	Painter::end_clip();
+}
+
 
 void
 SDLPainter::flip()

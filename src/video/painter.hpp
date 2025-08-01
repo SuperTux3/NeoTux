@@ -38,6 +38,9 @@ public:
 	
 	bool in_camera_bounds(std::optional<Rectf> dest);
 	
+	virtual void begin_clip(Rect clip);
+	virtual void end_clip();
+	
 	void register_camera(Camera *camera);
 	void unregister_camera();
 	
@@ -52,6 +55,8 @@ public:
 
 protected:
 	Camera *m_camera;
+	bool m_do_clip;
+	Rect m_clip;
 };
 
 #endif

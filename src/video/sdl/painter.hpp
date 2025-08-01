@@ -33,6 +33,9 @@ public:
 	void draw_fill_rect(Rectf dest, SDL_Color color);
 	void flip();
 	void clear();
+	
+	void begin_clip(Rect clip);
+	void end_clip();
 public:
 	VideoSystem *m_video_system;
 	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdl_renderer;

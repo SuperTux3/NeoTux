@@ -139,6 +139,8 @@ Game::run()
 		painter->register_camera(&g_camera);
 		handle_events();
 		
+		painter->begin_clip(SDL_Rect{90, 30, 600, 800});
+		
 		g_camera.x = 5;
 		g_camera.y = 5;
 		
@@ -170,6 +172,8 @@ Game::run()
 				}
 			}
 		}
+		
+		painter->end_clip();
 		
 		g_camera.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
 		g_camera.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;

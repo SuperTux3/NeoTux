@@ -44,3 +44,15 @@ Painter::unregister_camera()
 	m_camera = nullptr;
 }
 
+void
+Painter::begin_clip(Rect clip)
+{
+	m_do_clip = true;
+	m_clip = std::move(clip);
+}
+
+void
+Painter::end_clip()
+{
+	m_do_clip = false;
+}
