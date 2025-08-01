@@ -1,2 +1,3 @@
 (supertux-gui
-	(button (text "hello")))
+	(container
+		(button (text "hello"))))
