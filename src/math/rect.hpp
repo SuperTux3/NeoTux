@@ -24,11 +24,11 @@
 template <typename T>
 class Rect_t
 {
+public:
 	Rect_t() :
 		left(), top(), right(), bottom()
 	{}
 		
-public:
 	static Rect_t<T> from_center(T center_x, T center_y, T width, T height)
 	{
 		return {
