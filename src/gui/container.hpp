@@ -26,8 +26,12 @@ class ContainerWidget : public BoxWidget
 public:
 	ContainerWidget(const Rectf &props);
 	~ContainerWidget() = default;
-	
+
 	static std::string_view class_id() { return "container"; }
+	std::string_view obj_name() override { return "Container"; }
+	
+	static Widget* construct(SexpElt elt);
+	
 	
 	void add(BoxWidget *box);
 	

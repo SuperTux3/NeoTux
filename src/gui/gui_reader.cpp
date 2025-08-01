@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <format>
 #include "gui_reader.hpp"
 #include "util/filesystem.hpp"
 #include "util/logger.hpp"
@@ -38,6 +39,9 @@ GuiReader::open(const std::string &filename)
 		Logger::debug("Claims to be a gui...");
 	
 	root.next_inplace();
-	return Widget::create(root);
+	
+	Widget *widget = Widget::create(root);
+	Logger::debug(std::format("Created {}", widget->obj_name()));
+	return widget;
 }
 

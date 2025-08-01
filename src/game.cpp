@@ -21,6 +21,7 @@
 #include "game.hpp"
 #include "camera.hpp"
 #include "gui/box.hpp"
+#include "gui/container.hpp"
 #include "input_manager.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
@@ -120,6 +121,7 @@ Game::run()
 	
 	// Setup guis
 	Widget::register_widget<BoxWidget>();
+	Widget::register_widget<ContainerWidget>();
 	//Widget::register_widget("box", BoxWidget::construct);
 	GuiReader gui_reader;
 	Widget *box = gui_reader.open("guis/main.stui");

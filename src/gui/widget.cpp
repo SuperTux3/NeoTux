@@ -39,6 +39,5 @@ Widget::create(SexpElt elt)
 		return nullptr;
 	
 	std::string widget_type = elt.get_value();
-	Logger::debug("Got: " + elt.get_value());
 	return _registered_widgets.at(widget_type)(elt.next());
 }

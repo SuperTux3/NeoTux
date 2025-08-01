@@ -28,6 +28,7 @@ public:
 	BoxWidget(BoxWidget&&) = default;
 	
 	static std::string_view class_id() { return "box"; }
+	std::string_view obj_name() override { return "Box"; }
 	
 	static Widget *construct(SexpElt elt);
 	

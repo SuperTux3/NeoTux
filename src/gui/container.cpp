@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "container.hpp"
+#include "util/logger.hpp"
+#include <format>
 
 ContainerWidget::ContainerWidget(const Rectf& props) :
   BoxWidget{props},
@@ -51,3 +53,17 @@ ContainerWidget::add(BoxWidget* box)
 	m_widgets.emplace_back(box);
 }
 
+Widget*
+ContainerWidget::construct(SexpElt elt)
+{
+	Rectf props = BoxWidget::parse_sexp(elt);
+	ContainerWidget *widget = new ContainerWidget(props);
+	do
+	{
+		BoxWidget *box_widget = dynamic_cast<BoxWidget*>(Widget::create(elt));
+		Logger::debug(std::format("Pushing {} widget: {}", box_widget->obj_name(), static_cast<void*>(box_widget)));
+		if (box_widget)
+			widget->add(box_widget);
+	} while (elt.next_inplace());
+	return widget;
+}
