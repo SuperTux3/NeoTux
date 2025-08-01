@@ -18,6 +18,9 @@
 #ifndef HEADER_SUPERTUX_MATH_RECT_HPP
 #define HEADER_SUPERTUX_MATH_RECT_HPP
 
+#include <ostream>
+#include <string>
+#include <format>
 #include <SDL3/SDL_rect.h>
 #include "size.hpp"
 
@@ -83,12 +86,27 @@ public:
 		return { left, top, get_width(), get_height() };
 	}
 	
+	std::string to_string() const
+	{
+		return std::string("Rect(left: ") + std::to_string(left) +
+			", top: " + std::to_string(top) +
+			", right: " + std::to_string(right) +
+			", bottom: " + std::to_string(bottom) + ")";
+	}
+	
 public:
 	T left;
 	T top;
 	T right;
 	T bottom;
 };
+
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const Rect_t<T> rect)
+{
+	out << rect.to_string();
+	return out;
+}
 
 using Rect = Rect_t<int>;
 using Rectf = Rect_t<float>;
