@@ -94,7 +94,7 @@ TilesReader::open(std::string filename)
 						continue;
 					unsigned x = i % width;
 					unsigned y = i / width;
-					std::cout << std::format("x: {} | y: {} | {}", x, y, id) << std::endl;
+					//std::cout << std::format("x: {} | y: {} | {}", x, y, id) << std::endl;
 					
 					m_tiles.emplace(id, TileMeta{x, y, tileinfo});
 				}
