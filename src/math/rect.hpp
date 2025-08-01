@@ -49,6 +49,13 @@ public:
 		right(left + size.width),
 		bottom(top + size.height)
 	{}
+		
+	Rect_t(SDL_Rect rect) :
+		left(rect.x),
+		top(rect.y),
+		right(rect.x + rect.w),
+		bottom(rect.y + rect.h)
+	{}
 	
 	Rect_t(SDL_FRect frect) :
 		left(frect.x),
