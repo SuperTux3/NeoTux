@@ -71,6 +71,11 @@ public:
 		return { left, top, get_width(), get_height() };
 	}
 	
+	SDL_Rect to_sdl_rect()
+	{
+		return { left, top, get_width(), get_height() };
+	}
+	
 public:
 	T left;
 	T top;
