@@ -1,5 +1,7 @@
 (supertux-gui
- (container (rectf 60 20 420 420)
+ (container (rectf sdl 240 120 420 420)
+	(box)
+	(box)
 	(box)
 	(box)
 	(box)

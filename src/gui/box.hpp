@@ -52,6 +52,8 @@ private:
 	uint8_t r, g, b;
 	float m_padding_w, m_padding_h;
 	bool m_is_hovered;
+	
+	friend class ContainerWidget;
 };
 
 #endif

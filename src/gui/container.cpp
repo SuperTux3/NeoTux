@@ -40,10 +40,18 @@ void
 ContainerWidget::update()
 {
 	m_spacing = static_cast<float>(m_widgets.size());
+	const Rectf& that = box();
+	float height = that.get_height() / m_widgets.size();
+	float y = 0;
 	for (auto&& widget : m_widgets)
 	{
 		const Rectf& other = widget->box();
+		widget->top = y;
+		widget->bottom = y + height;
+		widget->left = that.left;
+		widget->right = that.right;
 		// TODO: other->set_{width,height}(m_spacing)
+		y += height;
 	}
 }
 

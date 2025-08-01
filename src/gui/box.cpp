@@ -49,6 +49,7 @@ Rectf
 BoxWidget::parse_sexp(SexpElt &elt)
 {
 	SexpElt root;
+	bool is_sdl = false;;
 	//elt.next_inplace();
 	if (!elt)
 		return {};
@@ -61,6 +62,15 @@ BoxWidget::parse_sexp(SexpElt &elt)
 
 	// TODO better arg parsing
 	root.next_inplace();
+	try {
+		root.get_int();
+	}
+	catch (const std::invalid_argument &e) {
+		if (!(root.is_value() && root.get_value() == "sdl"))
+			return {};
+		is_sdl = true;
+		root.next_inplace();
+	}
 	a = root.get_int();
 	root.next_inplace();
 	b = root.get_int();
@@ -69,11 +79,10 @@ BoxWidget::parse_sexp(SexpElt &elt)
 	root.next_inplace();
 	d = root.get_int();
 	
-	SDL_FRect frect((float)a, (float)b, (float)c, (float)d);
-	
 	elt.next_inplace();
-	
-	return Rectf(frect);
+	if (is_sdl)
+		return Rectf(SDL_FRect{(float)a, (float)b, (float)c, (float)d});
+	return Rectf(a, b, c, d);
 }
 
 Widget*

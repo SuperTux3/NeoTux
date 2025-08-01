@@ -148,7 +148,11 @@ Game::run()
 		g_camera.y = 5;
 		
 		if (box)
-		box->draw();
+		{
+			box->update();
+			box->draw();
+			
+		}
 		
 		// Draw tiles
 		for (int x = 0; x < tilemap->get_size().width; ++x)
