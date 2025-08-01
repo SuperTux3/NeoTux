@@ -60,6 +60,7 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 	SDL_FRect dest_sdl;
 	dest_sdl = dest.to_sdl_frect();
 	
+	SDL_SetRenderDrawColor(m_sdl_renderer.get(), color.r, color.g, color.b, color.a);
 	SDL_RenderFillRect(m_sdl_renderer.get(), &dest_sdl);
 	bump_draw_count();
 }
@@ -67,6 +68,7 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 void
 SDLPainter::flip()
 {
+
 	SDL_RenderPresent(m_sdl_renderer.get());
 	reset_draw_count();
 }
@@ -74,6 +76,7 @@ SDLPainter::flip()
 void
 SDLPainter::clear()
 {
+	SDL_SetRenderDrawColor(m_sdl_renderer.get(), 0, 0, 40, 255);
 	SDL_RenderClear(m_sdl_renderer.get());
 }
 
