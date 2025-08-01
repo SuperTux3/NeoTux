@@ -1,3 +1,2 @@
 (supertux-gui
-	(container
-		(button (text "hello"))))
+	(box 60 20 420 420))

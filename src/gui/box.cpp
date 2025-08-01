@@ -42,3 +42,22 @@ BoxWidget::draw()
 	g_video_system->get_painter()->draw_fill_rect(*this, {0, 255, 0, 150});
 }
 
+Widget*
+BoxWidget::construct(SexpElt elt)
+{
+	long a,b,c,d;
+	
+	// TODO better arg parsing
+	a = elt.get_int();
+	elt.next_inplace();
+	b = elt.get_int();
+	elt.next_inplace();
+	c = elt.get_int();
+	elt.next_inplace();
+	d = elt.get_int();
+	elt.next_inplace();
+	
+	Rectf props{SDL_FRect{(float)a,(float)b,(float)c,(float)d}};
+	return new BoxWidget(props);
+}
+

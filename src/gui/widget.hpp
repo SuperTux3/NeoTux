@@ -17,22 +17,32 @@
 #ifndef SUPERTUX_SRC_GUI_WIDGET_HPP
 #define SUPERTUX_SRC_GUI_WIDGET_HPP
 
+#include <functional>
+#include "util/sexp.hpp"
+
 class Widget
 {
 public:
-  Widget() = default;
-  virtual ~Widget() = default;
+	using factory_functor = std::function<Widget*(SexpElt)>;
+	
+	Widget() = default;
+	virtual ~Widget() = default;
 
-  bool handle_events() { return false; };
-  virtual void draw() = 0;
-  virtual void update() = 0;
+	// factory stuff
+	static void register_widget(std::string name, factory_functor fun);
+	static factory_functor get_widget_cstor(const std::string &name);
+	static Widget* create(SexpElt elt);
 
-  virtual bool on_mouse_button_up() { return false; }
-  virtual bool on_mouse_button_down() { return false; }
-  virtual bool on_mouse_motion() { return false; }
-  virtual bool on_mouse_wheel() { return false; }
-  virtual bool on_key_up() { return false; }
-  virtual bool on_key_down() { return false; }
+	bool handle_events() { return false; };
+	virtual void draw() = 0;
+	virtual void update() = 0;
+
+	virtual bool on_mouse_button_up() { return false; }
+	virtual bool on_mouse_button_down() { return false; }
+	virtual bool on_mouse_motion() { return false; }
+	virtual bool on_mouse_wheel() { return false; }
+	virtual bool on_key_up() { return false; }
+	virtual bool on_key_down() { return false; }
 };
 
 #endif

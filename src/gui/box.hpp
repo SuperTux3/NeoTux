@@ -26,6 +26,8 @@ public:
 	BoxWidget(const Rectf& box_props, float padding = 0.0f);
 	BoxWidget(const Rectf& box_props, float padding_w, float padding_h);
 	BoxWidget(BoxWidget&&) = default;
+	
+	static Widget *construct(SexpElt elt);
 
 	virtual void draw() override;
 	virtual void update() override {};

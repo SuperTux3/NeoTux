@@ -20,9 +20,11 @@
 #include "config.h"
 #include "game.hpp"
 #include "camera.hpp"
+#include "gui/box.hpp"
 #include "input_manager.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
+#include "gui/gui_reader.hpp"
 #include "util/filesystem.hpp"
 #include "video/sdl/painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
@@ -106,13 +108,21 @@ Game::run()
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 
+	// Tiles
 	TilesReader tiles_reader;
 	tiles_reader.open();	
 	
+	// Level info
 	LevelReader reader;
 	Level *level = reader.open("levels/via_nostalgica.stl");
 	Sector &sector = level->get_sector(0);
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
+	
+	// Setup guis
+	Widget::register_widget("box", BoxWidget::construct);
+	GuiReader gui_reader;
+	Widget *box = gui_reader.open("guis/main.stui");
+	//BoxWidget box(SDL_FRect{20, 20, 120, 40});
 	
 	int i = 0, j = 1;
 	while (!m_quit)
@@ -131,6 +141,9 @@ Game::run()
 		
 		g_camera.x = 5;
 		g_camera.y = 5;
+		
+		if (box)
+		box->draw();
 		
 		// Draw tiles
 		for (int x = 0; x < tilemap->get_size().width; ++x)
@@ -189,7 +202,7 @@ Game::run()
 		painter->draw(total_draws, std::nullopt, SDL_FRect{0, (float)draws->get_size().height, (float)total_draws->get_size().width,(float)total_draws->get_size().height});
 //#endif
 
-		Logger::debug(g_input_manager.to_string());
+		//Logger::debug(g_input_manager.to_string());
 		
 		g_video_system->flip();
 		SDL_Delay(10);
@@ -200,6 +213,7 @@ Game::run()
 	}
 	
 	delete level;
+	delete box;
 }
 
 void
