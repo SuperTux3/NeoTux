@@ -131,7 +131,7 @@ Game::run()
 	SurfaceBlitter thing({128, 128});
 	for (int x = 5; x < 85; ++x)
 		for (int y = 5; y < 85; ++y)
-			thing.write_pixel(x + sin(y/2)*4, y, {0, 255, 0, 255});
+			thing.write_pixel(x + sin(y/2)*4, y, {x*2, 130+y, x+y*2, 255});
 	std::unique_ptr<Texture> cool_thing(thing.to_texture());
 	thing.destroy();
 	
