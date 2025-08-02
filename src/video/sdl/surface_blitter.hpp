@@ -21,6 +21,7 @@
 #include <memory>
 #include <SDL3/SDL_surface.h>
 #include "math/size.hpp"
+#include "video/texture.hpp"
 
 class SurfaceBlitter
 {
@@ -30,6 +31,9 @@ public:
 	
 	SDL_Color read_pixel(int x, int y);
 	void write_pixel(int x, int y, SDL_Color color);
+	
+	Texture* to_texture();
+	void destroy();
 private:
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> m_sdl_surface;
 	Size m_size;

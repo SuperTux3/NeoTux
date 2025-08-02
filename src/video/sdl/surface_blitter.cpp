@@ -16,13 +16,14 @@
 
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_endian.h>
+#include <SDL3/SDL_surface.h>
 #include "surface_blitter.hpp"
 
 SurfaceBlitter::SurfaceBlitter(Size size) :
 	m_sdl_surface(nullptr, SDL_DestroySurface),
 	m_size(std::move(size))
 {
-	m_sdl_surface.reset();
+	m_sdl_surface.reset(SDL_CreateSurface(m_size.width, m_size.height, SDL_PIXELFORMAT_ABGR32));
 }
 
 SDL_Color
@@ -32,6 +33,7 @@ SurfaceBlitter::read_pixel(int x, int y)
 	SDL_Surface *surface = m_sdl_surface.get();
 	Uint8 *p;
 	p = reinterpret_cast<Uint8*>(surface->pixels) + y * surface->pitch + x * SDL_BYTESPERPIXEL(surface->format);
+	// TODO memcpy (if it even matters)
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	res.r = p[0];
 	res.g = p[1];
@@ -66,3 +68,14 @@ SurfaceBlitter::write_pixel(int x, int y, SDL_Color color)
 	//SDL_WriteSurfacePixel(m_sdl_surface.get(), x, y, color.r, color.g, color.b, color.a);
 }
 
+void
+SurfaceBlitter::destroy()
+{
+	m_sdl_surface.reset();
+}
+
+Texture*
+SurfaceBlitter::to_texture()
+{
+	return Texture::create(m_sdl_surface.get());
+}

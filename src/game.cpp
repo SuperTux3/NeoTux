@@ -29,6 +29,7 @@
 #include "util/filesystem.hpp"
 #include "video/sdl/painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
+#include "video/sdl/surface_blitter.hpp"
 #ifdef NEOTUX_BGFX
 #include "video/bgfx/bgfx_video_system.hpp"
 #endif
@@ -127,6 +128,13 @@ Game::run()
 	Widget *box = gui_reader.open("guis/main.stui");
 	//BoxWidget box(SDL_FRect{20, 20, 120, 40});
 	
+	SurfaceBlitter thing({128, 128});
+	for (int x = 5; x < 85; ++x)
+		for (int y = 5; y < 85; ++y)
+			thing.write_pixel(x + sin(y/2)*4, y, {0, 255, 0, 255});
+	std::unique_ptr<Texture> cool_thing(thing.to_texture());
+	thing.destroy();
+	
 	int i = 0, j = 1;
 	while (!m_quit)
 	{
@@ -191,8 +199,11 @@ Game::run()
 		g_texture_manager.load("images/creatures/penny/stand-0.png");
 		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
 		
+		painter->draw(cool_thing.get(), std::nullopt, SDL_FRect{80, 80, 100, 100});
+		
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
+		
 		
 		if ((i % 1200) == 0)
 		{
