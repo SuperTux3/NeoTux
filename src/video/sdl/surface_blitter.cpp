@@ -18,6 +18,9 @@
 #include <SDL3/SDL_endian.h>
 #include <SDL3/SDL_surface.h>
 #include "surface_blitter.hpp"
+#include "video/video_system.hpp"
+#include <SDL3/SDL_timer.h>
+#include <iostream>
 
 SurfaceBlitter::SurfaceBlitter(Size size) :
 	m_sdl_surface(nullptr, SDL_DestroySurface),
@@ -92,21 +95,37 @@ SurfaceBlitter::draw_circle(int x, int y, unsigned r, SDL_Color color)
 			yy -= 1;
 		}
 		xx += 1;
+		
+		/* Originally I was fill the circle unoptimally. Then I
+		 *  accidentally made it draw a triangle for a part. Then I
+		 *  realized that drawing 8 triangles was actually the optimal
+		 *  solution to fill the circle. The below is the result of
+		 *  serious delusions.
+		 */
+		
 		// bottom right
-		write_pixel(yy+m_size.height/2-1 + x, xx+m_size.width/2-1 + x, color);
-		write_pixel(xx+m_size.width/2-1 + x, yy+m_size.height/2-1 + y, color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx); ++i)
+			write_pixel(xx+m_size.width/2-1 + x, yy+m_size.height/2-1 + y - i, color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx - 1); ++i)
+			write_pixel(yy+m_size.height/2-1 + x - i, xx+m_size.width/2-1 + y , color);
 		
 		// top right
-		write_pixel(yy+m_size.height/2-1 + x, (m_size.width/2)-xx + x, color);
-		write_pixel(xx+m_size.width/2-1 + x, (m_size.height/2)-yy + y, color);
-		
+		for (int i = 0; i < (int)r - ((int)r - yy + xx); ++i)
+			write_pixel(xx+m_size.width/2-1 + x, (m_size.height/2)-yy + y + i, color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx - 1); ++i)
+			write_pixel(yy+m_size.height/2-1 + x - i, (m_size.width/2)-xx + y, color);
+
 		// bottom left
-		write_pixel((m_size.height/2)-yy + x, xx+m_size.width/2-1 + x, color);
-		write_pixel((m_size.width/2)-xx + x, yy+m_size.height/2-1 + y , color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx); ++i)
+			write_pixel((m_size.height/2)-yy + x + i, xx+m_size.width/2-1 + y, color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx - 1); ++i)
+			write_pixel((m_size.width/2)-xx + x, yy+m_size.height/2-1 + y - i , color);
 		
 		// top left
-		write_pixel((m_size.width/2)-xx + x, (m_size.height/2)-yy + y, color);
-		write_pixel((m_size.height/2)-yy + x, (m_size.width/2)-xx + y, color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx); ++i)
+			write_pixel((m_size.width/2)-xx + x, (m_size.height/2)-yy + y + i, color);
+		for (int i = 0; i < (int)r - ((int)r - yy + xx - 1); ++i)
+			write_pixel((m_size.height/2)-yy + x + i, (m_size.width/2)-xx + y, color);
 	}
 }
 
