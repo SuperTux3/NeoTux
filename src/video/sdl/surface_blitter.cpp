@@ -111,6 +111,14 @@ SurfaceBlitter::draw_circle(int x, int y, unsigned r, SDL_Color color)
 }
 
 void
+SurfaceBlitter::fill(SDL_Color color)
+{
+	for (int x = 0; x < m_size.width; ++x)
+		for (int y = 0; y < m_size.height; ++y)
+			write_pixel(x, y, color);
+}
+
+void
 SurfaceBlitter::destroy()
 {
 	m_sdl_surface.reset();

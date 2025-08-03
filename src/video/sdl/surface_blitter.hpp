@@ -35,6 +35,7 @@ public:
 	void write_pixel(int x, int y, SDL_Color color);
 	
 	void draw_circle(int x, int y, unsigned r, SDL_Color color);
+	void fill(SDL_Color color);
 	
 	Texture* to_texture();
 	void destroy();
