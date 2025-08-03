@@ -132,6 +132,7 @@ Game::run()
 	for (int x = 5; x < 85; ++x)
 		for (int y = 5; y < 85; ++y)
 			thing.write_pixel(x + sin(y/2)*4, y, {x*2, 130+y, x+y*2, 255});
+	thing.draw_circle(40, 40, 40, {0, 255, 0, 255});
 	std::unique_ptr<Texture> cool_thing(thing.to_texture());
 	thing.destroy();
 	
@@ -149,6 +150,8 @@ Game::run()
 		painter->clear();
 		painter->register_camera(&g_camera);
 		handle_events();
+		
+		painter->draw(cool_thing.get(), std::nullopt, SDL_FRect{80, 80, 300, 300});
 		
 		painter->begin_clip(SDL_Rect{90, 30, 600, 800});
 		
@@ -198,8 +201,6 @@ Game::run()
 		g_texture_manager.load("images/creatures/owl/carry-0.png");
 		g_texture_manager.load("images/creatures/penny/stand-0.png");
 		//g_texture_manager.add("images/creatures/spiky/spikycry.png");
-		
-		painter->draw(cool_thing.get(), std::nullopt, SDL_FRect{80, 80, 100, 100});
 		
 		TextureRef text = g_font_cache.load("Hello Super Tux", {255, 255, 255, 255});
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 

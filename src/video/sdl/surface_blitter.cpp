@@ -29,6 +29,8 @@ SurfaceBlitter::SurfaceBlitter(Size size) :
 SDL_Color
 SurfaceBlitter::read_pixel(int x, int y)
 {
+	if (x < 0 || y < 0 || x > m_size.width || y > m_size.height)
+		return {0, 0, 0, 0};
 	SDL_Color res;
 	SDL_Surface *surface = m_sdl_surface.get();
 	Uint8 *p;
@@ -51,6 +53,8 @@ SurfaceBlitter::read_pixel(int x, int y)
 void
 SurfaceBlitter::write_pixel(int x, int y, SDL_Color color)
 {
+	if (x < 0 || y < 0 || x > m_size.width || y > m_size.height)
+		return;
 	SDL_Surface *surface = m_sdl_surface.get();
 	Uint8 *p;
 	p = reinterpret_cast<Uint8*>(surface->pixels) + y * surface->pitch + x * SDL_BYTESPERPIXEL(surface->format);
@@ -66,6 +70,44 @@ SurfaceBlitter::write_pixel(int x, int y, SDL_Color color)
 	p[3] = color.r;
 #endif
 	//SDL_WriteSurfacePixel(m_sdl_surface.get(), x, y, color.r, color.g, color.b, color.a);
+}
+
+// bresenham's circle
+void
+SurfaceBlitter::draw_circle(int x, int y, unsigned r, SDL_Color color)
+{
+	x -= m_size.width/2;
+	y -= m_size.height/2;
+	int xx = 0;
+	int yy = r;
+	int w = 1 - r;
+	while (xx < yy)
+	{
+		if (w < 0)
+		{
+			w += 2 * xx + 3;
+		}
+		else {
+			w += 2 * (xx - yy) + 5;
+			yy -= 1;
+		}
+		xx += 1;
+		// bottom right
+		write_pixel(yy+m_size.height/2-1 + x, xx+m_size.width/2-1 + x, color);
+		write_pixel(xx+m_size.width/2-1 + x, yy+m_size.height/2-1 + y, color);
+		
+		// top right
+		write_pixel(yy+m_size.height/2-1 + x, (m_size.width/2)-xx + x, color);
+		write_pixel(xx+m_size.width/2-1 + x, (m_size.height/2)-yy + y, color);
+		
+		// bottom left
+		write_pixel((m_size.height/2)-yy + x, xx+m_size.width/2-1 + x, color);
+		write_pixel((m_size.width/2)-xx + x, yy+m_size.height/2-1 + y , color);
+		
+		// top left
+		write_pixel((m_size.width/2)-xx + x, (m_size.height/2)-yy + y, color);
+		write_pixel((m_size.height/2)-yy + x, (m_size.width/2)-xx + y, color);
+	}
 }
 
 void

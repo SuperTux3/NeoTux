@@ -29,8 +29,12 @@ public:
 	SurfaceBlitter(Size size);
 	~SurfaceBlitter() = default;
 	
+	const Size& get_size() const { return m_size; }
+	
 	SDL_Color read_pixel(int x, int y);
 	void write_pixel(int x, int y, SDL_Color color);
+	
+	void draw_circle(int x, int y, unsigned r, SDL_Color color);
 	
 	Texture* to_texture();
 	void destroy();
