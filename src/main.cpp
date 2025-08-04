@@ -29,31 +29,38 @@
 #include "video/video_system.hpp"
 #include "settings.hpp"
 #include "game.hpp"
+#include "all_tests.hpp"
 
 using namespace std::string_literals;
 
 void print_help(std::ostream& cout, int, char**, struct Argument*, int opt_width = 30);
 
+static bool plz_continue = true;
+
 struct Argument {
-	Argument():
+	Argument() :
 		longarg(nullptr),
 		shortarg(0),
 		desc(nullptr),
 		paramhint(nullptr)
-	{
-
-	}
+	{}
+	
+	Argument(const char* title) :
+		longarg(nullptr),
+		shortarg(0),
+		desc(title),
+		paramhint(nullptr)
+	{}
 
 	Argument(const char* longarg_,
-			  char shortarg_,
-			  const char* desc_,
-			  const char* paramhint_ = nullptr):
+	         char shortarg_,
+	         const char* desc_,
+	         const char* paramhint_ = nullptr) :
 		longarg(longarg_),
 		shortarg(shortarg_),
 		desc(desc_),
 		paramhint(paramhint_)
-	{
-	}
+	{}
 
 	/// You MUST provide a longarg if you provide a shortarg.
 	const char* longarg;
@@ -63,13 +70,19 @@ struct Argument {
 };
 
 Argument st_args[] = {
-	{ nullptr, 0, "General Options:" },
+	{ "General Options:" },
+	//////////////////////
 	{ "help", 'h', "Show this help message" },
 	{ "version", 'V', "Show SuperTux version" },
 	{ "verbose", 'v', "Show verbose messages" },
 	{ "renderer", 'r',
 	  "Use specific renderer ('auto', 'opengl', 'opengles', 'vulkan', 'metal', 'sdl', 'null')",
 	  "<option>"},
+	
+	{ "In-Game Testing:" },
+	//////////////
+	{ "test", 't', "Run in-game test", "<name>" },
+	{ "list-tests", 'l', "List in-game tests" },
 	{}
 };
 
@@ -83,7 +96,7 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 	switch (idx) {
 		case 1:
 			g_settings->show_help = true;
-			break;
+			return 1;
 
 		case 3:
 			g_settings->verbose = true;
@@ -96,6 +109,25 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 			std::string renderer = argv[argvidx + 1];
 			g_settings->renderer = VideoSystem::str_to_video_system(renderer);
 			break;
+		}
+		
+		case 6: {
+			if (argvidx - 1 >= argc)
+				return 1;
+			
+			Game *game = GameTest::get_game_test(argv[argvidx + 1]);
+			g_game = std::unique_ptr<Game>(game);
+			return 0;
+		}
+		
+		case 7: {
+			std::cout << "List of all in-game tests:\n";
+			for (auto &test : g_game_tests)
+			{
+				std::cout << "  - " << test.first << "\n";
+			}
+			std::cout.flush();
+			return 1;
 		}
 	}
 
@@ -135,7 +167,8 @@ int parse_arguments(int argc, char** argv, Argument args[])
 			if (!check_arg(args[i], argv[argv_idx]))
 				continue;
 
-			apply_argument(argc, argv, argv_idx, args, i);
+			if (apply_argument(argc, argv, argv_idx, args, i) != 0)
+				plz_continue = false;
 		}
 
 		if (invalid_argument)
@@ -190,6 +223,8 @@ void print_help(std::ostream& cout, int argc, char** argv, Argument args[], int 
 int main(int argc, char** argv)
 {
 	g_settings = std::make_unique<Settings>();
+	
+	GameTest::init_all_tests();
 
 	int result = parse_arguments(argc, argv, st_args);
 	if (result != 0)
@@ -200,12 +235,16 @@ int main(int argc, char** argv)
 		print_help(std::cout, argc, argv, st_args);
 		return 0;
 	}
+	
+	if (!plz_continue)
+		return 0;
 
-	g_game.run();
-	// Simple loop for now
-	//window.create_window(0, "SuperTux Milestone 3");
+	// g_game will be set if a game test was selected
+	if (g_game == nullptr)
+		g_game = std::make_unique<Game>();
 	
-	g_game.shutdown();
+	g_game->run();
 	
+	g_game->shutdown();
 	return 0;
 }

@@ -14,39 +14,8 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef HEADER_SUPERTUX_GAME_HPP
-#define HEADER_SUPERTUX_GAME_HPP
+#include "game_test.hpp"
 
-#include "audio/mixer.hpp"
-#include "input_manager.hpp"
-#include <memory>
+std::unordered_map<std::string, std::function<Game*()>> g_game_tests{};
 
-#define BEGIN_GAME_LOOP while (is_running()) { \
-	if (!g_video_system) continue; \
-	
-#define END_GAME_LOOP g_video_system->flip(); \
-	SDL_Delay(10); \
-	g_input_manager.reset(); \
-}
 
-class Game
-{
-public:
-	Game();
-	virtual ~Game() = default;
-	
-	void init_video_system();
-	virtual void run();
-	void update();
-	void shutdown();
-	
-	void handle_events();
-	
-	bool is_running() const { return !m_quit; }
-private:
-	bool m_quit;
-};
-
-extern std::unique_ptr<Game> g_game;
-
-#endif

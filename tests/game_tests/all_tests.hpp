@@ -14,39 +14,25 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef HEADER_SUPERTUX_GAME_HPP
-#define HEADER_SUPERTUX_GAME_HPP
+#ifndef ALL_GAME_TESTS_HEADER
+#define ALL_GAME_TESTS_HEADER
 
-#include "audio/mixer.hpp"
-#include "input_manager.hpp"
-#include <memory>
+#include "game_test.hpp"
+#include "everything_test.hpp"
 
-#define BEGIN_GAME_LOOP while (is_running()) { \
-	if (!g_video_system) continue; \
-	
-#define END_GAME_LOOP g_video_system->flip(); \
-	SDL_Delay(10); \
-	g_input_manager.reset(); \
-}
+namespace GameTest {
 
-class Game
+/*
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * |||   PUT YOUR GAME TESTS HERE   |||
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+static void init_all_tests()
 {
-public:
-	Game();
-	virtual ~Game() = default;
+	register_game_test<EverythingTest>();
+}
 	
-	void init_video_system();
-	virtual void run();
-	void update();
-	void shutdown();
-	
-	void handle_events();
-	
-	bool is_running() const { return !m_quit; }
-private:
-	bool m_quit;
-};
+} // namespace GameTest
 
-extern std::unique_ptr<Game> g_game;
 
 #endif

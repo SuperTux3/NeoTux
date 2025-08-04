@@ -29,7 +29,6 @@ include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
 FetchContent_Declare(
 	SDL3_mixer
 	URL https://github.com/libsdl-org/SDL_mixer/archive/68764f35899e133b402336843c046d75136eaf08.tar.gz
-	#URL https://github.com/mjsottile/sfsexp/releases/download/v${SFSEXP_VERSION}/sfsexp-${SFSEXP_VERSION}.tar.gz
 )
 FetchContent_MakeAvailable(SDL3_mixer)
 
@@ -85,14 +84,16 @@ endif()
 
 set(NEOTUX_DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
 
-file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp)
+file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS
+	src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp
+	tests/game_tests/*.cpp tests/game_tests/*.hpp)
 
 if(NOT NEOTUX_BGFX)
 	list(FILTER NEOTUX_SRC EXCLUDE REGEX bgfx/)
 endif()
 
 add_executable(NeoTux ${NEOTUX_SRC} )
-target_include_directories(NeoTux PRIVATE src)
+target_include_directories(NeoTux PRIVATE src tests/game_tests)
 target_link_libraries(NeoTux PUBLIC
 	SFSEXP
 	SDL3::SDL3
