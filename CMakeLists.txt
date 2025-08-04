@@ -33,6 +33,20 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL3_mixer)
 
+set(SSQ_BUILD_STATIC_ONLY Off)
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/external/simplesquirrel")
+	message(STATUS "Using external/simplesquirrel")
+	add_subdirectory("${PROJECT_SOURCE_DIR}/external/simplesquirrel")
+else()
+	FetchContent_Declare(
+		simplesquirrel
+		GIT_REPOSITORY "https://github.com/swagtoy/simplesquirrel"
+		GIT_BRANCH "master"
+	)
+	FetchContent_MakeAvailable(simplesquirrel)
+endif()
+
 option(NEOTUX_BGFX "Use BGFX library for NeoTux." OFF)
 if(NEOTUX_BGFX)
 	set(BGFX_VERSION "v1.129.8914-493" CACHE STRING "Version of bgfx.cmake to use")
@@ -85,13 +99,13 @@ target_link_libraries(NeoTux PUBLIC
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf
 	SDL3_mixer::SDL3_mixer
+	simplesquirrel
 )
 
 if(NEOTUX_BGFX)
 	target_sources(NeoTux PRIVATE "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
 	target_link_libraries(NeoTux PUBLIC bgfx)
 endif()
-
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
 	target_compile_options(NeoTux PUBLIC -O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
