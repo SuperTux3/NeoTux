@@ -112,10 +112,15 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 		}
 		
 		case 6: {
-			if (argvidx - 1 >= argc)
+			const char* name = argv[argvidx + 1];
+			if (!name)
 				return 1;
-			
-			Game *game = GameTest::get_game_test(argv[argvidx + 1]);
+			Game *game = GameTest::get_game_test(name);
+			if (!game)
+			{
+				std::cout << "Game test \"" << name << "\" not found!" << std::endl;
+				return 1;
+			}
 			g_game = std::unique_ptr<Game>(game);
 			return 0;
 		}
