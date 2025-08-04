@@ -62,25 +62,6 @@ Game::shutdown()
 	SDL_Quit();
 }
 
-static void
-draw_textures()
-{
-	int i = 0;
-	Size winsize = g_video_system->get_window_size();
-	for (auto const &pair: g_texture_manager.m_textures)
-	{
-		TextureRef tex = pair.second.get();
-		SDL_FRect dest = { (float)((i*40)%winsize.width), (float)((i*40)/winsize.width)*40, 40, 40 };
-		//SDL_RenderTexture(static_cast<SDLVideoSystem*>(g_video_system.get())->m_sdl_renderer.get(), texture, NULL, &dest);
-		
-		Painter* painter = g_video_system->get_painter();
-		
-		painter->draw(tex, std::nullopt, dest);
-		
-		++i;
-	}
-}
-
 void
 Game::init_video_system()
 {
