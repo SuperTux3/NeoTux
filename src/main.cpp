@@ -200,10 +200,11 @@ void print_help(std::ostream& cout, int argc, char** argv, Argument args[], int 
 		bool is_header = args[i].paramhint == nullptr && args[i].longarg == nullptr && args[i].shortarg == 0;
 		if (args[i].longarg == nullptr && args[i].shortarg == 0 && args[i].desc == nullptr)
 			break;
-		
 		else if (is_header)
-			cout << args[i].desc;
-			
+		{
+			cout << "\n" << args[i].desc;
+		
+		}	
 		else {
 			std::string arg_str = "";
 			cout << "  ";
@@ -220,7 +221,7 @@ void print_help(std::ostream& cout, int argc, char** argv, Argument args[], int 
 		cout << "\n";
 	}
 	
-	cout << std::endl;
+	cout.flush();
 	cout << std::resetiosflags(std::ios_base::left);
 }
 
