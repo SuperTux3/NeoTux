@@ -100,7 +100,7 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 
 		case 3:
 			g_settings->verbose = true;
-			break;
+			return 0;
 
 		case 4: {
 			if (argvidx - 1 >= argc)
@@ -108,7 +108,7 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 
 			std::string renderer = argv[argvidx + 1];
 			g_settings->renderer = VideoSystem::str_to_video_system(renderer);
-			break;
+			return 0;
 		}
 		
 		case 6: {
@@ -136,7 +136,7 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 		}
 	}
 
-	return 0;
+	return -1;
 }
 
 /**
@@ -154,23 +154,22 @@ int parse_arguments(int argc, char** argv, Argument args[])
 	if (argc <= 1)
 		return 0;
 
-	bool invalid_argument = false;
+	bool invalid_argument = true;
 	int argv_idx = 1;
 	for (argv_idx = 1; argv_idx < argc; ++argv_idx)
 	{
 		for (int i = 0;; ++i)
 		{
 			if (args[i].longarg == nullptr && args[i].shortarg == 0 && args[i].desc == nullptr)
-			{
-				//invalid_argument = true;
 				break;
-			}
 
 			if (args[i].longarg == nullptr)
 				continue;
 
 			if (!check_arg(args[i], argv[argv_idx]))
 				continue;
+			else
+				invalid_argument = false;
 
 			if (apply_argument(argc, argv, argv_idx, args, i) != 0)
 				plz_continue = false;
@@ -182,7 +181,7 @@ int parse_arguments(int argc, char** argv, Argument args[])
 	
 	if (invalid_argument)
 	{
-		std::cout << std::format("Invalid argument \"{}\".", argv[argv_idx]) << "\n" << std::endl;
+		std::cerr << std::format("Invalid argument \"{}\".", argv[argv_idx]) << "\n";
 		print_help(std::cerr, argc, argv, args);
 		return 1;
 	}
