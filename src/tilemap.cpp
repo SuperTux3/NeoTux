@@ -20,7 +20,7 @@
 
 Tilemap::Tilemap(SexpElt root) :
 	m_size(),
-	m_tiles(),
+	m_chunks(),
 	m_zpos()
 {
 	SexpElt elt;
@@ -35,11 +35,22 @@ Tilemap::Tilemap(SexpElt root) :
 		m_zpos = elt.get_int();
 	
 	elt = root.find_car("tiles", 1);
-	while (elt.next_inplace())
+	for (int i = 0; elt.next_inplace(); ++i)
 	{
 		long tile_id = elt.get_int();
+		//if (tile_id == 0)
+		//	continue;
+		int x = i % m_size.width;
+		int y = i / m_size.width;
+		int chunk_x = x / TileChunk::CHUNK_SIZE;
+		int chunk_y = y / TileChunk::CHUNK_SIZE;
+		int rel_x = x % TileChunk::CHUNK_SIZE;
+		int rel_y = y % TileChunk::CHUNK_SIZE;
 		// TODO chunking
-		m_tiles.emplace_back(tile_id);
+		//m_chunks.at(chunk_x, chunk_y)->get_tile(rel_x, rel_y);
+		TileChunk &t = m_chunks.get_or_create(chunk_x, chunk_y, TileChunk());
+		t.get_tile(rel_x, rel_y).set_id(tile_id);
+		//m_tiles.emplace_back(tile_id);
 	}
 	
 	
@@ -47,12 +58,18 @@ Tilemap::Tilemap(SexpElt root) :
 	                          "Width: {}\n\t"
 							  "Height: {}\n\t"
 							  "z-pos: {}\n\t"
-							  "# of tiles: {}", m_size.width, m_size.height, m_zpos, m_tiles.size()));
+							  "# of tiles: {}", m_size.width, m_size.height, m_zpos, 0));
 }
 
-const Tile&
+Tile&
 Tilemap::get_tile(unsigned long x, unsigned long y)
 {
-	return m_tiles.at(x + (y * m_size.width));
+	int chunk_x = x / TileChunk::CHUNK_SIZE;
+	int chunk_y = y / TileChunk::CHUNK_SIZE;
+	int rel_x = x % TileChunk::CHUNK_SIZE;
+	int rel_y = y % TileChunk::CHUNK_SIZE;
+	//std::cout << "CHUNK: " << chunk_x << " "<< chunk_y << std::endl;
+	//std::cout << "  REL: " << rel_x << " "<< rel_y << std::endl;
+	return m_chunks.at(chunk_x, chunk_y)->get_tile(rel_x, rel_y);
 }
 

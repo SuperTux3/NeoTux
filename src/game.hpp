@@ -22,7 +22,7 @@
 #include <memory>
 
 #define BEGIN_GAME_LOOP double __last_time; \
-	g_dtime = SDL_GetTicks() / 1000.0; \
+	g_dtime = 0; \
 	while (is_running()) { \
 		__last_time = SDL_GetTicks(); \
 		if (!g_video_system) continue; \

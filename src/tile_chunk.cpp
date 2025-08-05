@@ -15,10 +15,14 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tile_chunk.hpp"
+#include <stdexcept>
 
-const Tile&
+Tile&
 TileChunk::get_tile(uint8_t x, uint8_t y)
 {
 	// TODO bounds checking
+	if (x >= TileChunk::CHUNK_SIZE || y >= TileChunk::CHUNK_SIZE)
+		throw std::runtime_error("BAD TILE");
 	return m_tiles[x + (y * TileChunk::CHUNK_SIZE)];
 }
+

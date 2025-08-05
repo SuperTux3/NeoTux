@@ -31,7 +31,7 @@ public:
 	{}
 	~TileChunk() = default;
 	
-	const Tile& get_tile(uint8_t x, uint8_t y);
+	Tile& get_tile(uint8_t x, uint8_t y);
 	
 private:
 	Tile m_tiles[CHUNK_SIZE * CHUNK_SIZE];

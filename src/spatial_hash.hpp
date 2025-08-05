@@ -26,16 +26,29 @@ public:
 	SpatialHash() :
 		m_hash()
 	{}
-	~SpatialHash();
+	~SpatialHash() = default;
 	
 	void emplace(long x, long y, T t)
 	{
-		if (!m_hash.exists(x))
-			m_hash.emplace(x, {});
+		if (!m_hash.contains(x))
+			m_hash.emplace(x, std::unordered_map<long, T>());
 		
 		//if (!m_hash[x].exists(y))
 		m_hash[x].emplace(y, std::move(t));
 	}
+	
+	T& get_or_create(long x, long y, T if_not_exists)
+	{
+		T* t = at(x, y);
+		if (t)
+			return *t;
+		else
+		{
+			emplace(x, y, std::move(if_not_exists));
+			return m_hash[x][y];
+		}
+	}
+	
 	
 	T* at(long x, long y)
 	try {

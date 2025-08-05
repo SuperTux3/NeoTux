@@ -124,7 +124,7 @@ EverythingTest::run()
 		{
 			for (int y = 0; y < tilemap->get_size().height; ++y)
 			{
-				const Tile &tile = tilemap->get_tile(x, y);
+				const Tile& tile = tilemap->get_tile(x, y);
 				if (tile.get_id() != 0)
 				{
 					try{

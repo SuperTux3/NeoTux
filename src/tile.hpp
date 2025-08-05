@@ -25,7 +25,8 @@ public:
 	{}
 	Tile(unsigned long id);
 	~Tile() = default;
-
+	
+	void set_id(unsigned long id) { m_id = id; } 
 	unsigned long get_id() const { return m_id; }
 private:
 	unsigned long m_id;
