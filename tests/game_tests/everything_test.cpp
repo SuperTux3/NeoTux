@@ -182,7 +182,7 @@ EverythingTest::run()
 		std::cout << "Deltatime: " << g_dtime << std::endl;
 
 		//Logger::debug(g_input_manager.to_string());
-		i += DTIME * 60;
+		i += g_dtime * 60;
 	END_GAME_LOOP
 	
 	delete level;

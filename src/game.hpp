@@ -50,7 +50,6 @@ private:
 	bool m_quit;
 };
 
-#define DTIME (g_dtime)
 extern double g_dtime;
 
 extern std::unique_ptr<Game> g_game;
