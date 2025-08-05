@@ -40,7 +40,7 @@
 #include <SDL3/SDL.h>
 
 std::unique_ptr<Game> g_game{nullptr};
-
+double g_dtime = SDL_GetTicks() / 1000.0;
 
 Game::Game() :
 	m_quit(false)

@@ -95,7 +95,7 @@ EverythingTest::run()
 	std::unique_ptr<Texture> cool_thing(thing.to_texture());
 	thing.destroy();
 	
-	int i = 0, j = 1;
+	double i = 0, j = 1;
 	BEGIN_GAME_LOOP
 		g_font_cache.try_gc();
 		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
@@ -160,7 +160,7 @@ EverythingTest::run()
 		painter->draw(text, std::nullopt, SDL_FRect{50,50,(float)text->get_size().width,(float)text->get_size().height}); 
 		
 		
-		if ((i % 1200) == 0)
+		if (((int)i % 1200) == 0)
 		{
 			g_mixer.play_sound("sounds/bigjump.wav");
 		}
@@ -179,8 +179,10 @@ EverythingTest::run()
 		painter->draw(total_draws, std::nullopt, SDL_FRect{0, (float)draws->get_size().height, (float)total_draws->get_size().width,(float)total_draws->get_size().height});
 //#endif
 
+		std::cout << "Deltatime: " << g_dtime << std::endl;
+
 		//Logger::debug(g_input_manager.to_string());
-		++i;
+		i += DTIME * 60;
 	END_GAME_LOOP
 	
 	delete level;
