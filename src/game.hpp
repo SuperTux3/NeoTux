@@ -52,6 +52,13 @@ private:
 
 extern double g_dtime;
 
+static double
+get_fps()
+{
+	return 1.0 / g_dtime;
+}
+
+
 extern std::unique_ptr<Game> g_game;
 
 #endif

@@ -173,13 +173,13 @@ EverythingTest::run()
 		g_camera.y = 0;
 		
 //#ifndef NDEBUG
+		TextureRef fps = g_font_cache.load(std::format("FPS: {}", (int)get_fps()), {255, 255, 255, 155});
+		painter->draw(fps, std::nullopt, Rectf{0, 0, {(float)fps->get_size().width, (float)fps->get_size().height}});
 		TextureRef draws = g_font_cache.load(std::format("Draws: {}", painter->get_draw_count()), {255, 255, 255, 255});
-		painter->draw(draws, std::nullopt, SDL_FRect{0, 0, (float)draws->get_size().width,(float)draws->get_size().height});
+		painter->draw(draws, std::nullopt, SDL_FRect{0, (float)fps->get_size().height, (float)draws->get_size().width,(float)draws->get_size().height});
 		TextureRef total_draws = g_font_cache.load(std::format("Total Draws: {}", painter->get_total_draw_count()), {255, 255, 255, 255});
-		painter->draw(total_draws, std::nullopt, SDL_FRect{0, (float)draws->get_size().height, (float)total_draws->get_size().width,(float)total_draws->get_size().height});
+		painter->draw(total_draws, std::nullopt, SDL_FRect{0, (float)draws->get_size().height * 2, (float)total_draws->get_size().width,(float)total_draws->get_size().height});
 //#endif
-
-		std::cout << "Deltatime: " << g_dtime << std::endl;
 
 		//Logger::debug(g_input_manager.to_string());
 		i += g_dtime * 60;
