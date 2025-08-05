@@ -19,12 +19,16 @@
 #include "math/size.hpp"
 #include "camera.hpp"
 #include "object/player.hpp"
+#include "util/filesystem.hpp"
+#include "video/font_cache.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
 
 #include "collision.hpp"
+
+static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 void
 CollisionTest::run()
@@ -54,16 +58,30 @@ CollisionTest::run()
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		
-		if (g_input_manager.is_mouse_down() == true)'
+		if (g_input_manager.is_mouse_down() == true)
 		{
 			if (g_input_manager.get_mouse_button() == 1)
 				player.move((double)g_input_manager.get_mouse_dx()*2.0,
 				            (double)g_input_manager.get_mouse_dy()*2.0);
-			else {
-				g_camera.x -= g_input_manager.get_mouse_dx()*2.0;
-				g_camera.y -= g_input_manager.get_mouse_dy()*2.0;
+			else if (g_input_manager.get_mouse_button() == 3) {
+				player.move_to((int)g_input_manager.get_mouse_x() + g_camera.x,
+				               (int)g_input_manager.get_mouse_y() + g_camera.y);
+			}
+			else if (g_input_manager.get_mouse_button() == 2) {
+				g_camera.x -= g_input_manager.get_mouse_dx()*5.0;
+				g_camera.y -= g_input_manager.get_mouse_dy()*5.0;
 			}
 		}
+		
+		TextureRef help_1 = g_font_cache.load("Left click to move relative", {255, 255, 255, 155});
+		painter->draw(help_1, std::nullopt,
+			Rectf{0, 0, {(float)help_1->get_size().width, (float)help_1->get_size().height}});
+		TextureRef help_2 = g_font_cache.load("Middle click to move camera", {255, 255, 255, 155});
+		painter->draw(help_2, std::nullopt,
+			Rectf{0, (float)help_1->get_size().height*2, {(float)help_2->get_size().width, (float)help_2->get_size().height}});
+		TextureRef help_3 = g_font_cache.load("Right click to move Tux to cursor", {255, 255, 255, 155});
+		painter->draw(help_3, std::nullopt,
+			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
 		
 		for (int x = 0; x < 200; ++x)
 		{

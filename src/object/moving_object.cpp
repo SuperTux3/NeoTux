@@ -63,3 +63,14 @@ MovingObject::move(float x, float y)
 		m_rect.bottom += y;
 	}
 }
+
+void
+MovingObject::move_to(float x, float y)
+{
+	float old_width = m_rect.get_width(),
+	      old_height = m_rect.get_height();
+	m_rect.left = x;
+	m_rect.right = x + old_width;
+	m_rect.top = y;
+	m_rect.bottom = y + old_height;
+}

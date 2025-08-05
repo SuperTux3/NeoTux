@@ -31,6 +31,7 @@ public:
 	void draw() = 0;
 	
 	void move(float x, float y);
+	void move_to(float x, float y);
 	
 	const Rectf& get_rect() const { return m_rect; }
 	Rectf get_colbox() const;
