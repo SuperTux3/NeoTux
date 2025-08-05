@@ -51,6 +51,8 @@ CollisionTest::run()
 		handle_events();
 		painter->clear();
 		
+		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
+		
 		// Draw tiles
 		for (int x = 0; x < 100; ++x)
 		{
@@ -58,6 +60,7 @@ CollisionTest::run()
 			{
 				int rx = x * 32;
 				int ry = y * 32 - 200;
+				Rectf rrect{(float)rx, (float)ry, {32.f, 32.f}};
 				const Tile &tile = tilemap->get_tile(x, y);
 				if (tile.get_id() != 0)
 				{
@@ -66,9 +69,19 @@ CollisionTest::run()
 					if (tilemeta.info->image.empty())
 						continue;
 					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);
-					painter->draw(tex,
-						tilemeta.get_src_rect(tex),
-						Rectf{(float)rx, (float)ry, {32.f, 32.f}});
+					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
+					
+					
+					auto collide = Collision::aabb(player.get_rect(), rrect);
+					if (collide.is_colliding())
+					{
+						player.m_grounded = true;
+						player.move(0, -collide.bottom_constraint);
+						std::cout << "COLLIDING!! "<< collide.left_constraint << " " << 
+							collide.right_constraint << " " << collide.top_constraint << 
+							" " << collide.bottom_constraint << std::endl;
+					}
+					
 					}catch(...) {
 						continue;
 					}
@@ -76,18 +89,9 @@ CollisionTest::run()
 			}
 		}
 		
-		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
-		
 		player.update();
 		player.draw();
 		
-		auto collide = Collision::aabb(player.get_rect(), mouse_rect);
-		if (collide.is_colliding())
-			std::cout << "COLLIDING!! "<< collide.left_constraint << " " << 
-				collide.right_constraint << " " << collide.top_constraint << 
-				" " << collide.bottom_constraint << std::endl;
-		else
-			std::cout << "ISNT COLLIDING!!" << std::endl;
 		
 		painter->flip();
 	END_GAME_LOOP

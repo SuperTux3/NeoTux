@@ -35,11 +35,13 @@ public:
 	const Rectf& get_rect() const { return m_rect; }
 	const Sizef& get_colbox() const { return m_colbox; }
 	
-	void enable_gravity() { likes_falling = true; }
-	void disable_gravity() { likes_falling = false; }
+	void enable_gravity() { m_likes_falling = true; }
+	void disable_gravity() { m_likes_falling = false; }
 protected:
-	float y_vel;
-	bool likes_falling;
+public:
+	float m_y_vel;
+	bool m_likes_falling,
+		 m_grounded;
 	Rectf m_rect;
 	Sizef m_colbox;
 };

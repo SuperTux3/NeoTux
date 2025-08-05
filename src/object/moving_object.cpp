@@ -21,7 +21,8 @@ MovingObject::MovingObject(Rectf rect, Sizef colbox, std::string_view name) :
 	GameObject(name),
 	m_rect(std::move(rect)),
 	m_colbox(std::move(colbox)),
-	y_vel()
+	m_grounded(false),
+	m_y_vel()
 {
 	
 }
@@ -29,8 +30,11 @@ MovingObject::MovingObject(Rectf rect, Sizef colbox, std::string_view name) :
 void
 MovingObject::update()
 {
-	y_vel -= 9.81;
-	move(0, -y_vel * g_dtime);
+	if (!m_grounded)
+	{
+		m_y_vel -= 2;
+		move(0, -m_y_vel * g_dtime);
+	}
 }
 
 void
