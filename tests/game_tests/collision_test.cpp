@@ -84,34 +84,7 @@ CollisionTest::run()
 			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
 		
 		tilemap->draw(g_camera, tiles_reader);
-		for (int x = 0; x < tilemap->get_size().width; ++x)
-		{
-			for (int y = 0; y < tilemap->get_size().height; ++y)
-			{
-				int rx = x * 32;
-				int ry = y * 32;
-				Rectf rrect{(float)rx, (float)ry, {32.f, 32.f}};
-				const Tile &tile = tilemap->get_tile(x, y);
-				if (tile.get_id() != 0)
-				{
-					
-					auto collide = Collision::aabb(player.get_colbox(), rrect);
-					if (collide.is_colliding())
-					{
-						player.m_grounded = true;
-						
-						if (collide.top)
-							player.move(0, collide.top_constraint);
-						if (collide.bottom)
-							player.move(0, -collide.bottom_constraint);
-						if (collide.left)
-							player.move(collide.left_constraint, 0);
-						if (collide.right)
-							player.move(-collide.right_constraint, 0);
-					}
-				}
-			}
-		}
+		tilemap->try_object_collision(player);
 		
 		player.update();
 		player.draw();

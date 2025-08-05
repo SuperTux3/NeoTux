@@ -27,6 +27,7 @@
 
 struct Camera;
 struct TilesReader;
+struct MovingObject;
 
 class Tilemap
 {
@@ -37,6 +38,8 @@ public:
 	Tile& get_tile(unsigned long x, unsigned long y);
 	long get_zpos() const { return m_zpos; }
 	Size get_size() const { return m_size; }
+	
+	bool try_object_collision(MovingObject &obj);
 	
 	void draw(const Camera &camera, TilesReader &tiles_reader);
 private:

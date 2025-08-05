@@ -19,10 +19,24 @@
 
 #include <algorithm>
 #include <iostream>
+#include <utility>
+#include <vector>
 #include "math/rect.hpp"
 
 namespace Collision
 {
+
+static Rectf
+get_chunk_collisions(Rectf box, long chunk_size)
+{
+	long bl = box.left / chunk_size;
+	long bt = box.top / chunk_size;
+	long br = box.right / chunk_size;
+	long bb = box.bottom / chunk_size;
+	return Rectf{
+		(float)bl, (float)bt, (float)br, (float)bb
+	};
+}
 
 template <typename T>
 struct CollideInfo

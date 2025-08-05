@@ -16,7 +16,9 @@
 
 #include "tilemap.hpp"
 #include "camera.hpp"
+#include "collision.hpp"
 #include "math/rect.hpp"
+#include "object/moving_object.hpp"
 #include "tiles_reader.hpp"
 #include "util/logger.hpp"
 #include "video/texture_manager.hpp"
@@ -71,7 +73,46 @@ Tilemap::get_tile(unsigned long x, unsigned long y)
 	int chunk_y = y / TileChunk::CHUNK_SIZE;
 	int rel_x = x % TileChunk::CHUNK_SIZE;
 	int rel_y = y % TileChunk::CHUNK_SIZE;
-	return m_chunks.at(chunk_x, chunk_y)->get_tile(rel_x, rel_y);
+	TileChunk *chunk = m_chunks.at(chunk_x, chunk_y);
+	if (!chunk)
+		return m_chunks.at(0,0)->get_tile(0,0);
+	return chunk->get_tile(rel_x, rel_y);
+}
+
+bool
+Tilemap::try_object_collision(MovingObject& obj)
+{
+	Rectf obj_rect = obj.get_colbox();
+	
+	auto cols = Collision::get_chunk_collisions(obj_rect, 32.f);
+	for (long x = cols.left; x <= cols.right; ++x)
+	{
+		for (long y = cols.top; y <= cols.bottom; ++y)
+		{
+			const Tile &tile = get_tile(x, y);
+			if (tile.get_id() != 0)
+			{
+				Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
+				auto collide = Collision::aabb(obj_rect, rrect);
+				if (collide.is_colliding())
+				{
+					obj.m_grounded = true;
+					
+					if (collide.top)
+						obj.move(0, collide.top_constraint);
+					if (collide.bottom)
+						obj.move(0, -collide.bottom_constraint);
+					if (collide.left)
+						obj.move(collide.left_constraint, 0);
+					if (collide.right)
+						obj.move(-collide.right_constraint, 0);
+					return true;
+				}
+			}
+		}
+	}
+	
+	return false;
 }
 
 void
