@@ -17,7 +17,7 @@
 #include "game.hpp"
 #include "moving_object.hpp"
 
-MovingObject::MovingObject(Rectf rect, Sizef colbox, std::string_view name) :
+MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	GameObject(name),
 	m_rect(std::move(rect)),
 	m_colbox(std::move(colbox)),
@@ -25,6 +25,18 @@ MovingObject::MovingObject(Rectf rect, Sizef colbox, std::string_view name) :
 	m_y_vel()
 {
 	
+}
+
+Rectf
+MovingObject::get_colbox() const
+{
+	Rectf res{
+		m_rect.left + m_colbox.left,
+		m_rect.top + m_colbox.top,
+		m_rect.left + m_colbox.right - m_colbox.left,
+		m_rect.top + m_colbox.bottom - m_colbox.top
+	};
+	return res;
 }
 
 void

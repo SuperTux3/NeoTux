@@ -44,6 +44,7 @@ CollisionTest::run()
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	
 	Painter* painter = g_video_system->get_painter();
+	painter->register_camera(&g_camera);
 	
 	Player player;
 	
@@ -53,8 +54,18 @@ CollisionTest::run()
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		
-		// Draw tiles
-		for (int x = 0; x < 100; ++x)
+		if (g_input_manager.is_mouse_down() == true)'
+		{
+			if (g_input_manager.get_mouse_button() == 1)
+				player.move((double)g_input_manager.get_mouse_dx()*2.0,
+				            (double)g_input_manager.get_mouse_dy()*2.0);
+			else {
+				g_camera.x -= g_input_manager.get_mouse_dx()*2.0;
+				g_camera.y -= g_input_manager.get_mouse_dy()*2.0;
+			}
+		}
+		
+		for (int x = 0; x < 200; ++x)
 		{
 			for (int y = 0; y < tilemap->get_size().height; ++y)
 			{
@@ -72,14 +83,19 @@ CollisionTest::run()
 					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
 					
 					
-					auto collide = Collision::aabb(player.get_rect(), rrect);
+					auto collide = Collision::aabb(player.get_colbox(), rrect);
 					if (collide.is_colliding())
 					{
 						player.m_grounded = true;
-						player.move(0, -collide.bottom_constraint);
-						std::cout << "COLLIDING!! "<< collide.left_constraint << " " << 
-							collide.right_constraint << " " << collide.top_constraint << 
-							" " << collide.bottom_constraint << std::endl;
+						
+						if (collide.top)
+							player.move(0, collide.top_constraint);
+						if (collide.bottom)
+							player.move(0, -collide.bottom_constraint);
+						if (collide.left)
+							player.move(collide.left_constraint, 0);
+						if (collide.right)
+							player.move(-collide.right_constraint, 0);
 					}
 					
 					}catch(...) {
@@ -91,7 +107,6 @@ CollisionTest::run()
 		
 		player.update();
 		player.draw();
-		
 		
 		painter->flip();
 	END_GAME_LOOP

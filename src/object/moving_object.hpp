@@ -24,7 +24,7 @@
 class MovingObject : public GameObject
 {
 public:
-	MovingObject(Rectf rect, Sizef colbox, std::string_view name);
+	MovingObject(Rectf rect, Rectf colbox, std::string_view name);
 	virtual ~MovingObject() = default;
 	
 	void update();
@@ -33,7 +33,7 @@ public:
 	void move(float x, float y);
 	
 	const Rectf& get_rect() const { return m_rect; }
-	const Sizef& get_colbox() const { return m_colbox; }
+	Rectf get_colbox() const;
 	
 	void enable_gravity() { m_likes_falling = true; }
 	void disable_gravity() { m_likes_falling = false; }
@@ -43,7 +43,7 @@ public:
 	bool m_likes_falling,
 		 m_grounded;
 	Rectf m_rect;
-	Sizef m_colbox;
+	Rectf m_colbox;
 };
 
 #endif

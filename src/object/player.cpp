@@ -20,7 +20,7 @@
 #include "video/video_system.hpp"
 
 Player::Player() :
-	MovingObject({0, 0, {60, 100}}, {60, 100}, "player")
+	MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
 {
 	enable_gravity();
 }
