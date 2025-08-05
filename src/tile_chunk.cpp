@@ -14,21 +14,11 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_TILE_HPP
-#define SUPERTUX_SRC_TILE_HPP
+#include "tile_chunk.hpp"
 
-class Tile
+const Tile&
+TileChunk::get_tile(uint8_t x, uint8_t y)
 {
-public:
-	Tile() :
-		m_id(0)
-	{}
-	Tile(unsigned long id);
-	~Tile() = default;
-
-	unsigned long get_id() const { return m_id; }
-private:
-	unsigned long m_id;
-};
-
-#endif
+	// TODO bounds checking
+	return m_tiles[x + (y * TileChunk::CHUNK_SIZE)];
+}

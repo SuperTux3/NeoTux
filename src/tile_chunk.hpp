@@ -14,21 +14,27 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_TILE_HPP
-#define SUPERTUX_SRC_TILE_HPP
+#ifndef SUPERTUX_SRC_TILE_CHUNK_HPP
+#define SUPERTUX_SRC_TILE_CHUNK_HPP
 
-class Tile
+#include <cstdint>
+#include <vector>
+#include "tile.hpp"
+
+class TileChunk
 {
 public:
-	Tile() :
-		m_id(0)
+	static constexpr uint8_t CHUNK_SIZE = 16;
+	
+	TileChunk() :
+		m_tiles()
 	{}
-	Tile(unsigned long id);
-	~Tile() = default;
-
-	unsigned long get_id() const { return m_id; }
+	~TileChunk() = default;
+	
+	const Tile& get_tile(uint8_t x, uint8_t y);
+	
 private:
-	unsigned long m_id;
+	Tile m_tiles[CHUNK_SIZE * CHUNK_SIZE];
 };
 
 #endif

@@ -19,8 +19,10 @@
 
 #include <vector>
 #include <string>
+#include "spatial_hash.hpp"
 #include "math/size.hpp"
 #include "tile.hpp"
+#include "tile_chunk.hpp"
 #include "util/sexp.hpp"
 
 class Tilemap
@@ -34,7 +36,7 @@ public:
 	Size get_size() const { return m_size; }
 private:
 	Size m_size;
-	std::vector<Tile> m_tiles;
+	SpatialHash<TileChunk> m_chunks;
 	long m_zpos;
 };
 
