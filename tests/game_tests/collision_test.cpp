@@ -83,23 +83,17 @@ CollisionTest::run()
 		painter->draw(help_3, std::nullopt,
 			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
 		
-		for (int x = 0; x < 200; ++x)
+		tilemap->draw(g_camera, tiles_reader);
+		for (int x = 0; x < tilemap->get_size().width; ++x)
 		{
 			for (int y = 0; y < tilemap->get_size().height; ++y)
 			{
 				int rx = x * 32;
-				int ry = y * 32 - 200;
+				int ry = y * 32;
 				Rectf rrect{(float)rx, (float)ry, {32.f, 32.f}};
 				const Tile &tile = tilemap->get_tile(x, y);
 				if (tile.get_id() != 0)
 				{
-					try{
-					TileMeta &tilemeta = tiles_reader.m_tiles.at(tile.get_id());
-					if (tilemeta.info->image.empty())
-						continue;
-					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);
-					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
-					
 					
 					auto collide = Collision::aabb(player.get_colbox(), rrect);
 					if (collide.is_colliding())
@@ -114,10 +108,6 @@ CollisionTest::run()
 							player.move(collide.left_constraint, 0);
 						if (collide.right)
 							player.move(-collide.right_constraint, 0);
-					}
-					
-					}catch(...) {
-						continue;
 					}
 				}
 			}

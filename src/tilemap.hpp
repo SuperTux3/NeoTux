@@ -25,6 +25,9 @@
 #include "tile_chunk.hpp"
 #include "util/sexp.hpp"
 
+struct Camera;
+struct TilesReader;
+
 class Tilemap
 {
 public:
@@ -34,6 +37,8 @@ public:
 	Tile& get_tile(unsigned long x, unsigned long y);
 	long get_zpos() const { return m_zpos; }
 	Size get_size() const { return m_size; }
+	
+	void draw(const Camera &camera, TilesReader &tiles_reader);
 private:
 	Size m_size;
 	SpatialHash<TileChunk> m_chunks;
