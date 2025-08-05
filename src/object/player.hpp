@@ -14,24 +14,20 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_GAME_OBJECT_HPP
-#define SUPERTUX_SRC_OBJECT_GAME_OBJECT_HPP
+#ifndef SUPERTUX_SRC_OBJECT_PLAYER_HPP
+#define SUPERTUX_SRC_OBJECT_PLAYER_HPP
 
-#include <string>
+#include "object/moving_object.hpp"
 
-class GameObject
+class Player : public MovingObject
 {
 public:
-	GameObject(std::string_view name) :
-		m_name(name)
-	{};
-	virtual ~GameObject() = default;
+	Player();
+	virtual ~Player() = default;
 	
-	virtual void update() = 0;
-	virtual void draw() = 0;
-	virtual std::string_view get_name() const { return m_name; }
+	virtual void update();
+	void draw();
 private:
-	std::string_view m_name;
 };
 
 #endif

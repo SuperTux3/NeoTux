@@ -14,24 +14,36 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_GAME_OBJECT_HPP
-#define SUPERTUX_SRC_OBJECT_GAME_OBJECT_HPP
+#include "game.hpp"
+#include "moving_object.hpp"
 
-#include <string>
-
-class GameObject
+MovingObject::MovingObject(Rectf rect, Sizef colbox, std::string_view name) :
+	GameObject(name),
+	m_rect(std::move(rect)),
+	m_colbox(std::move(colbox)),
+	y_vel()
 {
-public:
-	GameObject(std::string_view name) :
-		m_name(name)
-	{};
-	virtual ~GameObject() = default;
 	
-	virtual void update() = 0;
-	virtual void draw() = 0;
-	virtual std::string_view get_name() const { return m_name; }
-private:
-	std::string_view m_name;
-};
+}
 
-#endif
+void
+MovingObject::update()
+{
+	y_vel -= 9.81;
+	move(0, -y_vel * g_dtime);
+}
+
+void
+MovingObject::move(float x, float y)
+{
+	if (x != 0)
+	{
+		m_rect.left += x;
+		m_rect.right += x;
+	}
+	if (y != 0)
+	{
+		m_rect.top += y;
+		m_rect.bottom += y;
+	}
+}

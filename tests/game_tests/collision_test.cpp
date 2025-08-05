@@ -18,6 +18,7 @@
 #include "input_manager.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
+#include "object/player.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include "level_reader.hpp"
@@ -44,19 +45,43 @@ CollisionTest::run()
 	
 	Painter* painter = g_video_system->get_painter();
 	
-	Rectf player_pos(40, 60, {60, 100});
+	Player player;
 	
 	BEGIN_GAME_LOOP
 		handle_events();
 		painter->clear();
 		
-		TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
-		painter->draw_fill_rect(player_pos, {0, 255, 0, 155});
-		painter->draw(tex, std::nullopt, player_pos);
+		// Draw tiles
+		for (int x = 0; x < 100; ++x)
+		{
+			for (int y = 0; y < tilemap->get_size().height; ++y)
+			{
+				int rx = x * 32;
+				int ry = y * 32 - 200;
+				const Tile &tile = tilemap->get_tile(x, y);
+				if (tile.get_id() != 0)
+				{
+					try{
+					TileMeta &tilemeta = tiles_reader.m_tiles.at(tile.get_id());
+					if (tilemeta.info->image.empty())
+						continue;
+					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);
+					painter->draw(tex,
+						tilemeta.get_src_rect(tex),
+						Rectf{(float)rx, (float)ry, {32.f, 32.f}});
+					}catch(...) {
+						continue;
+					}
+				}
+			}
+		}
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		
-		auto collide = Collision::aabb(player_pos, mouse_rect);
+		player.update();
+		player.draw();
+		
+		auto collide = Collision::aabb(player.get_rect(), mouse_rect);
 		if (collide.is_colliding())
 			std::cout << "COLLIDING!! "<< collide.left_constraint << " " << 
 				collide.right_constraint << " " << collide.top_constraint << 

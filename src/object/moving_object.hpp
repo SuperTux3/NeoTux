@@ -17,15 +17,31 @@
 #ifndef SUPERTUX_SRC_OBJECT_MOVING_OBJECT_HPP
 #define SUPERTUX_SRC_OBJECT_MOVING_OBJECT_HPP
 
+#include "math/rect.hpp"
+#include "math/size.hpp"
 #include "game_object.hpp"
 
 class MovingObject : public GameObject
 {
 public:
-	MovingObject(std::string_view name);
-	~MovingObject();
+	MovingObject(Rectf rect, Sizef colbox, std::string_view name);
+	virtual ~MovingObject() = default;
 	
+	void update();
+	void draw() = 0;
 	
+	void move(float x, float y);
+	
+	const Rectf& get_rect() const { return m_rect; }
+	const Sizef& get_colbox() const { return m_colbox; }
+	
+	void enable_gravity() { likes_falling = true; }
+	void disable_gravity() { likes_falling = false; }
+protected:
+	float y_vel;
+	bool likes_falling;
+	Rectf m_rect;
+	Sizef m_colbox;
 };
 
 #endif
