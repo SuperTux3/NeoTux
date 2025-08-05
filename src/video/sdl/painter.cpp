@@ -21,6 +21,7 @@
 #include "video/sdl/texture.hpp"
 
 SDLPainter::SDLPainter(VideoSystem *video) :
+	Painter(),
 	m_video_system(video),
 	m_sdl_renderer(SDL_CreateRenderer(video->window.m_sdl_window.get(), NULL),
 		&SDL_DestroyRenderer)
