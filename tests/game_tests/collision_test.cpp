@@ -61,15 +61,15 @@ CollisionTest::run()
 		if (g_input_manager.is_mouse_down() == true)
 		{
 			if (g_input_manager.get_mouse_button() == 1)
-				player.move((double)g_input_manager.get_mouse_dx()*2.0,
-				            (double)g_input_manager.get_mouse_dy()*2.0);
+				player.move((double)g_input_manager.get_mouse_dx()*1200.0*g_dtime,
+				            (double)g_input_manager.get_mouse_dy()*1200.0*g_dtime);
 			else if (g_input_manager.get_mouse_button() == 3) {
 				player.move_to((int)g_input_manager.get_mouse_x() + g_camera.x,
 				               (int)g_input_manager.get_mouse_y() + g_camera.y);
 			}
 			else if (g_input_manager.get_mouse_button() == 2) {
-				g_camera.x -= g_input_manager.get_mouse_dx()*5.0;
-				g_camera.y -= g_input_manager.get_mouse_dy()*5.0;
+				g_camera.x -= g_input_manager.get_mouse_dx()*1500.0*g_dtime;
+				g_camera.y -= g_input_manager.get_mouse_dy()*1500.0*g_dtime;
 			}
 		}
 		
@@ -126,6 +126,7 @@ CollisionTest::run()
 		player.update();
 		player.draw();
 		
+
 		painter->flip();
 	END_GAME_LOOP
 	
