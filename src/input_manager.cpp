@@ -22,7 +22,15 @@
 
 InputManager g_input_manager;
 
-InputManager::InputManager()
+InputManager::InputManager() :
+	m_mouse_x(),
+	m_mouse_y(),
+	m_mouse_dx(),
+	m_mouse_dy(),
+	m_mouse_btn(),
+	m_mouse_down(),
+	m_mouse_scroll_x(),
+	m_mouse_scroll_y()
 {
 	if (!SDL_Init(SDL_INIT_GAMEPAD))
 		throw SDLException("SDL_Init(SDL_INIT_GAMEPAD)");
@@ -36,6 +44,8 @@ InputManager::handle_event(const SDL_Event &ev)
 		case SDL_EVENT_MOUSE_MOTION:
 			m_mouse_x = ev.motion.x;
 			m_mouse_y = ev.motion.y;
+			m_mouse_dx = ev.motion.xrel;
+			m_mouse_dy = ev.motion.yrel;
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			m_mouse_btn = ev.button.button;
@@ -59,6 +69,8 @@ InputManager::reset()
 {
 	m_mouse_scroll_x = 0;
 	m_mouse_scroll_y = 0;
+	m_mouse_dx = 0;
+	m_mouse_dy = 0;
 }
 
 std::string
@@ -69,12 +81,16 @@ InputManager::to_string() const
 		" Mouse btn: {}\n"
 		"         x: {}\n"
 		"         y: {}\n"
+		"   delta x: {}\n"
+		"   delta y: {}\n"
 		"  scroll x: {}\n"
 		"  scroll y: {}",
 		is_mouse_down(),
 		get_mouse_button(),
 		get_mouse_x(),
 		get_mouse_y(),
+		get_mouse_dx(),
+		get_mouse_dy(),
 		get_scroll_x(),
 		get_scroll_y());
 }

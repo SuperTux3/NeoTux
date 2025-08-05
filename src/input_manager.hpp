@@ -30,6 +30,8 @@ public:
 	
 	unsigned get_mouse_x() const { return m_mouse_x; }
 	unsigned get_mouse_y() const { return m_mouse_y; }
+	int get_mouse_dx() const { return m_mouse_dx; }
+	int get_mouse_dy() const { return m_mouse_dy; }
 	bool is_mouse_down() const { return m_mouse_down; }
 	bool get_mouse_scrolled() const { return m_mouse_scroll_x != 0 || m_mouse_scroll_y != 0; }
 	int get_scroll_x() const { return m_mouse_scroll_x; }
@@ -41,6 +43,7 @@ public:
 	std::string to_string() const;
 private:
 	unsigned m_mouse_x, m_mouse_y;
+	int m_mouse_dx, m_mouse_dy;
 	bool m_mouse_down;
 	unsigned m_mouse_btn;
 	int m_mouse_scroll_x, m_mouse_scroll_y;
