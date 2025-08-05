@@ -21,15 +21,15 @@
 #include "input_manager.hpp"
 #include <memory>
 
-#define BEGIN_GAME_LOOP double __last_time; \
+#define BEGIN_GAME_LOOP uint64_t __last_time; \
 	g_dtime = 0; \
 	while (is_running()) { \
-		__last_time = SDL_GetTicks(); \
+		__last_time = SDL_GetTicksNS(); \
 		if (!g_video_system) continue; \
 	
 #define END_GAME_LOOP g_video_system->flip(); \
 	g_input_manager.reset(); \
-	g_dtime = (double)(SDL_GetTicks() - __last_time) / 1000.0; \
+	g_dtime = (double)(SDL_GetTicksNS() - __last_time) / 1000.0; \
 }
 
 class Game
@@ -55,7 +55,7 @@ extern double g_dtime;
 static double
 get_fps()
 {
-	return 1.0 / g_dtime;
+	return 1000.0 / g_dtime;
 }
 
 

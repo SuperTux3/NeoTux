@@ -44,7 +44,7 @@ MovingObject::update()
 {
 	if (!m_grounded)
 	{
-		m_y_vel -= 2;
+		//m_y_vel -= .0002;
 		move(0, -m_y_vel * g_dtime);
 	}
 }
