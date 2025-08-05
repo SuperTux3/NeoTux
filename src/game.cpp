@@ -69,13 +69,11 @@ Game::init_video_system()
 	{
 		case VideoSystem::VIDEO_NULL:
 			break;
-		case VideoSystem::VIDEO_SDL:
-			g_video_system.reset(new SDLVideoSystem{});
-		    break;
 		case VideoSystem::VIDEO_BGFX_OPENGL:
 		case VideoSystem::VIDEO_BGFX_OPENGLES:
 		case VideoSystem::VIDEO_BGFX_VULKAN:
 	    case VideoSystem::VIDEO_BGFX_METAL:
+		case VideoSystem::VIDEO_SDL:
 		default:
 		    g_video_system = std::make_unique<SDLVideoSystem>();
 	}
