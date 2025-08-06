@@ -89,7 +89,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 	{
 		for (long y = cols.top; y <= cols.bottom; ++y)
 		{
-			const Tile &tile = get_tile(x, y);
+			Tile &tile = get_tile(x, y);
 			if (tile.get_id() == 0)
 				continue;
 			const TileMeta &meta = g_tiles_reader.m_tiles.at(tile.get_id());
@@ -104,17 +104,23 @@ Tilemap::try_object_collision(MovingObject& obj)
 			{
 				if (collide.top)
 				{
-					obj.m_y_vel = 0;
-					obj.move(0, collide.top_constraint);
+					if (obj.m_y_vel > 0)
+					{
+						obj.m_y_vel = 0;
+						obj.move(0, collide.top_constraint);
+					}
 				}
-				if (collide.bottom)
+				else if (collide.bottom)
 				{
-					obj.m_grounded = true;
-					obj.move(0, -collide.bottom_constraint);
+					if (obj.m_y_vel < 0)
+					{	
+						obj.m_grounded = true;
+						obj.move(0, -collide.bottom_constraint);
+					}
 				}
-				if (collide.left)
+				else if (collide.left)
 					obj.move(collide.left_constraint, 0);
-				if (collide.right)
+				else if (collide.right)
 					obj.move(-collide.right_constraint, 0);
 				return true;
 			}

@@ -55,6 +55,8 @@ PlatformingTest::run()
 		handle_events();
 		painter->clear();
 		
+		player.update(*tilemap);
+		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)
 		{
@@ -73,6 +75,7 @@ PlatformingTest::run()
 				player.enable_gravity();
 			}
 		}
+		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))
 			player.move(-0.5 * g_dtime, 0);
@@ -89,11 +92,8 @@ PlatformingTest::run()
 		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
 		
 		tilemap->draw(g_camera);
-		
-		player.update(*tilemap);
 		player.draw();
 		
-		tilemap->try_object_collision(player);
 		
 
 		painter->flip();
