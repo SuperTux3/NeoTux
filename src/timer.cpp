@@ -18,6 +18,7 @@
 
 Timer::Timer(uint64_t ms, int loops /*= 1*/) :
 	m_loops(loops),
+	m_iterations(0),
 	m_duration(ms),
 	m_last_time(SDL_GetTicks())
 {}
@@ -31,15 +32,21 @@ Timer::get_percentage()
 		return ((double)(SDL_GetTicks() - m_last_time) / (double)m_duration) * 100;
 }
 
+unsigned
+Timer::get_iterations()
+{
+	return m_iterations;
+}
+
 bool
 Timer::tick()
 {
 	if (SDL_GetTicks() > m_last_time + m_duration && m_loops != 0)
 	{
 		if (m_loops != -1)
-		{
 			--m_loops;
-		}
+		
+		++m_iterations;
 		m_last_time = SDL_GetTicks();
 		return true;
 	}

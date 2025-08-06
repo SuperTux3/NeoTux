@@ -25,10 +25,12 @@ public:
 	Timer(uint64_t ms, int loops = 1);
 	~Timer() = default;
 	
+	unsigned get_iterations();
 	double get_percentage();
 	bool tick();
 private:
 	int m_loops;
+	unsigned m_iterations;
 	uint64_t m_duration;
 	uint64_t m_current_time;
 	uint64_t m_last_time;
