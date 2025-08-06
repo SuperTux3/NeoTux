@@ -68,8 +68,11 @@ PlatformingTest::run()
 		}
 		else
 		{
-			player.m_y_vel = 0.0;
-			player.enable_gravity();
+			if (player.m_likes_falling == false)
+			{
+				player.m_y_vel = 0.0;
+				player.enable_gravity();
+			}
 		}
 		
 		if (g_input_manager.is_key_down('a'))
