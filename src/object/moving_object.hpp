@@ -21,13 +21,15 @@
 #include "math/size.hpp"
 #include "game_object.hpp"
 
+struct Tilemap;
+
 class MovingObject : public GameObject
 {
 public:
 	MovingObject(Rectf rect, Rectf colbox, std::string_view name);
 	virtual ~MovingObject() = default;
 	
-	void update();
+	void update(Tilemap &tilemap);
 	void draw() = 0;
 	
 	void move(float x, float y);

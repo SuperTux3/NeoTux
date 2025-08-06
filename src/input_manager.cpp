@@ -19,6 +19,7 @@
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_events.h>
 #include <format>
+#include <iostream>
 
 InputManager g_input_manager;
 
@@ -59,9 +60,22 @@ InputManager::handle_event(const SDL_Event &ev)
 			m_mouse_scroll_x += ev.wheel.integer_y;
 			m_mouse_scroll_y += ev.wheel.integer_y;
 			break;
+		case SDL_EVENT_KEY_DOWN:
+			m_keys.push_back(SDL_SCANCODE_TO_KEYCODE(ev.key.key));
+			break;
+		case SDL_EVENT_KEY_UP: {
+			auto it = m_keys.erase(std::remove(m_keys.begin(), m_keys.end(), (char)SDL_SCANCODE_TO_KEYCODE(ev.key.key)), m_keys.end());
+		}
+			break;
 		default:
 			break;
 	}
+}
+
+bool
+InputManager::is_key_down(char key) const
+{
+	return std::find(m_keys.begin(), m_keys.end(), key) != m_keys.end();
 }
 
 void

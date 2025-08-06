@@ -26,9 +26,9 @@ Player::Player() :
 }
 
 void
-Player::update()
+Player::update(Tilemap &tilemap)
 {
-	MovingObject::update();
+	MovingObject::update(tilemap);
 }
 
 void

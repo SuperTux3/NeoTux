@@ -16,6 +16,7 @@
 
 #include "game.hpp"
 #include "moving_object.hpp"
+#include "tilemap.hpp"
 
 MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	GameObject(name),
@@ -40,13 +41,21 @@ MovingObject::get_colbox() const
 }
 
 void
-MovingObject::update()
+MovingObject::update(Tilemap &tilemap)
 {
 	if (!m_grounded)
 	{
-		//m_y_vel -= .0002;
+		m_y_vel -= .000002;
 		move(0, -m_y_vel * g_dtime);
 	}
+	
+	move(0, -1);
+	if (tilemap.try_object_collision(*this) == false && m_grounded)
+	{
+		m_y_vel = 0;
+		m_grounded = false;
+	}
+	move(0, 1);
 }
 
 void

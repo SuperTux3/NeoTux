@@ -19,6 +19,7 @@
 
 #include <SDL3/SDL_events.h>
 #include <string>
+#include <vector>
 
 class InputManager
 {
@@ -38,10 +39,13 @@ public:
 	int get_scroll_y() const { return m_mouse_scroll_y; }
 	unsigned get_mouse_button() const { return m_mouse_btn; }
 	
+	bool is_key_down(char key) const;
+	
 	void reset();
 	
 	std::string to_string() const;
 private:
+	std::vector<char> m_keys;
 	unsigned m_mouse_x, m_mouse_y;
 	int m_mouse_dx, m_mouse_dy;
 	bool m_mouse_down;

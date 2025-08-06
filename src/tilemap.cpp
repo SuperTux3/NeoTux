@@ -96,12 +96,14 @@ Tilemap::try_object_collision(MovingObject& obj)
 				auto collide = Collision::aabb(obj_rect, rrect);
 				if (collide.is_colliding())
 				{
-					obj.m_grounded = true;
 					
 					if (collide.top)
 						obj.move(0, collide.top_constraint);
 					if (collide.bottom)
+					{
+						obj.m_grounded = true;
 						obj.move(0, -collide.bottom_constraint);
+					}
 					if (collide.left)
 						obj.move(collide.left_constraint, 0);
 					if (collide.right)

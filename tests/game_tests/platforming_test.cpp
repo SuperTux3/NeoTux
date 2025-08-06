@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "collision_test.hpp"
+#include "platforming_test.hpp"
 #include "input_manager.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
@@ -31,7 +31,7 @@
 static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 void
-CollisionTest::run()
+PlatformingTest::run()
 {
 	Size winsize = g_video_system->get_window_size();
 	g_camera.width = winsize.width;
@@ -58,39 +58,38 @@ CollisionTest::run()
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		
+		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
+		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
+		
 		if (g_input_manager.is_mouse_down() == true)
 		{
 			if (g_input_manager.get_mouse_button() == 1)
 				player.move((double)g_input_manager.get_mouse_dx()*.005*g_dtime,
 				            (double)g_input_manager.get_mouse_dy()*.005*g_dtime);
-			else if (g_input_manager.get_mouse_button() == 3) {
-				player.move_to((int)g_input_manager.get_mouse_x() + g_camera.x,
-				               (int)g_input_manager.get_mouse_y() + g_camera.y);
-			}
-			else if (g_input_manager.get_mouse_button() == 2) {
-				g_camera.x -= g_input_manager.get_mouse_dx()*.01*g_dtime;
-				g_camera.y -= g_input_manager.get_mouse_dy()*.01*g_dtime;
-			}
 		}
 		
-		TextureRef help_1 = g_font_cache.load("Left click to move relative", {255, 255, 255, 155});
-		painter->draw(help_1, std::nullopt,
-			Rectf{0, 0, {(float)help_1->get_size().width, (float)help_1->get_size().height}});
-		TextureRef help_2 = g_font_cache.load("Middle click to move camera", {255, 255, 255, 155});
-		painter->draw(help_2, std::nullopt,
-			Rectf{0, (float)help_1->get_size().height*2, {(float)help_2->get_size().width, (float)help_2->get_size().height}});
-		TextureRef help_3 = g_font_cache.load("Right click to move Tux to cursor", {255, 255, 255, 155});
-		painter->draw(help_3, std::nullopt,
-			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
-		
-		tilemap->draw(g_camera, tiles_reader);
-		tilemap->try_object_collision(player);
+		if (g_input_manager.is_key_down('a'))
+			player.move(-1.0 * 0.0005 * g_dtime, 0);
+		else if (g_input_manager.is_key_down('d'))
+			player.move(1.0 * 0.0005 * g_dtime, 0);
+		if (g_input_manager.is_key_down('w') && player.m_grounded == true)
+		{
+			player.m_y_vel = .0009;
+			player.m_grounded = false;
+			g_mixer.play_sound("sounds/bigjump.wav");
+		}
 		
 		player.update(*tilemap);
 		player.draw();
 		
+		tilemap->draw(g_camera, tiles_reader);
+		tilemap->try_object_collision(player);
+		
 
 		painter->flip();
+		
+		std::cout << g_dtime << std::endl;
+		
 	END_GAME_LOOP
 	
 	delete level;
