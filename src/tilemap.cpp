@@ -98,7 +98,10 @@ Tilemap::try_object_collision(MovingObject& obj)
 				{
 					
 					if (collide.top)
+					{
+						obj.m_y_vel = 0;
 						obj.move(0, collide.top_constraint);
+					}
 					if (collide.bottom)
 					{
 						obj.m_grounded = true;

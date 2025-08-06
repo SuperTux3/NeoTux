@@ -17,13 +17,14 @@
 #include "game.hpp"
 #include "moving_object.hpp"
 #include "tilemap.hpp"
+#include <iostream>
 
 MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	GameObject(name),
 	m_rect(std::move(rect)),
 	m_colbox(std::move(colbox)),
 	m_grounded(false),
-	m_y_vel()
+	m_y_vel(0)
 {
 	
 }
@@ -43,9 +44,9 @@ MovingObject::get_colbox() const
 void
 MovingObject::update(Tilemap &tilemap)
 {
+	m_y_vel -= .0020581 * g_dtime;
 	if (!m_grounded)
 	{
-		m_y_vel -= .000002;
 		move(0, -m_y_vel * g_dtime);
 	}
 	
@@ -59,18 +60,12 @@ MovingObject::update(Tilemap &tilemap)
 }
 
 void
-MovingObject::move(float x, float y)
+MovingObject::move(double x, double y)
 {
-	if (x != 0)
-	{
-		m_rect.left += x;
-		m_rect.right += x;
-	}
-	if (y != 0)
-	{
-		m_rect.top += y;
-		m_rect.bottom += y;
-	}
+	m_rect.left += x;
+	m_rect.right += x;
+	m_rect.top += y;
+	m_rect.bottom += y;
 }
 
 void

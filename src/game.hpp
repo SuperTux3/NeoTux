@@ -24,12 +24,12 @@
 #define BEGIN_GAME_LOOP uint64_t __last_time; \
 	g_dtime = 0; \
 	while (is_running()) { \
-		__last_time = SDL_GetTicksNS(); \
+		__last_time = SDL_GetTicks(); \
 		if (!g_video_system) continue; \
 	
 #define END_GAME_LOOP g_video_system->flip(); \
 	g_input_manager.reset(); \
-	g_dtime = (double)(SDL_GetTicksNS() - __last_time) / 1000.0; \
+	g_dtime = SDL_GetTicks() - __last_time; \
 }
 
 class Game

@@ -32,7 +32,7 @@ public:
 	void update(Tilemap &tilemap);
 	void draw() = 0;
 	
-	void move(float x, float y);
+	void move(double x, double y);
 	void move_to(float x, float y);
 	
 	const Rectf& get_rect() const { return m_rect; }
@@ -42,7 +42,7 @@ public:
 	void disable_gravity() { m_likes_falling = false; }
 protected:
 public:
-	float m_y_vel;
+	double m_y_vel;
 	bool m_likes_falling,
 		 m_grounded;
 	Rectf m_rect;

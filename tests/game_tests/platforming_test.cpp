@@ -50,17 +50,13 @@ PlatformingTest::run()
 	Painter* painter = g_video_system->get_painter();
 	painter->register_camera(&g_camera);
 	
-	Player player;
+	Player player{};
 	
 	BEGIN_GAME_LOOP
 		handle_events();
 		painter->clear();
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
-		
-		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
-		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
-		
 		if (g_input_manager.is_mouse_down() == true)
 		{
 			if (g_input_manager.get_mouse_button() == 1)
@@ -69,15 +65,19 @@ PlatformingTest::run()
 		}
 		
 		if (g_input_manager.is_key_down('a'))
-			player.move(-1.0 * 0.0005 * g_dtime, 0);
+			player.move(-0.5 * g_dtime, 0);
 		else if (g_input_manager.is_key_down('d'))
-			player.move(1.0 * 0.0005 * g_dtime, 0);
+			player.move(0.5 * g_dtime, 0);
 		if (g_input_manager.is_key_down('w') && player.m_grounded == true)
 		{
-			player.m_y_vel = .0009;
+			player.m_y_vel = 0.75;
 			player.m_grounded = false;
 			g_mixer.play_sound("sounds/bigjump.wav");
 		}
+		
+		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
+		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
+		
 		
 		player.update(*tilemap);
 		player.draw();
@@ -87,9 +87,6 @@ PlatformingTest::run()
 		
 
 		painter->flip();
-		
-		std::cout << g_dtime << std::endl;
-		
 	END_GAME_LOOP
 	
 	delete level;
