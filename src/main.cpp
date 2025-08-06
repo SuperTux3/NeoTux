@@ -138,10 +138,25 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 			return 1;
 		}
 		
-		case 9: {
-			g_settings->forced_delay = std::stol(argv[argvidx + 1]);
+		case 9: try {
+			long forced_delay =  std::stol(argv[argvidx + 1]);
+			if (forced_delay < 0)
+			{
+				std::cerr << "Forced delay must be positive" << std::endl;
+				return 1;
+			}
+			if (forced_delay > 5000)
+			{
+				std::cerr << "Forced delay should be a reasonable number (below 5000ms)" << std::endl;
+				return 1;
+			}
+			g_settings->forced_delay = forced_delay;
 			std::cout << "Using forced delay: " << g_settings->forced_delay << std::endl;
 			return 0;
+		}
+		catch (...) {
+			std::cerr << "Forced delay must be a number." << std::endl;
+			return 1;
 		}
 	}
 
