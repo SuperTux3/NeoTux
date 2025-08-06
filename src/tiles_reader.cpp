@@ -91,7 +91,7 @@ TilesReader::open(std::string filename)
 					Size(1,1),
 					image,
 					fps,
-					Timer((double)(fps/60.0)*1000, -1));
+					Timer((double)((fps/30.0)*1000), -1));
 				// This manages memory instead
 				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
 				m_tiles.emplace(id, TileMeta{0, 0, tileinfo, attrs});
