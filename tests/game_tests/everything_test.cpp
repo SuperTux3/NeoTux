@@ -128,9 +128,9 @@ EverythingTest::run()
 				{
 					try{
 					TileMeta &tilemeta = g_tiles_reader.m_tiles.at(tile.get_id());
-					if (tilemeta.info->image.empty())
+					if (tilemeta.info->images.empty())
 						continue;
-					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);
+					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->get_image());
 					painter->draw(tex,
 						tilemeta.get_src_rect(tex),
 						SDL_FRect(x * 20 + (sin((float)i/260.f)*3600.f - 3500),

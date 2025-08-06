@@ -151,9 +151,10 @@ Tilemap::draw(const Camera &camera)
 			{
 				try{
 					TileMeta &tilemeta = g_tiles_reader.m_tiles.at(tile.get_id());
-					if (tilemeta.info->image.empty())
+					if (tilemeta.info->images.empty())
 						continue;
-					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);
+					tilemeta.info->timer.tick();
+					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->get_image());
 					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
 				}catch(...){
 					continue;

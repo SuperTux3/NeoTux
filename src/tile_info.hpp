@@ -17,6 +17,8 @@
 #ifndef SUPERTUX_SRC_TILE_INFO_HPP
 #define SUPERTUX_SRC_TILE_INFO_HPP
 
+#include <vector>
+#include "timer.hpp"
 #include "math/size.hpp"
 #include "video/texture.hpp"
 
@@ -24,7 +26,14 @@ struct TileInfo
 {
 	using id_t = unsigned long;
 	Size size;
-	std::string image;
+	std::vector<std::string> images;
+	int fps;
+	Timer timer;
+	
+	const std::string& get_image() const
+	{
+		return images[timer.get_iterations() % (images.size())];
+	}
 };
 
 struct TileMeta

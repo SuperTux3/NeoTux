@@ -24,7 +24,7 @@ Timer::Timer(uint64_t ms, int loops /*= 1*/) :
 {}
 
 double
-Timer::get_percentage()
+Timer::get_percentage() const
 {
 	if (m_loops == 0)
 		return 100.0;
@@ -33,7 +33,7 @@ Timer::get_percentage()
 }
 
 unsigned
-Timer::get_iterations()
+Timer::get_iterations() const
 {
 	return m_iterations;
 }

@@ -57,8 +57,9 @@ TilesReader::open(std::string filename)
 		if (elt.is_value())
 		{
 			TileInfo *tileinfo;
-			std::string image;
+			std::vector<std::string> image;
 			uint16_t attrs = 0;
+			int fps = -1;
 			if (elt.get_value() == "tile")
 			{
 				TileInfo::id_t id = 0;
@@ -68,14 +69,29 @@ TilesReader::open(std::string filename)
 				
 				telt = elt.find_car("images");
 				if (telt)
-					image = telt.next().get_value();
+				{
+					while (telt.next_inplace())
+					{
+						image.push_back(telt.get_value());
+					}
+				}
+				
+				telt = elt.find_car("fps");
+				if (telt)
+				{
+					fps = telt.next().get_int();
+				}
 				
 				telt = elt.find_car("solid");
 				if (telt)
 					if (telt.next() && telt.next().get_value() == "#t")
 						attrs |= TileMeta::SOLID;
 				
-				tileinfo = new TileInfo(Size(1,1), image);
+				tileinfo = new TileInfo(
+					Size(1,1),
+					image,
+					fps,
+					Timer((double)(fps/60.0)*1000, -1));
 				// This manages memory instead
 				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
 				m_tiles.emplace(id, TileMeta{0, 0, tileinfo, attrs});
@@ -87,12 +103,23 @@ TilesReader::open(std::string filename)
 				telt = elt.find_car("width");
 				if (telt)
 					width = telt.next().get_int();
+					
 				telt = elt.find_car("height");
 				if (telt)
 					height = telt.next().get_int();
+					
 				telt = elt.find_car("images");
 				if (telt)
-					image = telt.next().get_value();
+				{
+					while (telt.next_inplace())
+					{
+						image.push_back(telt.get_value());
+					}
+				}
+				
+				telt = elt.find_car("fps");
+				if (telt)
+					fps = telt.next().get_int();
 				
 				telt_ids = elt.find_car("ids");
 				if (!telt_ids)
@@ -102,7 +129,12 @@ TilesReader::open(std::string filename)
 				if (!telt_attr)
 					continue;
 				
-				tileinfo = new TileInfo(Size(width, height), image);
+				tileinfo = new TileInfo(
+					Size(width, height),
+					image,
+					fps,
+					Timer((double)(fps/60.0)*1000, -1)
+				);
 				// This manages memory instead
 				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
 				

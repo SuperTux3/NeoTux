@@ -51,7 +51,7 @@ PlatformingTest::run()
 	painter->register_camera(&g_camera);
 	
 	Player player{};
-	Timer timer{1000, 1};
+	Timer timer{1000, -1};
 	
 	BEGIN_GAME_LOOP
 		handle_events();

@@ -25,8 +25,8 @@ public:
 	Timer(uint64_t ms, int loops = 1);
 	~Timer() = default;
 	
-	unsigned get_iterations();
-	double get_percentage();
+	unsigned get_iterations() const;
+	double get_percentage() const;
 	bool tick();
 private:
 	int m_loops;
