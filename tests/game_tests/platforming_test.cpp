@@ -19,6 +19,7 @@
 #include "math/size.hpp"
 #include "camera.hpp"
 #include "object/player.hpp"
+#include "timer.hpp"
 #include "util/filesystem.hpp"
 #include "video/font_cache.hpp"
 #include "video/texture_manager.hpp"
@@ -50,6 +51,7 @@ PlatformingTest::run()
 	painter->register_camera(&g_camera);
 	
 	Player player{};
+	Timer timer{1000, 1};
 	
 	BEGIN_GAME_LOOP
 		handle_events();
@@ -88,13 +90,14 @@ PlatformingTest::run()
 			g_mixer.play_sound("sounds/bigjump.wav");
 		}
 		
+		if (timer.tick())
+			std::cout << "Timer ticked!" << std::endl;
+		
 		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
 		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
 		
 		tilemap->draw(g_camera);
 		player.draw();
-		
-		
 
 		painter->flip();
 	END_GAME_LOOP
