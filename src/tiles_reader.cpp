@@ -49,6 +49,7 @@ TilesReader::open(std::string filename)
 		{
 			TileInfo *tileinfo;
 			std::string image;
+			uint16_t attrs = 0;
 			if (elt.get_value() == "tile")
 			{
 				TileInfo::id_t id = 0;
@@ -60,10 +61,15 @@ TilesReader::open(std::string filename)
 				if (telt)
 					image = telt.next().get_value();
 				
+				telt = elt.find_car("solid");
+				if (telt)
+					if (telt.next() && telt.next().get_value() == "#t")
+						attrs |= TileMeta::SOLID;
+				
 				tileinfo = new TileInfo(Size(1,1), image);
 				// This manages memory instead
 				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
-				m_tiles.emplace(id, TileMeta{0, 0, tileinfo});
+				m_tiles.emplace(id, TileMeta{0, 0, tileinfo, attrs});
 				
 			}
 			else if (elt.get_value() == "tiles")
