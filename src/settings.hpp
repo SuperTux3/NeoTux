@@ -22,8 +22,9 @@
 #include "video/video_system.hpp"
 
 struct Settings {
-	bool show_help;
-	bool verbose;
+	bool show_help = false;
+	bool verbose = false;
+	int forced_delay = 0;
 	VideoSystem::Backend renderer = VideoSystem::VIDEO_AUTO;
 };
 

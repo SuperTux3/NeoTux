@@ -19,6 +19,7 @@
 
 #include "audio/mixer.hpp"
 #include "input_manager.hpp"
+#include "settings.hpp"
 #include <memory>
 
 #define BEGIN_GAME_LOOP uint64_t __last_time; \
@@ -29,6 +30,8 @@
 	
 #define END_GAME_LOOP g_video_system->flip(); \
 	g_input_manager.reset(); \
+	if (g_settings->forced_delay != 0) \
+		SDL_Delay(g_settings->forced_delay); \
 	g_dtime = SDL_GetTicks() - __last_time; \
 }
 

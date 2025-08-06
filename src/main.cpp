@@ -83,6 +83,9 @@ Argument st_args[] = {
 	//////////////
 	{ "test", 't', "Run in-game test", "<name>" },
 	{ "list-tests", 'l', "List in-game tests" },
+	
+	{ "Debugging:" },
+	{ "forced-delay", 'F', "Add an intentional delay in MS to the game loop", "<ms>" },
 	{}
 };
 
@@ -133,6 +136,12 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 			}
 			std::cout.flush();
 			return 1;
+		}
+		
+		case 9: {
+			g_settings->forced_delay = std::stol(argv[argvidx + 1]);
+			std::cout << "Using forced delay: " << g_settings->forced_delay << std::endl;
+			return 0;
 		}
 	}
 
