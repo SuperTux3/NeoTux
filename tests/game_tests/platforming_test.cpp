@@ -60,8 +60,16 @@ PlatformingTest::run()
 		if (g_input_manager.is_mouse_down() == true)
 		{
 			if (g_input_manager.get_mouse_button() == 1)
-				player.move((double)g_input_manager.get_mouse_dx()*.005*g_dtime,
-				            (double)g_input_manager.get_mouse_dy()*.005*g_dtime);
+			{
+				player.disable_gravity();
+				player.move((double)g_input_manager.get_mouse_dx()*g_dtime,
+				            (double)g_input_manager.get_mouse_dy()*g_dtime);
+			}
+		}
+		else
+		{
+			player.m_y_vel = 0.0;
+			player.enable_gravity();
 		}
 		
 		if (g_input_manager.is_key_down('a'))
@@ -84,7 +92,6 @@ PlatformingTest::run()
 		
 		tilemap->draw(g_camera, tiles_reader);
 		tilemap->try_object_collision(player);
-		
 
 		painter->flip();
 	END_GAME_LOOP

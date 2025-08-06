@@ -44,6 +44,8 @@ MovingObject::get_colbox() const
 void
 MovingObject::update(Tilemap &tilemap)
 {
+	if (!m_likes_falling)
+		return;
 	m_y_vel -= .0020581 * g_dtime;
 	if (!m_grounded)
 	{
