@@ -28,7 +28,7 @@ TilesReader::open(std::string filename)
 {
 	if (filename.empty())
 		filename = "images/tiles.strf";
-	SexpElt root, elt, telt;
+	SexpElt root, elt, telt, telt_ids, telt_attr;
 	
 	root = m_parser.read_file(FS::path(filename));
 	
@@ -79,24 +79,29 @@ TilesReader::open(std::string filename)
 				if (telt)
 					image = telt.next().get_value();
 				
-				telt = elt.find_car("ids");
-				if (!telt)
+				telt_ids = elt.find_car("ids");
+				if (!telt_ids)
+					continue;
+				
+				telt_attr = elt.find_car("attributes");
+				if (!telt_attr)
 					continue;
 				
 				tileinfo = new TileInfo(Size(width, height), image);
 				// This manages memory instead
 				m_tileinfo.push_back(std::unique_ptr<TileInfo>(tileinfo));
 				
-				for (int i = 0; telt.next_inplace(); ++i)
+				for (int i = 0; telt_ids.next_inplace() && telt_attr.next_inplace(); ++i)
 				{
-					TileInfo::id_t id = telt.get_int();
+					uint16_t attr = telt_attr.get_int();
+					TileInfo::id_t id = telt_ids.get_int();
 					if (id == 0)
 						continue;
 					unsigned x = i % width;
 					unsigned y = i / width;
 					//std::cout << std::format("x: {} | y: {} | {}", x, y, id) << std::endl;
 					
-					m_tiles.emplace(id, TileMeta{x, y, tileinfo});
+					m_tiles.emplace(id, TileMeta{x, y, tileinfo, attr});
 				}
 			}
 		}

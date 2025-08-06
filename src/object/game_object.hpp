@@ -20,6 +20,7 @@
 #include <string>
 
 struct Tilemap;
+struct TilesReader;
 
 class GameObject
 {
@@ -29,7 +30,7 @@ public:
 	{};
 	virtual ~GameObject() = default;
 	
-	virtual void update(Tilemap &tilemap) = 0;
+	virtual void update(Tilemap &tilemap, TilesReader &reader) = 0;
 	virtual void draw() = 0;
 	virtual std::string_view get_name() const { return m_name; }
 private:

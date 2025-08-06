@@ -89,12 +89,13 @@ PlatformingTest::run()
 		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
 		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
 		
+		tilemap->draw(g_camera, tiles_reader);
 		
-		player.update(*tilemap);
+		player.update(*tilemap, tiles_reader);
 		player.draw();
 		
-		tilemap->draw(g_camera, tiles_reader);
-		tilemap->try_object_collision(player);
+		tilemap->try_object_collision(player, tiles_reader);
+		
 
 		painter->flip();
 	END_GAME_LOOP

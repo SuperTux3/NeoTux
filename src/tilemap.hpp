@@ -39,7 +39,8 @@ public:
 	long get_zpos() const { return m_zpos; }
 	Size get_size() const { return m_size; }
 	
-	bool try_object_collision(MovingObject &obj);
+	// TODO: Make tiles_reader a member
+	bool try_object_collision(MovingObject &obj, TilesReader &tiles_reader);
 	
 	void draw(const Camera &camera, TilesReader &tiles_reader);
 private:

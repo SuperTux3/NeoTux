@@ -25,7 +25,7 @@ public:
 	Player();
 	virtual ~Player() = default;
 	
-	virtual void update(Tilemap &tilemap);
+	virtual void update(Tilemap &tilemap, TilesReader &reader);
 	void draw();
 private:
 };

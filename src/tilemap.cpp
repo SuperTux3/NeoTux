@@ -80,7 +80,7 @@ Tilemap::get_tile(unsigned long x, unsigned long y)
 }
 
 bool
-Tilemap::try_object_collision(MovingObject& obj)
+Tilemap::try_object_collision(MovingObject& obj, TilesReader &tiles_reader)
 {
 	Rectf obj_rect = obj.get_colbox();
 	
@@ -90,29 +90,33 @@ Tilemap::try_object_collision(MovingObject& obj)
 		for (long y = cols.top; y <= cols.bottom; ++y)
 		{
 			const Tile &tile = get_tile(x, y);
-			if (tile.get_id() != 0)
+			if (tile.get_id() == 0)
+				continue;
+			const TileMeta &meta = tiles_reader.m_tiles.at(tile.get_id());
+			if ((meta.attrs & TileMeta::SOLID) == 0 &&
+			    (meta.attrs & TileMeta::UNISOLID) == 0 &&
+				(meta.attrs & TileMeta::BRICK) == 0)
+				continue;
+			
+			Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
+			auto collide = Collision::aabb(obj_rect, rrect);
+			if (collide.is_colliding())
 			{
-				Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
-				auto collide = Collision::aabb(obj_rect, rrect);
-				if (collide.is_colliding())
+				if (collide.top)
 				{
-					
-					if (collide.top)
-					{
-						obj.m_y_vel = 0;
-						obj.move(0, collide.top_constraint);
-					}
-					if (collide.bottom)
-					{
-						obj.m_grounded = true;
-						obj.move(0, -collide.bottom_constraint);
-					}
-					if (collide.left)
-						obj.move(collide.left_constraint, 0);
-					if (collide.right)
-						obj.move(-collide.right_constraint, 0);
-					return true;
+					obj.m_y_vel = 0;
+					obj.move(0, collide.top_constraint);
 				}
+				if (collide.bottom)
+				{
+					obj.m_grounded = true;
+					obj.move(0, -collide.bottom_constraint);
+				}
+				if (collide.left)
+					obj.move(collide.left_constraint, 0);
+				if (collide.right)
+					obj.move(-collide.right_constraint, 0);
+				return true;
 			}
 		}
 	}
