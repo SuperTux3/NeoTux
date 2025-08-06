@@ -19,9 +19,18 @@
 #include "util/filesystem.hpp"
 #include "util/logger.hpp"
 
+TilesReader g_tiles_reader{};
+
 TilesReader::TilesReader() :
 	m_parser()
 {}
+
+void
+TilesReader::reset()
+{
+	m_tileinfo.clear();
+	m_tiles.clear();
+}
 
 void
 TilesReader::open(std::string filename)

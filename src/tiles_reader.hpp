@@ -29,11 +29,14 @@ public:
 	~TilesReader() = default;
 	
 	void open(std::string filename = "");
+	void reset();
 public:
 	std::unordered_map<TileInfo::id_t, TileMeta> m_tiles;
 private:
 	std::vector<std::unique_ptr<TileInfo>> m_tileinfo;
 	SexpParser m_parser;
 };
+
+extern TilesReader g_tiles_reader;
 
 #endif

@@ -42,7 +42,7 @@ MovingObject::get_colbox() const
 }
 
 void
-MovingObject::update(Tilemap &tilemap, TilesReader &tiles)
+MovingObject::update(Tilemap &tilemap)
 {
 	if (!m_likes_falling)
 		return;
@@ -53,7 +53,7 @@ MovingObject::update(Tilemap &tilemap, TilesReader &tiles)
 	}
 	
 	move(0, -1);
-	if (tilemap.try_object_collision(*this, tiles) == false && m_grounded)
+	if (tilemap.try_object_collision(*this) == false && m_grounded)
 	{
 		m_y_vel = 0;
 		m_grounded = false;

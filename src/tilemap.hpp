@@ -40,9 +40,9 @@ public:
 	Size get_size() const { return m_size; }
 	
 	// TODO: Make tiles_reader a member
-	bool try_object_collision(MovingObject &obj, TilesReader &tiles_reader);
+	bool try_object_collision(MovingObject &obj);
 	
-	void draw(const Camera &camera, TilesReader &tiles_reader);
+	void draw(const Camera &camera);
 private:
 	Size m_size;
 	SpatialHash<TileChunk> m_chunks;

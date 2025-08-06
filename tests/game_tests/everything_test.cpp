@@ -69,8 +69,7 @@ EverythingTest::run()
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 
 	// Tiles
-	TilesReader tiles_reader;
-	tiles_reader.open();	
+	g_tiles_reader.open();	
 	
 	// Level info
 	LevelReader reader;
@@ -128,7 +127,7 @@ EverythingTest::run()
 				if (tile.get_id() != 0)
 				{
 					try{
-					TileMeta &tilemeta = tiles_reader.m_tiles.at(tile.get_id());
+					TileMeta &tilemeta = g_tiles_reader.m_tiles.at(tile.get_id());
 					if (tilemeta.info->image.empty())
 						continue;
 					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);

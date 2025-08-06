@@ -80,7 +80,7 @@ Tilemap::get_tile(unsigned long x, unsigned long y)
 }
 
 bool
-Tilemap::try_object_collision(MovingObject& obj, TilesReader &tiles_reader)
+Tilemap::try_object_collision(MovingObject& obj)
 {
 	Rectf obj_rect = obj.get_colbox();
 	
@@ -92,7 +92,7 @@ Tilemap::try_object_collision(MovingObject& obj, TilesReader &tiles_reader)
 			const Tile &tile = get_tile(x, y);
 			if (tile.get_id() == 0)
 				continue;
-			const TileMeta &meta = tiles_reader.m_tiles.at(tile.get_id());
+			const TileMeta &meta = g_tiles_reader.m_tiles.at(tile.get_id());
 			if ((meta.attrs & TileMeta::SOLID) == 0 &&
 			    (meta.attrs & TileMeta::UNISOLID) == 0 &&
 				(meta.attrs & TileMeta::BRICK) == 0)
@@ -125,7 +125,7 @@ Tilemap::try_object_collision(MovingObject& obj, TilesReader &tiles_reader)
 }
 
 void
-Tilemap::draw(const Camera &camera, TilesReader &tiles_reader)
+Tilemap::draw(const Camera &camera)
 {
 	Painter *painter = g_video_system->get_painter();
 	float cam_tx = camera.x / 32.f;
@@ -144,7 +144,7 @@ Tilemap::draw(const Camera &camera, TilesReader &tiles_reader)
 			if (tile.get_id() != 0)
 			{
 				try{
-					TileMeta &tilemeta = tiles_reader.m_tiles.at(tile.get_id());
+					TileMeta &tilemeta = g_tiles_reader.m_tiles.at(tile.get_id());
 					if (tilemeta.info->image.empty())
 						continue;
 					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->image);

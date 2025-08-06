@@ -39,8 +39,7 @@ PlatformingTest::run()
 	
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
-	TilesReader tiles_reader;
-	tiles_reader.open();	
+	g_tiles_reader.open();	
 	
 	LevelReader reader;
 	Level *level = reader.open("levels/via_nostalgica.stl");
@@ -89,12 +88,12 @@ PlatformingTest::run()
 		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
 		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
 		
-		tilemap->draw(g_camera, tiles_reader);
+		tilemap->draw(g_camera);
 		
-		player.update(*tilemap, tiles_reader);
+		player.update(*tilemap);
 		player.draw();
 		
-		tilemap->try_object_collision(player, tiles_reader);
+		tilemap->try_object_collision(player);
 		
 
 		painter->flip();

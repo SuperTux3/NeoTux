@@ -29,7 +29,7 @@ public:
 	MovingObject(Rectf rect, Rectf colbox, std::string_view name);
 	virtual ~MovingObject() = default;
 	
-	void update(Tilemap &tilemap, TilesReader &reader);
+	void update(Tilemap &tilemap);
 	void draw() = 0;
 	
 	void move(double x, double y);

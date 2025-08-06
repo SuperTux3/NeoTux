@@ -39,8 +39,7 @@ CollisionTest::run()
 	
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
-	TilesReader tiles_reader;
-	tiles_reader.open();	
+	g_tiles_reader.open();	
 	
 	LevelReader reader;
 	Level *level = reader.open("levels/via_nostalgica.stl");
@@ -83,10 +82,10 @@ CollisionTest::run()
 		painter->draw(help_3, std::nullopt,
 			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
 		
-		tilemap->draw(g_camera, tiles_reader);
-		tilemap->try_object_collision(player, tiles_reader);
+		tilemap->draw(g_camera);
+		tilemap->try_object_collision(player);
 		
-		player.update(*tilemap, tiles_reader);
+		player.update(*tilemap);
 		player.draw();
 		
 
