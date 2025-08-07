@@ -17,6 +17,7 @@
 #include "texture.hpp"
 #include <SDL3/SDL_timer.h>
 #include <SDL3_image/SDL_image.h>
+#include "sdl_exception.hpp"
 #include "video/sdl/texture.hpp"
 #include "video/video_system.hpp"
 
@@ -59,6 +60,8 @@ SDL_Surface*
 Texture::create_surface(const std::string& filename)
 {
 	SDL_Surface* image = IMG_Load(filename.c_str());
+	if (!image)
+		throw SDLException("IMG_Load");
 	return image;
 }
 
