@@ -32,7 +32,7 @@
 	g_input_manager.reset(); \
 	if (g_settings->forced_delay != 0) \
 		SDL_Delay(g_settings->forced_delay); \
-	g_dtime = SDL_GetTicks() - __last_time; \
+	g_dtime = (SDL_GetTicks() - __last_time) * g_settings->speed; \
 }
 
 class Game

@@ -87,6 +87,7 @@ Argument st_args[] = {
 	{ "Debugging:" },
 	{ "forced-delay", 'F', "Add an intentional delay in MS to the game loop", "<ms>" },
 	{ "show-hitboxes", 'b', "Shows MovingObject hitboxes" },
+	{ "game-speed", 's', "Set game speed as a float (default: 1.0)", "<speed>" },
 	{}
 };
 
@@ -162,6 +163,22 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 		
 		case 10:
 			g_settings->show_hitboxes = true;
+			return 0;
+		
+		case 11:
+			const char *number = argv[argvidx + 1];
+			if (!number)
+				return 1;
+			std::istringstream iss(number);
+			iss.imbue(std::locale::classic());
+			double result;
+			iss >> result;
+			if (result == 0.0 || result < 0.0)
+			{
+				std::cerr << "Result must be a number larger than 0." << std::endl;
+				return 1;
+			}
+			g_settings->speed = result;
 			return 0;
 	}
 

@@ -25,6 +25,7 @@ struct Settings {
 	bool show_help = false;
 	bool verbose = false;
 	bool show_hitboxes = false;
+	double speed = 1.0;
 	int forced_delay = 0;
 	VideoSystem::Backend renderer = VideoSystem::VIDEO_AUTO;
 };

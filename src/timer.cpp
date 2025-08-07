@@ -19,14 +19,14 @@
 Timer::Timer(duration_t ms, int loops /*= 1*/) :
 	m_loops(loops),
 	m_iterations(0),
-	m_duration(ms),
+	m_duration(ms / g_settings->speed),
 	m_last_time(SDL_GetTicks())
 {}
 
 void
 Timer::set_duration(duration_t ms)
 {
-	m_duration = ms;
+	m_duration = ms / g_settings->speed;
 	reset();
 }
 
