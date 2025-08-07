@@ -16,24 +16,73 @@
 
 #include "moving_sprite.hpp"
 #include "object/moving_object.hpp"
+#include "util/filesystem.hpp"
+#include "util/logger.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 
-MovingSprite::MovingSprite(std::string_view name) :
-	MovingObject({0, 0, 0, 0}, {0, 0, 0, 0}, std::move(name))
+MovingSprite::MovingSprite(std::string sprite_file, std::string_view name) :
+	MovingObject({0, 0, 0, 0}, {0, 0, 0, 0}, std::move(name)),
+	m_filename(std::move(sprite_file))
 {
+	parse_sprite();
 }
 
-MovingSprite::MovingSprite(const std::string &sprite_file, std::string_view name) :
-	MovingSprite(name)
+void
+MovingSprite::parse_sprite()
 {
-	enable_gravity();
-}
-
-MovingSprite::MovingSprite(SexpElt selt, std::string_view name) :
-	MovingSprite(name)
-{
+	SexpElt root, elt, aelt;
+	std::string name;
+	double fps;
+	std::vector<std::string> images;
+	int hitboxes[4];
 	
+	root = m_parser.read_file(FS::path(m_filename));
+	if (!root.is_list())
+		return;
+	
+	root = root.get_list();
+	
+	if (root.get_value() == "supertux-sprite")
+		Logger::debug("Claims to be a supertux sprite .... ^_^");
+	
+	while (root.next_inplace())
+	{
+		if (!root.is_list())
+			continue;
+		elt = root.get_list();
+		if (!elt.is_value())
+			continue;
+		
+		aelt = elt.find_car("name");
+		if (aelt)
+			name = aelt.next().get_value();
+		
+		aelt = elt.find_car("fps");
+		if (aelt)
+			fps = aelt.next().get_number();
+		
+		aelt = elt.find_car("images");
+		if (aelt)
+		{
+			while (aelt.next_inplace())
+				images.push_back(aelt.get_value());
+		}
+		
+		aelt = elt.find_car("hitbox");
+		if (aelt)
+		{
+			int i = 0;
+			for (i = 0; i < 4 && aelt.next_inplace(); ++i)
+			{
+				hitboxes[i] = aelt.get_int();
+			}
+			if (i != 4)
+				Logger::warn("A sprite hitbox is missing values! Expect bugs...");
+		}
+		
+		m_actions.emplace(name, SpriteAction{fps, images, hitboxes});
+	}
 }
 
 void

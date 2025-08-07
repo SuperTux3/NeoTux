@@ -19,17 +19,39 @@
 
 #include "util/sexp.hpp"
 #include "object/moving_object.hpp"
+#include <cstring>
+#include <unordered_map>
+
+struct SpriteAction
+{
+	SpriteAction(double fps,
+	             std::vector<std::string> images,
+				 int *_hitboxes) :
+		fps(std::move(fps)),
+		images(std::move(images)),
+		hitboxes()
+	{
+		std::memcpy(hitboxes, _hitboxes, sizeof(decltype(*hitboxes))*4);
+	}
+	double fps;
+	std::vector<std::string> images;
+	int hitboxes[4];
+};
 
 class MovingSprite : public MovingObject
 {
-	MovingSprite(const std::string &sprite_file, std::string_view name);
-	MovingSprite(SexpElt selt, std::string_view name);
+public:
+	MovingSprite(std::string sprite_dir, std::string_view name);
 	virtual ~MovingSprite() = default;
 	
 	virtual void update(Tilemap &tilemap);
 	void draw();
 private:
-	MovingSprite(std::string_view name);
+	void parse_sprite();
+	
+	std::string m_filename;
+	std::unordered_map<std::string, SpriteAction> m_actions;
+	SexpParser m_parser;
 };
 
 #endif

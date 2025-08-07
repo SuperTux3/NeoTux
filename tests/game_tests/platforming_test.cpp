@@ -18,6 +18,7 @@
 #include "input_manager.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
+#include "object/moving_sprite.hpp"
 #include "object/player.hpp"
 #include "timer.hpp"
 #include "util/filesystem.hpp"
@@ -50,6 +51,8 @@ PlatformingTest::run()
 	Painter* painter = g_video_system->get_painter();
 	painter->register_camera(&g_camera);
 	
+	MovingSprite sprite("images/creatures/tux/tux.sprite", "super the tux");
+	
 	Player player{};
 	Timer timer{1000, -1};
 	
@@ -57,6 +60,7 @@ PlatformingTest::run()
 		handle_events();
 		painter->clear();
 		
+		sprite.update(*tilemap);
 		player.update(*tilemap);
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
@@ -98,6 +102,7 @@ PlatformingTest::run()
 		
 		tilemap->draw(g_camera);
 		player.draw();
+		sprite.draw();
 
 		painter->flip();
 	END_GAME_LOOP
