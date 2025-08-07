@@ -17,6 +17,7 @@
 #include "game.hpp"
 #include "moving_object.hpp"
 #include "tilemap.hpp"
+#include "video/video_system.hpp"
 #include <iostream>
 
 MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
@@ -59,6 +60,13 @@ MovingObject::update(Tilemap &tilemap)
 		m_grounded = false;
 	}
 	move(0, 1);
+}
+
+void
+MovingObject::draw()
+{
+	g_video_system->get_painter()->draw_fill_rect(get_colbox(), {155, 30, 30, 255/2});
+	//g_video_system->get_painter()->draw_fill_rect(m_rect, {155, 30, 30, 255/2});
 }
 
 void

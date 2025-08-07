@@ -30,7 +30,7 @@ public:
 	virtual ~MovingObject() = default;
 	
 	void update(Tilemap &tilemap);
-	void draw() = 0;
+	void draw();
 	
 	void move(double x, double y);
 	void move_to(float x, float y);
