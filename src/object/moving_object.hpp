@@ -48,6 +48,7 @@ public:
 		 m_grounded;
 	Rectf m_rect;
 	Rectf m_colbox;
+	Rectf m_last_colbox;
 };
 
 #endif

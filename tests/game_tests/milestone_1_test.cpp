@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "milestone_1_test.hpp"
+#include "collision_system.hpp"
 #include "input_manager.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
@@ -54,6 +55,9 @@ Milestone1Test::run()
 	RetroPlayer player{};
 	RetroBag    bag{};
 	
+	g_collision_system.register_object(&player);
+	g_collision_system.register_object(&bag);
+	
 	BEGIN_GAME_LOOP
 		handle_events();
 		painter->clear();
@@ -77,7 +81,7 @@ Milestone1Test::run()
 			}
 		}
 		player.update(*tilemap);
-		bag.update(*tilemap);
+		//bag.update(*tilemap);
 		tilemap->try_object_collision(player);
 		tilemap->try_object_collision(bag);
 		
@@ -98,6 +102,8 @@ Milestone1Test::run()
 		tilemap->draw(g_camera);
 		player.draw();
 		bag.draw();
+		
+		g_collision_system.debug_draw();
 
 		painter->flip();
 	END_GAME_LOOP

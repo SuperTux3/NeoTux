@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "collision.hpp"
+#include "collision_system.hpp"
 #include "game.hpp"
 #include "moving_object.hpp"
 #include "tilemap.hpp"
@@ -47,6 +49,7 @@ MovingObject::update(Tilemap &tilemap)
 {
 	if (!m_likes_falling)
 		return;
+	
 	m_y_vel -= .0020581 * g_dtime;
 	if (!m_grounded)
 	{
@@ -60,6 +63,47 @@ MovingObject::update(Tilemap &tilemap)
 		m_grounded = false;
 	}
 	move(0, 1);
+	
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	if (colbox != m_last_colbox)
+	{
+		std::cout << std::endl << "m_last_colbox: " << m_last_colbox.to_string() << std::endl;
+		std::cout << "colbox: " << colbox.to_string() << std::endl;
+		for (long l = colbox.left; l <= colbox.right; ++l)
+		{
+			for (long ol = m_last_colbox.left; ol <= m_last_colbox.right; ++ol)
+			{
+				// New area
+				if (l != std::clamp<float>(l, m_last_colbox.left, m_last_colbox.right))
+					for (long t = colbox.top; t <= colbox.bottom; ++t)
+						g_collision_system.add(l, t, this);
+				
+				// Old area
+				if (ol != std::clamp<float>(ol, colbox.left, colbox.right))
+					for (long ot = colbox.top; ot <= colbox.bottom; ++ot)
+						g_collision_system.remove(ol, ot, this);
+			}
+		}
+		
+		for (long l = colbox.top; l <= colbox.bottom; ++l)
+		{
+			for (long ol = m_last_colbox.top; ol <= m_last_colbox.bottom; ++ol)
+			{
+				// New area
+				if (l != std::clamp<float>(l, m_last_colbox.top, m_last_colbox.bottom))
+					for (long t = colbox.left; t <= colbox.right; ++t)
+						g_collision_system.add(t, l, this);
+				
+				// Old area
+				if (ol != std::clamp<float>(ol, colbox.top, colbox.bottom))
+					for (long ot = colbox.left; ot <= colbox.right; ++ot)
+						g_collision_system.remove(ot, ol, this);
+			}
+		}
+		
+		
+	}
+	m_last_colbox = colbox;
 }
 
 void

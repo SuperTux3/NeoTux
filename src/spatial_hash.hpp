@@ -58,7 +58,7 @@ public:
 		return nullptr;
 	}
 	
-private:
+public:
 	// HACK: Don't feel like writing a hash function for std::pair<long, long>
 	std::unordered_map<long, std::unordered_map<long, T>> m_hash;
 };
