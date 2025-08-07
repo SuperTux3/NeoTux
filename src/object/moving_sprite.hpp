@@ -26,9 +26,11 @@
 struct SpriteAction
 {
 	SpriteAction(double fps,
+	             int loops,
 	             std::vector<std::string> images,
 				 int *_hitboxes) :
 		fps(std::move(fps)),
+		loops(loops),
 		images(std::move(images)),
 		hitboxes()
 	{
@@ -42,6 +44,7 @@ struct SpriteAction
 	}
 	
 	double fps;
+	int loops;
 	std::vector<std::string> images;
 	int hitboxes[4];
 };
@@ -57,7 +60,7 @@ public:
 	
 	void set_action(const std::string &action);
 
-private:
+protected:
 	void parse_sprite();
 	
 	std::string m_parent_dir;
@@ -66,6 +69,7 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<SpriteAction>> m_actions;
 	SexpParser m_parser;
 	Timer m_action_timer;
+	Flip m_flip;
 };
 
 #endif

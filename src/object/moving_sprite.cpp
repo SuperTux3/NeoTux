@@ -18,6 +18,7 @@
 #include "object/moving_object.hpp"
 #include "util/filesystem.hpp"
 #include "util/logger.hpp"
+#include "video/painter.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 
@@ -25,7 +26,8 @@ MovingSprite::MovingSprite(std::string sprite_file, std::string_view name) :
 	MovingObject({0, 0, 0, 0}, {0, 0, 0, 0}, std::move(name)),
 	m_filename(std::move(sprite_file)),
 	m_action(nullptr),
-	m_action_timer(0, 0)
+	m_action_timer(0, 0),
+	m_flip(0)
 {
 	m_parent_dir = FS::parent_dir(m_filename);
 	parse_sprite();
@@ -49,6 +51,7 @@ MovingSprite::parse_sprite()
 	{
 		std::string name;
 		double fps;
+		int loops = -1;
 		std::vector<std::string> images;
 		int hitboxes[4];
 		SpriteAction *sprite_action;
@@ -66,6 +69,10 @@ MovingSprite::parse_sprite()
 		aelt = elt.find_car("fps");
 		if (aelt)
 			fps = aelt.next().get_number();
+		
+		aelt = elt.find_car("loops");
+		if (aelt)
+			loops = aelt.next().get_int();
 		
 		aelt = elt.find_car("images");
 		if (aelt)
@@ -86,7 +93,7 @@ MovingSprite::parse_sprite()
 				Logger::warn("A sprite hitbox is missing values! Expect bugs...");
 		}
 		
-		sprite_action = new SpriteAction(fps, images, hitboxes);
+		sprite_action = new SpriteAction(fps, loops, images, hitboxes);
 		m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 	}
 }
@@ -106,7 +113,7 @@ MovingSprite::set_action(const std::string &action)
 	m_colbox.bottom = m_action->hitboxes[3];
 	
 	m_action_timer.set_duration((1.0/m_action->fps)*1000);
-	m_action_timer.set_loops(-1);
+	m_action_timer.set_loops(m_action->loops);
 }
 
 void
@@ -123,6 +130,6 @@ MovingSprite::draw()
 	if (!m_action)
 		return;
 	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
-	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
+	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip);
 	MovingObject::draw();
 }
