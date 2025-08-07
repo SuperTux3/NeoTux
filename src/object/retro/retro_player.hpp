@@ -14,31 +14,26 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ALL_GAME_TESTS_HEADER
-#define ALL_GAME_TESTS_HEADER
+#ifndef SUPERTUX_SRC_OBJECT_RETRO_RETRO_PLAYER_HPP
+#define SUPERTUX_SRC_OBJECT_RETRO_RETRO_PLAYER_HPP
 
-#include "game_test.hpp"
-#include "everything_test.hpp"
-#include "collision_test.hpp"
-#include "milestone_1_test.hpp"
-#include "platforming_test.hpp"
+#include "object/moving_object.hpp"
+#include "object/moving_sprite.hpp"
 
-namespace GameTest {
-
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * |||   PUT YOUR GAME TESTS HERE   |||
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-static void init_all_tests()
+class RetroPlayer : public MovingSprite
 {
-	register_game_test<EverythingTest>();
-	register_game_test<CollisionTest>();
-	register_game_test<PlatformingTest>();
-	register_game_test<Milestone1Test>();
-}
+public:
+	RetroPlayer();
+	virtual ~RetroPlayer() = default;
 	
-} // namespace GameTest
-
+	virtual void update(Tilemap &tilemap);
+	void draw();
+	
+	void move_left();
+	void move_right();
+	void jump();
+private:
+	bool m_moving;
+};
 
 #endif
