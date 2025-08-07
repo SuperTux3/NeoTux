@@ -17,6 +17,7 @@
 #ifndef SUPERTUX_SRC_OBJECT_MOVING_SPRITE_HPP
 #define SUPERTUX_SRC_OBJECT_MOVING_SPRITE_HPP
 
+#include "timer.hpp"
 #include "util/sexp.hpp"
 #include "object/moving_object.hpp"
 #include <cstring>
@@ -33,6 +34,13 @@ struct SpriteAction
 	{
 		std::memcpy(hitboxes, _hitboxes, sizeof(decltype(*hitboxes))*4);
 	}
+	
+	const std::string&
+	get_image(Timer &timer)
+	{
+		return images[timer.get_iterations() % (images.size())];
+	}
+	
 	double fps;
 	std::vector<std::string> images;
 	int hitboxes[4];
@@ -46,12 +54,18 @@ public:
 	
 	virtual void update(Tilemap &tilemap);
 	void draw();
+	
+	void set_action(const std::string &action);
+
 private:
 	void parse_sprite();
 	
+	std::string m_parent_dir;
 	std::string m_filename;
-	std::unordered_map<std::string, SpriteAction> m_actions;
+	SpriteAction *m_action;
+	std::unordered_map<std::string, std::unique_ptr<SpriteAction>> m_actions;
 	SexpParser m_parser;
+	Timer m_action_timer;
 };
 
 #endif

@@ -36,8 +36,8 @@ MovingObject::get_colbox() const
 	Rectf res{
 		m_rect.left + m_colbox.left,
 		m_rect.top + m_colbox.top,
-		m_rect.left + m_colbox.right - m_colbox.left,
-		m_rect.top + m_colbox.bottom - m_colbox.top
+		m_rect.left + m_colbox.left + m_colbox.right,
+		m_rect.top + m_colbox.top + m_colbox.bottom
 	};
 	return res;
 }

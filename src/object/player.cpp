@@ -20,22 +20,26 @@
 #include "video/video_system.hpp"
 
 Player::Player() :
-	MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
+	MovingSprite("images/creatures/tux/tux.sprite", "tux")
+	//MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
 {
 	enable_gravity();
+	
+	set_action("small-stand-right");
 }
 
 void
 Player::update(Tilemap &tilemap)
 {
-	MovingObject::update(tilemap);
+	MovingSprite::update(tilemap);
 }
 
 void
 Player::draw()
 {
 	//MovingObject::draw();
-	TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
-	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
+	MovingSprite::draw();
+	//TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
+	//g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
 }
 

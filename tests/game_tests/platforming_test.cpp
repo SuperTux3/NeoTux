@@ -52,6 +52,7 @@ PlatformingTest::run()
 	painter->register_camera(&g_camera);
 	
 	MovingSprite sprite("images/creatures/tux/tux.sprite", "super the tux");
+	sprite.set_action("small-stand-right");
 	
 	Player player{};
 	Timer timer{1000, -1};

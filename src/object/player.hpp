@@ -18,8 +18,9 @@
 #define SUPERTUX_SRC_OBJECT_PLAYER_HPP
 
 #include "object/moving_object.hpp"
+#include "object/moving_sprite.hpp"
 
-class Player : public MovingObject
+class Player : public MovingSprite
 {
 public:
 	Player();

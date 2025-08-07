@@ -23,8 +23,11 @@
 
 MovingSprite::MovingSprite(std::string sprite_file, std::string_view name) :
 	MovingObject({0, 0, 0, 0}, {0, 0, 0, 0}, std::move(name)),
-	m_filename(std::move(sprite_file))
+	m_filename(std::move(sprite_file)),
+	m_action(nullptr),
+	m_action_timer(0, 0)
 {
+	m_parent_dir = FS::parent_dir(m_filename);
 	parse_sprite();
 }
 
@@ -32,10 +35,6 @@ void
 MovingSprite::parse_sprite()
 {
 	SexpElt root, elt, aelt;
-	std::string name;
-	double fps;
-	std::vector<std::string> images;
-	int hitboxes[4];
 	
 	root = m_parser.read_file(FS::path(m_filename));
 	if (!root.is_list())
@@ -48,6 +47,12 @@ MovingSprite::parse_sprite()
 	
 	while (root.next_inplace())
 	{
+		std::string name;
+		double fps;
+		std::vector<std::string> images;
+		int hitboxes[4];
+		SpriteAction *sprite_action;
+		
 		if (!root.is_list())
 			continue;
 		elt = root.get_list();
@@ -81,20 +86,43 @@ MovingSprite::parse_sprite()
 				Logger::warn("A sprite hitbox is missing values! Expect bugs...");
 		}
 		
-		m_actions.emplace(name, SpriteAction{fps, images, hitboxes});
+		sprite_action = new SpriteAction(fps, images, hitboxes);
+		m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 	}
+}
+
+void
+MovingSprite::set_action(const std::string &action)
+{
+	m_action = m_actions.at(action).get();
+	
+	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
+	
+	m_rect.right = m_rect.left + tex->get_size().width;
+	m_rect.bottom = m_rect.top + tex->get_size().height;
+	m_colbox.left = m_action->hitboxes[0];
+	m_colbox.top = m_action->hitboxes[1];
+	m_colbox.right = m_action->hitboxes[2];
+	m_colbox.bottom = m_action->hitboxes[3];
+	
+	m_action_timer.set_duration((1.0/m_action->fps)*1000);
+	m_action_timer.set_loops(-1);
 }
 
 void
 MovingSprite::update(Tilemap &tilemap)
 {
 	MovingObject::update(tilemap);
+	if (m_action)
+		m_action_timer.tick();
 }
 
 void
 MovingSprite::draw()
 {
-	//MovingObject::draw();
-	TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
+	if (!m_action)
+		return;
+	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
 	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
+	MovingObject::draw();
 }
