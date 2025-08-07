@@ -2110,7 +2110,7 @@
     (object-data "(sprite \"images/objects/bonus_block/bonusblock.sprite\") (data 1)")
     (next-tile 84)
     (data 1)
-    (fps 2)
+    (fps 15)
     (deprecated #t)
   )
 
@@ -2367,7 +2367,7 @@
     (object-data "(sprite \"images/objects/bonus_block/bonusblock.sprite\") (data 2)")
     (editor-images "objects/bonus_block/bonus-fire_flower.png")
     (data 2)
-    (fps 2)
+    (fps 15)
   )
 
   (tile
@@ -2390,7 +2390,7 @@
     (object-data "(sprite \"images/objects/bonus_block/bonusblock.sprite\") (data 3)")
     (editor-images "objects/bonus_block/bonus-star.png")
     (data 3)
-    (fps 2)
+    (fps 15)
   )
 
   (tile
@@ -2472,7 +2472,7 @@
     (object-data "(sprite \"images/objects/bonus_block/bonusblock.sprite\") (data 4)")
     (editor-images "objects/bonus_block/bonus-1up.png")
     (data 4)
-    (fps 2)
+    (fps 15)
   )
 
   (tile
@@ -2698,7 +2698,7 @@
     (object-data "(sprite \"images/objects/bonus_block/bonusblock.sprite\") (data 5)")
     (editor-images "objects/bonus_block/bonus-ice_flower.png")
     (data 5)
-    (fps 2)
+    (fps 15)
   )
 
   (tiles
