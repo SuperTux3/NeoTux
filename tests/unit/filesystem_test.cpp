@@ -14,15 +14,16 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_UTIL_FILESYSTEM_HPP
-#define SUPERTUX_SRC_UTIL_FILESYSTEM_HPP
+#include <assert.h>
+#include <iostream>
+#include "util/filesystem.hpp"
 
-#include <string>
-
-namespace FS
+int
+main()
 {
-	std::string path(const std::string &file);
-	std::string parent_dir(const std::string &file);
+	assert(FS::parent_dir("/test/fun/hello.s") == "/test/fun");
+	assert(FS::parent_dir("///hello.s") == "//");
+	assert(FS::parent_dir("") == "");
+	assert(FS::parent_dir("test") == "test");
+	return 0;
 }
-
-#endif

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <string>
 #include "filesystem.hpp"
 
 #include "config.h"
@@ -28,6 +29,16 @@ std::string
 path(const std::string& file)
 {
 	return std::string(NEOTUX_DATA_DIR) + "/" + file;
+}
+
+std::string
+parent_dir(const std::string &file)
+{
+	auto pos = file.find_last_of('/');
+	if (pos == std::string::npos)
+		return file;
+	
+	return file.substr(0, pos);
 }
 
 }

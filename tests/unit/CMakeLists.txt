@@ -34,6 +34,9 @@ make_unit_test(SexpTest SOURCE sexp_test.cpp
 	LIBRARIES SFSEXP
 	EXTERNAL util/sexp.cpp)
 
+make_unit_test(FilesystemTest SOURCE filesystem_test.cpp
+	EXTERNAL util/filesystem.cpp)
+
 #message("ALL TESTS: ${all_test_targets}")
 
 set(NEOTUX_UNITTESTS_DIR "${PROJECT_SOURCE_DIR}/tests/unit" CACHE PATH "Where NeoTux will look for unit test data.")
