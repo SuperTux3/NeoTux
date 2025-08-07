@@ -18,6 +18,7 @@
 #include "input_manager.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
+#include "object/retro/retro_bag.hpp"
 #include "object/retro/retro_player.hpp"
 #include "timer.hpp"
 #include "util/filesystem.hpp"
@@ -51,6 +52,7 @@ Milestone1Test::run()
 	painter->register_camera(&g_camera);
 	
 	RetroPlayer player{};
+	RetroBag    bag{};
 	
 	BEGIN_GAME_LOOP
 		handle_events();
@@ -75,7 +77,9 @@ Milestone1Test::run()
 			}
 		}
 		player.update(*tilemap);
+		bag.update(*tilemap);
 		tilemap->try_object_collision(player);
+		tilemap->try_object_collision(bag);
 		
 		if (g_input_manager.is_key_down('a'))
 			player.move_left();
@@ -93,6 +97,7 @@ Milestone1Test::run()
 		
 		tilemap->draw(g_camera);
 		player.draw();
+		bag.draw();
 
 		painter->flip();
 	END_GAME_LOOP

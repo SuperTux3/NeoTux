@@ -88,3 +88,10 @@ MovingObject::move_to(float x, float y)
 	m_rect.top = y;
 	m_rect.bottom = y + old_height;
 }
+
+void
+MovingObject::set_y_vel(double y_vel)
+{
+	m_y_vel = y_vel;
+	m_grounded = false;
+}

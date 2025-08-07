@@ -14,40 +14,20 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_MOVING_OBJECT_HPP
-#define SUPERTUX_SRC_OBJECT_MOVING_OBJECT_HPP
+#ifndef SUPERTUX_SRC_OBJECT_RETRO_RETRO_BAG_HPP
+#define SUPERTUX_SRC_OBJECT_RETRO_RETRO_BAG_HPP
 
-#include "math/rect.hpp"
-#include "math/size.hpp"
-#include "game_object.hpp"
+#include "object/moving_object.hpp"
+#include "object/moving_sprite.hpp"
 
-struct Tilemap;
-
-class MovingObject : public GameObject
+class RetroBag : public MovingSprite
 {
 public:
-	MovingObject(Rectf rect, Rectf colbox, std::string_view name);
-	virtual ~MovingObject() = default;
+	RetroBag();
+	virtual ~RetroBag() = default;
 	
-	void update(Tilemap &tilemap);
+	virtual void update(Tilemap &tilemap);
 	void draw();
-	
-	void move(double x, double y);
-	void move_to(float x, float y);
-	void set_y_vel(double y_vel);
-	
-	const Rectf& get_rect() const { return m_rect; }
-	Rectf get_colbox() const;
-	
-	void enable_gravity() { m_likes_falling = true; }
-	void disable_gravity() { m_likes_falling = false; }
-protected:
-public:
-	double m_y_vel;
-	bool m_likes_falling,
-		 m_grounded;
-	Rectf m_rect;
-	Rectf m_colbox;
 };
 
 #endif

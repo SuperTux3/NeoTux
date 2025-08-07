@@ -1,0 +1,6 @@
+(supertux-sprite
+ (action
+  (name "bag")
+  (hitbox 0 0 32 32)
+  (images "bag-left-0.png"))
+)
