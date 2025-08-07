@@ -14,23 +14,26 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_RETRO_RETRO_BAG_HPP
-#define SUPERTUX_SRC_OBJECT_RETRO_RETRO_BAG_HPP
+#include "game_object.hpp"
 
-#include "object/moving_object.hpp"
-#include "object/moving_sprite.hpp"
+std::unordered_map<std::string_view, std::function<GameObject*(SexpElt)>> _registered_gobjects{};
 
-class RetroBag : public MovingSprite
+GameObject::factory_functor
+GameObject::get_gobject_cstor(const std::string &name)
 {
-public:
-	RetroBag();
-	virtual ~RetroBag() = default;
-	
-	static std::string_view class_id() { return "retro-bag"; }
-	static MovingObject* construct(SexpElt elt);
-	
-	virtual void update(Tilemap &tilemap);
-	void draw();
-};
+	return _registered_gobjects.at(name);
+}
 
-#endif
+GameObject*
+GameObject::create(SexpElt elt)
+{
+	//elt.next_inplace();
+	if (!elt.is_list())
+		return nullptr;
+	elt = elt.get_list();
+	if (!elt.is_value())
+		return nullptr;
+	
+	std::string gameobject_type = elt.get_value();
+	return _registered_gobjects.at(gameobject_type)(elt.next());
+}

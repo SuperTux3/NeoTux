@@ -15,9 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "sector.hpp"
+#include "collision_system.hpp"
 #include "util/logger.hpp"
 
-Sector::Sector(SexpElt root)
+Sector::Sector(SexpElt root) :
+	m_objects()
 {
 	SexpElt elt;
 	
@@ -37,10 +39,13 @@ Sector::Sector(SexpElt root)
 					Logger::debug("Sector Name: " + m_name);
 				}
 			}
-			if (elt.get_value() == "tilemap")
-			{
+			else if (elt.get_value() == "tilemap") {
 				Logger::debug("Parsing tilemap");
 				m_tilemaps.emplace_back(elt);
+			}
+			else {
+				std::string obj_name = elt.get_value();
+				MovingObject *obj = static_cast<MovingObject*>(GameObject::create(elt));
 			}
 			
 		}

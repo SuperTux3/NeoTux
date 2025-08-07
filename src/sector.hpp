@@ -19,6 +19,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include "object/moving_object.hpp"
 #include "tilemap.hpp"
 #include "util/sexp.hpp"
 
@@ -36,6 +38,7 @@ public:
 private:
 	std::string m_name;
 	
+	std::vector<std::shared_ptr<MovingObject>> m_objects;
 	std::vector<Tilemap> m_tilemaps;
 };
 

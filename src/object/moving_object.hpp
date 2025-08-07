@@ -29,6 +29,8 @@ public:
 	MovingObject(Rectf rect, Rectf colbox, std::string_view name);
 	virtual ~MovingObject() = default;
 	
+	static std::string_view class_id() { return "moving-object"; }
+	
 	void update(Tilemap &tilemap);
 	void draw();
 	

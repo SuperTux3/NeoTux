@@ -25,6 +25,12 @@ RetroBag::RetroBag() :
 	set_action("bag");
 }
 
+static MovingObject*
+construct(SexpElt elt)
+{
+	return (MovingObject*)0x1;
+}
+
 void
 RetroBag::update(Tilemap &tilemap)
 {

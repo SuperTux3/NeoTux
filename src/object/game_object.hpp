@@ -17,17 +17,33 @@
 #ifndef SUPERTUX_SRC_OBJECT_GAME_OBJECT_HPP
 #define SUPERTUX_SRC_OBJECT_GAME_OBJECT_HPP
 
+#include <functional>
 #include <string>
+#include "util/sexp.hpp"
+
+struct GameObject;
+extern std::unordered_map<std::string_view, std::function<GameObject*(SexpElt)>> _registered_gobjects;
 
 struct Tilemap;
 
 class GameObject
 {
 public:
+	using factory_functor = std::function<GameObject*(SexpElt)>;
+
 	GameObject(std::string_view name) :
 		m_name(name)
 	{};
 	virtual ~GameObject() = default;
+	
+	template <typename T>
+	static void register_object()
+	{
+		std::string_view id = T::class_id();
+		_registered_gobjects.emplace(id, &T::construct);
+	}
+	static factory_functor get_gobject_cstor(const std::string &name);
+	static GameObject* create(SexpElt elt);
 	
 	virtual void update(Tilemap &tilemap) = 0;
 	virtual void draw() = 0;
