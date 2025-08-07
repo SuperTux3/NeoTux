@@ -65,8 +65,8 @@ MovingObject::update(Tilemap &tilemap)
 void
 MovingObject::draw()
 {
-	g_video_system->get_painter()->draw_fill_rect(get_colbox(), {155, 30, 30, 255/2});
-	//g_video_system->get_painter()->draw_fill_rect(m_rect, {155, 30, 30, 255/2});
+	if (g_settings->show_hitboxes)
+		g_video_system->get_painter()->draw_fill_rect(get_colbox(), {155, 30, 30, 255/2});
 }
 
 void

@@ -86,6 +86,7 @@ Argument st_args[] = {
 	
 	{ "Debugging:" },
 	{ "forced-delay", 'F', "Add an intentional delay in MS to the game loop", "<ms>" },
+	{ "show-hitboxes", 'b', "Shows MovingObject hitboxes" },
 	{}
 };
 
@@ -158,6 +159,10 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 			std::cerr << "Forced delay must be a number." << std::endl;
 			return 1;
 		}
+		
+		case 10:
+			g_settings->show_hitboxes = true;
+			return 0;
 	}
 
 	return -1;
