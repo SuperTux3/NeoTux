@@ -25,10 +25,10 @@ RetroBag::RetroBag() :
 	set_action("bag");
 }
 
-static MovingObject*
-construct(SexpElt elt)
+GameObject*
+RetroBag::construct(SexpElt elt)
 {
-	return (MovingObject*)0x1;
+	return (GameObject*)0x1;
 }
 
 void

@@ -27,7 +27,7 @@ public:
 	virtual ~RetroBag() = default;
 	
 	static std::string_view class_id() { return "retro-bag"; }
-	static MovingObject* construct(SexpElt elt);
+	static GameObject* construct(SexpElt elt);
 	
 	virtual void update(Tilemap &tilemap);
 	void draw();

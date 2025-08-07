@@ -46,6 +46,7 @@ Sector::Sector(SexpElt root) :
 			else {
 				std::string obj_name = elt.get_value();
 				MovingObject *obj = static_cast<MovingObject*>(GameObject::create(elt));
+				m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
 			}
 			
 		}

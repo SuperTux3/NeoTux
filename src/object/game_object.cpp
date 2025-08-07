@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "game_object.hpp"
+#include <iostream>
 
 std::unordered_map<std::string_view, std::function<GameObject*(SexpElt)>> _registered_gobjects{};
 
@@ -28,12 +29,16 @@ GameObject*
 GameObject::create(SexpElt elt)
 {
 	//elt.next_inplace();
-	if (!elt.is_list())
-		return nullptr;
-	elt = elt.get_list();
-	if (!elt.is_value())
-		return nullptr;
+	//if (!elt.is_list())
+	//	return nullptr;
+	//elt = elt.get_list();
+	//if (!elt.is_value())
+	//	return nullptr;
 	
 	std::string gameobject_type = elt.get_value();
-	return _registered_gobjects.at(gameobject_type)(elt.next());
+	try {
+		return _registered_gobjects.at(gameobject_type)(elt.next());
+	} catch (const std::out_of_range &err) {
+		return nullptr;
+	}
 }

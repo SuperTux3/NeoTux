@@ -36,6 +36,7 @@ static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 void
 Milestone1Test::run()
 {
+	GameObject::register_object<RetroBag>();
 	Size winsize = g_video_system->get_window_size();
 	g_camera.width = winsize.width;
 	g_camera.height = winsize.height;
