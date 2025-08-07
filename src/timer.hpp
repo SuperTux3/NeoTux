@@ -22,18 +22,24 @@
 class Timer
 {
 public:
-	Timer(uint64_t ms, int loops = 1);
+	using duration_t = uint64_t;
+	Timer(duration_t ms, int loops = 1);
 	~Timer() = default;
+	
+	void set_duration(duration_t ms);
+	void set_loops(int loops = 1);
 	
 	unsigned get_iterations() const;
 	double get_percentage() const;
+	
 	bool tick();
+	void reset();
 private:
 	int m_loops;
 	unsigned m_iterations;
-	uint64_t m_duration;
-	uint64_t m_current_time;
-	uint64_t m_last_time;
+	duration_t m_duration;
+	duration_t m_current_time;
+	duration_t m_last_time;
 };
 
 #endif
