@@ -66,6 +66,11 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 		return;
 	
 	SDL_FRect dest_sdl = dest.to_sdl_frect();
+	if (m_camera)
+	{
+		dest_sdl.x -= m_camera->x;
+		dest_sdl.y -= m_camera->y;
+	}
 	if (m_do_clip)
 	{
 		dest_sdl.x -= m_clip.left;

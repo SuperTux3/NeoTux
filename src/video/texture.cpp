@@ -64,5 +64,3 @@ Texture::create_surface(const std::string& filename)
 		throw SDLException("IMG_Load");
 	return image;
 }
-
-
