@@ -44,27 +44,57 @@ MovingObject::get_colbox() const
 	return res;
 }
 
+bool
+MovingObject::colliding_with(const MovingObject &other) const
+{
+	return Collision::aabb(get_colbox(), other.get_colbox());
+}
+
 void
 MovingObject::update(Tilemap &tilemap)
 {
-	if (!m_likes_falling)
-		return;
-	
+	if (m_likes_falling)
+	{
 	m_y_vel -= .0020581 * g_dtime;
-	if (!m_grounded)
-	{
-		move(0, -m_y_vel * g_dtime);
+		if (!m_grounded)
+		{
+			move(0, -m_y_vel * g_dtime);
+		}
+
+		move(0, -1);
+		if (tilemap.try_object_collision(*this) == false && m_grounded)
+		{
+			m_y_vel = 0;
+			m_grounded = false;
+		}
+		move(0, 1);
 	}
-	
-	move(0, -1);
-	if (tilemap.try_object_collision(*this) == false && m_grounded)
-	{
-		m_y_vel = 0;
-		m_grounded = false;
-	}
-	move(0, 1);
-	
+
+	// Test collision	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	
+	for (int x = colbox.left; x <= colbox.right; ++x)
+	{
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
+		{
+			const std::vector<MovingObject*> *objects = g_collision_system.get_objects(x, y);
+			if (!objects)
+				continue;
+			for (MovingObject *obj : *objects)
+			{
+				if (obj == this)
+					break;
+				
+				if (colliding_with(*obj))
+				{
+					obj->move_to(0, 0);
+				}
+			}
+		}
+	}
+	
+	
+	// Update collision spatial hash
 	if (colbox != m_last_colbox)
 	{
 		std::cout << std::endl << "m_last_colbox: " << m_last_colbox.to_string() << std::endl;
@@ -100,8 +130,6 @@ MovingObject::update(Tilemap &tilemap)
 						g_collision_system.remove(ot, ol, this);
 			}
 		}
-		
-		
 	}
 	m_last_colbox = colbox;
 }

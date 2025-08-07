@@ -31,6 +31,8 @@ public:
 	void add(int x, int y, MovingObject *object);
 	void remove(int x, int y, MovingObject *object);
 	
+	const std::vector<MovingObject*>* get_objects(int x, int y);
+	
 	void register_object(MovingObject *object);
 	//void clear();
 	

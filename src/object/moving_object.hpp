@@ -36,6 +36,8 @@ public:
 	void move_to(float x, float y);
 	void set_y_vel(double y_vel);
 	
+	bool colliding_with(const MovingObject &other) const;
+	
 	const Rectf& get_rect() const { return m_rect; }
 	Rectf get_colbox() const;
 	

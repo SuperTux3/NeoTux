@@ -81,7 +81,7 @@ Milestone1Test::run()
 			}
 		}
 		player.update(*tilemap);
-		//bag.update(*tilemap);
+		bag.update(*tilemap);
 		tilemap->try_object_collision(player);
 		tilemap->try_object_collision(bag);
 		

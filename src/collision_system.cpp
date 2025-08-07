@@ -25,6 +25,13 @@ CollisionSystem::CollisionSystem() :
 {
 }
 
+const std::vector<MovingObject*> *
+CollisionSystem::get_objects(int x, int y)
+{
+	return m_object_shash.at(x, y);
+}
+
+
 void
 CollisionSystem::debug_draw()
 {
@@ -37,7 +44,7 @@ CollisionSystem::debug_draw()
 			if (y.second.size() != 0)
 				g_video_system->get_painter()->draw_fill_rect(
 					Rectf{(float)x.first * COL_HASH_SIZE, (float)y.first * COL_HASH_SIZE, {COL_HASH_SIZE, COL_HASH_SIZE}},
-					{(unsigned char)std::min<int>(200, 0 + (5 * y.second.size())),
+					{(unsigned char)std::min<int>(200, 10 + (65 * y.second.size())),
 					 0, 255, (unsigned char)std::min<int>(200, 60 + (5 * y.second.size()))});
 		}
 	}
