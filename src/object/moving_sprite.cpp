@@ -50,7 +50,7 @@ MovingSprite::parse_sprite()
 	while (root.next_inplace())
 	{
 		std::string name;
-		double fps;
+		double fps = 0.0;
 		int loops = -1;
 		std::vector<std::string> images;
 		int hitboxes[4];

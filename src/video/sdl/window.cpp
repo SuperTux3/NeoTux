@@ -56,10 +56,11 @@ SDLWindow::set_icon(const std::string& filename)
 	catch (const SDLException& err) {
 		SDL_DestroySurface(icon);
 		// Ignore this specific error, not our problem
+		//std::cout << err.what() << "\n";
 		if (err.sdl_error == "wayland: cannot set icon; required xdg_toplevel_icon_v1 protocol not supported")
 			return;
 		throw err;
 	}
-		
+	
 	//SDL_DestroySurface(icon);
 }

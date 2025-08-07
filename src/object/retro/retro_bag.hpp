@@ -29,7 +29,7 @@ public:
 	static std::string_view class_id() { return "retro-bag"; }
 	static GameObject* construct(SexpElt elt);
 	
-	virtual void update(Tilemap &tilemap);
+	void update(Tilemap &tilemap) override;
 	void draw();
 };
 

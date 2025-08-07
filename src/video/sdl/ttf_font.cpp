@@ -51,5 +51,6 @@ TTFFont::render_text_solid(const std::string &msg, SDL_Color color)
 float
 TTFFont::get_text_width(std::string_view text) const
 {
-	
+	// temp
+	return 0.0f;
 }

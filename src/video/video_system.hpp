@@ -73,7 +73,6 @@ public:
 
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
-	virtual const Viewport& get_viewport() const = 0;
 	virtual void apply_config() = 0;
 	virtual void flip() = 0;
 	virtual void on_resize(int w, int h) = 0;
