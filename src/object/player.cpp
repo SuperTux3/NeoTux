@@ -16,11 +16,13 @@
 
 #include "player.hpp"
 #include "object/moving_object.hpp"
+#include "video/painter.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 
 Player::Player() :
-	MovingSprite("images/creatures/tux/tux.sprite", "tux")
+	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
+	m_moving(false)
 	//MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
 {
 	enable_gravity();
@@ -29,8 +31,52 @@ Player::Player() :
 }
 
 void
+Player::move_left()
+{
+	m_moving = true;
+	move(-0.5 * g_dtime, 0);
+	m_flip = (int)FLIP_HORIZONTAL;
+	if (m_grounded)
+		set_action("small-walk-right");
+
+}
+
+void
+Player::move_right()
+{
+	m_moving = true;
+	move(0.5 * g_dtime, 0);
+	m_flip = FLIP_NONE;
+	if (m_grounded)
+		set_action("small-walk-right");
+}
+
+void
+Player::jump()
+{
+	if (!m_grounded)
+		return;
+	
+	m_y_vel = 0.75;
+	m_grounded = false;
+	g_mixer.play_sound("sounds/bigjump.wav");
+	set_action("small-jump-right");
+}
+
+void
 Player::update(Tilemap &tilemap)
 {
+
+	if (!m_moving && m_grounded)
+	{
+		set_action("small-stand-right");
+	}
+	else
+		m_moving = false;
+	
+	if (m_y_vel < -0.1)
+		set_action("small-fall-right");
+	
 	MovingSprite::update(tilemap);
 }
 

@@ -30,7 +30,10 @@ SDLPainter::SDLPainter(VideoSystem *video) :
 }
 
 void
-SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest)
+SDLPainter::draw(TextureRef texture,
+                 std::optional<Rectf> src,
+                 std::optional<Rectf> dest,
+                 Flip flip)
 {
 	SDLTexture *sdltex = static_cast<SDLTexture*>(texture);
 	
@@ -53,9 +56,18 @@ SDLPainter::draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rec
 		dest_sdl.x -= m_clip.left;
 		dest_sdl.y -= m_clip.top;
 	}
-	//SDLVideoSystem *video = static_cast<SDLVideoSystem*>(m_
-	SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
-		src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
+	
+
+	if (flip != FLIP_NONE)
+	{
+		SDL_RenderTextureRotated(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
+		    src ? &src_sdl : NULL, dest ? &dest_sdl : NULL,
+		    0.0, NULL, (SDL_FlipMode)flip);
+	}
+	else {
+		SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
+		    src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
+	}
 	bump_draw_count();
 }
 

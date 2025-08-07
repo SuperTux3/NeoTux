@@ -23,6 +23,14 @@
 #include "math/rect.hpp"
 #include "texture.hpp"
 
+enum
+{
+	FLIP_NONE       = 0,
+	FLIP_HORIZONTAL = 1,
+	FLIP_VERTICAL   = 2,
+};
+using Flip = uint8_t;
+
 class Camera;
 
 class Painter
@@ -31,7 +39,10 @@ public:
 	Painter() = default;
 	virtual ~Painter() = default;
 	
-	virtual void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest) = 0;
+	virtual void draw(TextureRef texture,
+	                  std::optional<Rectf> src,
+	                  std::optional<Rectf> dest,
+	                  Flip flip = FLIP_NONE) = 0;
 	virtual void draw_fill_rect(Rectf dest, SDL_Color color) = 0;
 	virtual void flip() = 0;
 	virtual void clear() = 0;

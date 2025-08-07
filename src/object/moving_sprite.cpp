@@ -101,7 +101,10 @@ MovingSprite::parse_sprite()
 void
 MovingSprite::set_action(const std::string &action)
 {
-	m_action = m_actions.at(action).get();
+	SpriteAction *s_action = m_actions.at(action).get();
+	if (s_action == m_action)
+		return;
+	m_action = s_action;
 	
 	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
 	

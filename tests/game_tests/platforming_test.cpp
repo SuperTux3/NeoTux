@@ -62,7 +62,6 @@ PlatformingTest::run()
 		painter->clear();
 		
 		sprite.update(*tilemap);
-		player.update(*tilemap);
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)
@@ -82,18 +81,16 @@ PlatformingTest::run()
 				player.enable_gravity();
 			}
 		}
+		player.update(*tilemap);
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))
-			player.move(-0.5 * g_dtime, 0);
+			player.move_left();
 		else if (g_input_manager.is_key_down('d'))
-			player.move(0.5 * g_dtime, 0);
-		if (g_input_manager.is_key_down('w') && player.m_grounded == true)
-		{
-			player.m_y_vel = 0.75;
-			player.m_grounded = false;
-			g_mixer.play_sound("sounds/bigjump.wav");
-		}
+			player.move_right();
+		
+		if (g_input_manager.is_key_down('w'))
+			player.jump();
 		
 		if (timer.tick())
 			std::cout << "Timer ticked!" << std::endl;

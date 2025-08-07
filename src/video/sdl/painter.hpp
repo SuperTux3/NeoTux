@@ -29,7 +29,10 @@ public:
 	SDLPainter(VideoSystem *video);
 	~SDLPainter() = default;
 	
-	void draw(TextureRef texture, std::optional<Rectf> src, std::optional<Rectf> dest);
+	void draw(TextureRef texture,
+	          std::optional<Rectf> src,
+	          std::optional<Rectf> dest,
+	          Flip flip = FLIP_NONE);
 	void draw_fill_rect(Rectf dest, SDL_Color color);
 	void flip();
 	void clear();

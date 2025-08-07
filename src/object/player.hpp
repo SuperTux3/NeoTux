@@ -28,7 +28,12 @@ public:
 	
 	virtual void update(Tilemap &tilemap);
 	void draw();
+	
+	void move_left();
+	void move_right();
+	void jump();
 private:
+	bool m_moving;
 };
 
 #endif
