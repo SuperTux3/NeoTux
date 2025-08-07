@@ -97,7 +97,6 @@ EverythingTest::run()
 	double i = 0, j = 1;
 	BEGIN_GAME_LOOP
 		g_font_cache.try_gc();
-		TextureRef ref = g_texture_manager.load("images/engine/supertux.png");
 		
 		Painter* painter = g_video_system->get_painter();
 		painter->clear();

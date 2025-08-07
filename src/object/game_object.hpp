@@ -24,7 +24,7 @@
 struct GameObject;
 extern std::unordered_map<std::string_view, std::function<GameObject*(SexpElt)>> _registered_gobjects;
 
-struct Tilemap;
+class Tilemap;
 
 class GameObject
 {

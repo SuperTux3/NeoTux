@@ -55,7 +55,7 @@ public:
 	MovingSprite(std::string sprite_dir, std::string_view name);
 	virtual ~MovingSprite() = default;
 	
-	virtual void update(Tilemap &tilemap);
+	virtual void update(Tilemap &tilemap) override;
 	void draw();
 	
 	void set_action(const std::string &action);

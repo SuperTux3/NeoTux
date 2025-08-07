@@ -43,20 +43,19 @@ public:
 	//virtual TexturePtr new_texture(const SDL_Surface& image, const Sampler& sampler = Sampler()) = 0;
 
 	Backend get_video_system() const;
-	const Viewport& get_viewport() const {};
 	void apply_config() {};
 	void flip();
 	void on_resize(int w, int h);
 	Size get_window_size() const {};
 
 	void set_vsync(int mode) {};
-	int get_vsync() const {};
+	int get_vsync() const { return 0; /*temp*/ };
 	void set_title(const std::string& title) {};
 	void set_icon(const SDL_Surface& icon) {};
 	//SDLSurfacePtr make_screenshot() {};
 	
 	void shutdown();
-
+		
 	void do_take_screenshot();
 
 public:

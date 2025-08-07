@@ -21,7 +21,7 @@
 #include "math/size.hpp"
 #include "game_object.hpp"
 
-struct Tilemap;
+class Tilemap;
 
 class MovingObject : public GameObject
 {
@@ -31,7 +31,7 @@ public:
 	
 	static std::string_view class_id() { return "moving-object"; }
 	
-	void update(Tilemap &tilemap);
+	virtual void update(Tilemap &tilemap);
 	void draw();
 	
 	void move(double x, double y);

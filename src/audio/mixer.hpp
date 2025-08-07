@@ -20,6 +20,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
+#include <string>
 #include <SDL3_mixer/SDL_mixer.h>
 
 class Mixer
