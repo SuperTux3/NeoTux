@@ -86,6 +86,17 @@ public:
 		return { left, top, get_width(), get_height() };
 	}
 	
+	bool operator==(const Rect_t<T> &other)
+	{
+		return left == other.left && top == other.top &&
+			right == other.right && bottom == other.bottom;
+	}
+	
+	bool operator!=(const Rect_t<T> &other)
+	{
+		return !operator==(other);
+	}
+	
 	std::string to_string() const
 	{
 		return std::string("Rect(left: ") + std::to_string(left) +
