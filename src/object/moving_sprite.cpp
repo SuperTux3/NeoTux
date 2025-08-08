@@ -27,7 +27,8 @@ MovingSprite::MovingSprite(std::string sprite_file, std::string_view name) :
 	m_filename(std::move(sprite_file)),
 	m_action(nullptr),
 	m_action_timer(0, 0),
-	m_flip(0)
+	m_flip(0),
+	m_alpha(1.0)
 {
 	if (!m_filename.empty())
 	{
@@ -180,6 +181,6 @@ MovingSprite::draw()
 	if (!m_action)
 		return;
 	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
-	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip);
+	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip, m_alpha);
 	MovingObject::draw();
 }

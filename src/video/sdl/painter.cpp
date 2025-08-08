@@ -33,9 +33,12 @@ void
 SDLPainter::draw(TextureRef texture,
                  std::optional<Rectf> src,
                  std::optional<Rectf> dest,
-                 Flip flip)
+                 Flip flip,
+				 float alpha)
 {
 	SDLTexture *sdltex = static_cast<SDLTexture*>(texture);
+	SDL_Texture *tex = sdltex->get_sdl_texture();
+	float last_alpha;
 	
 	if (!in_camera_bounds(dest))
 		return;
@@ -57,17 +60,23 @@ SDLPainter::draw(TextureRef texture,
 		dest_sdl.y -= m_clip.top;
 	}
 	
-
+	if (alpha != 1.0)
+	{
+		SDL_GetTextureAlphaModFloat(tex, &last_alpha);
+		SDL_SetTextureAlphaModFloat(tex, alpha);
+	}
 	if (flip != FLIP_NONE)
 	{
-		SDL_RenderTextureRotated(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
+		SDL_RenderTextureRotated(m_sdl_renderer.get(), tex,
 		    src ? &src_sdl : NULL, dest ? &dest_sdl : NULL,
 		    0.0, NULL, (SDL_FlipMode)flip);
 	}
 	else {
-		SDL_RenderTexture(m_sdl_renderer.get(), sdltex->get_sdl_texture(),
+		SDL_RenderTexture(m_sdl_renderer.get(), tex,
 		    src ? &src_sdl : NULL, dest ? &dest_sdl : NULL);
 	}
+	if (alpha != 1.0)
+		SDL_SetTextureAlphaModFloat(tex, last_alpha);
 	bump_draw_count();
 }
 

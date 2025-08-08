@@ -32,7 +32,8 @@ public:
 	void draw(TextureRef texture,
 	          std::optional<Rectf> src,
 	          std::optional<Rectf> dest,
-	          Flip flip = FLIP_NONE);
+	          Flip flip = FLIP_NONE,
+			  float alpha = 1.0);
 	void draw_fill_rect(Rectf dest, SDL_Color color);
 	void flip();
 	void clear();

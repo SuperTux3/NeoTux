@@ -42,7 +42,8 @@ public:
 	virtual void draw(TextureRef texture,
 	                  std::optional<Rectf> src,
 	                  std::optional<Rectf> dest,
-	                  Flip flip = FLIP_NONE) = 0;
+	                  Flip flip = FLIP_NONE,
+					  float alpha = 1.0) = 0;
 	virtual void draw_fill_rect(Rectf dest, SDL_Color color) = 0;
 	virtual void flip() = 0;
 	virtual void clear() = 0;

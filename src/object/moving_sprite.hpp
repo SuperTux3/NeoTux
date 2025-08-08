@@ -73,6 +73,7 @@ protected:
 	SexpParser m_parser;
 	Timer m_action_timer;
 	Flip m_flip;
+	float m_alpha;
 };
 
 #endif

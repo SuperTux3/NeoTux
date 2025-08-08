@@ -23,7 +23,7 @@
 Coin::Coin() :
 	MovingSprite("", "old-bag"),
 	m_just_collected(false),
-	m_collected_timer(400.0, 1)
+	m_collected_timer(300.0, 1)
 {
 	disable_gravity();
 	set_collidable(false);
@@ -53,7 +53,8 @@ Coin::update(Tilemap &tilemap)
 			mark_for_destruction();
 			return;
 		}
-		move(0, -0.3);
+		m_alpha = 1.0 - (m_collected_timer.get_percentage() / 100.0);
+		move(0, -0.4);
 		return;
 	}
 	
