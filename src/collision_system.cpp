@@ -25,7 +25,7 @@ CollisionSystem::CollisionSystem() :
 {
 }
 
-const std::vector<MovingObject*> *
+const CollisionSystem::object_list_t*
 CollisionSystem::get_objects(int x, int y)
 {
 	return m_object_shash.at(x, y);
@@ -53,7 +53,7 @@ CollisionSystem::debug_draw()
 void
 CollisionSystem::add(int x, int y, MovingObject *object)
 {
-	std::vector<MovingObject*> &objs = m_object_shash.get_or_create(x, y, {});
+	object_list_t &objs = m_object_shash.get_or_create(x, y, {});
 	auto it = std::find(objs.begin(), objs.end(), object);
 	
 	if (it == objs.end())
@@ -63,7 +63,7 @@ CollisionSystem::add(int x, int y, MovingObject *object)
 void
 CollisionSystem::remove(int x, int y, MovingObject *object)
 {
-	std::vector<MovingObject*> &objs = m_object_shash.get_or_create(x, y, {});
+	object_list_t &objs = m_object_shash.get_or_create(x, y, {});
 	auto it = std::find(objs.begin(), objs.end(), object);
 	
 	if (it != objs.end())

@@ -17,13 +17,14 @@
 #ifndef SUPERTUX_SRC_COLLISION_SYSTEM_HPP
 #define SUPERTUX_SRC_COLLISION_SYSTEM_HPP
 
-#include <vector>
+#include <list>
 #include "object/moving_object.hpp"
 #include "spatial_hash.hpp"
 
 class CollisionSystem
 {
 public:
+	using object_list_t = std::list<MovingObject*>;
 	static constexpr uint16_t COL_HASH_SIZE = 64;
 	CollisionSystem();
 	~CollisionSystem() = default;
@@ -31,14 +32,14 @@ public:
 	void add(int x, int y, MovingObject *object);
 	void remove(int x, int y, MovingObject *object);
 	
-	const std::vector<MovingObject*>* get_objects(int x, int y);
+	const object_list_t* get_objects(int x, int y);
 	
 	void register_object(MovingObject *object);
 	//void clear();
 	
 	void debug_draw();
 private:
-	SpatialHash<std::vector<MovingObject*>> m_object_shash;
+	SpatialHash<object_list_t> m_object_shash;
 };
 
 extern CollisionSystem g_collision_system;

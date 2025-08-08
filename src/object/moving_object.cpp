@@ -131,7 +131,7 @@ MovingObject::update(Tilemap &tilemap)
 	{
 		for (int y = colbox.top; y <= colbox.bottom; ++y)
 		{
-			const std::vector<MovingObject*> *objects = g_collision_system.get_objects(x, y);
+			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
 			if (!objects)
 				continue;
 			for (MovingObject *obj : *objects)
