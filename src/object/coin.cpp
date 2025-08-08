@@ -15,6 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "coin.hpp"
+#include "collision.hpp"
+#include "collision_system.hpp"
+#include "object/player.hpp"
 #include "video/painter.hpp"
 
 Coin::Coin() :
@@ -41,6 +44,28 @@ Coin::update(Tilemap &tilemap)
 	//if (m_grounded)
 	//	m_y_vel = -15 * g_dtime;
 	MovingSprite::update(tilemap);
+	
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	for (int x = colbox.left; x <= colbox.right; ++x)
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
+		{
+			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
+			if (!objects)
+				continue;
+			for (MovingObject *obj : *objects)
+			{
+				if (obj == this) continue;
+				Player *player = dynamic_cast<Player*>(player);
+				if (!player)
+					continue;
+				
+				auto collide = do_collision(*obj, false);
+				if (collide.is_colliding())
+				{
+					mark_for_destruction();
+				}
+			}
+		}
 }
 
 void

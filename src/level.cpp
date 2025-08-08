@@ -63,7 +63,7 @@ Level::Level(SexpElt root) :
 void
 Level::update()
 {
-	for (const Sector& sector : m_sectors)
+	for (Sector& sector : m_sectors)
 		sector.update();
 }
 

@@ -36,7 +36,7 @@ public:
 	const size_t num_tilemaps() const { return m_tilemaps.size(); }
 	Tilemap& operator[](size_t idx) { return get_tilemap(idx); }
 	
-	void update() const;
+	void update();
 	void draw();
 private:
 	std::string m_name;

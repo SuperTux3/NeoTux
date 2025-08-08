@@ -20,7 +20,7 @@
 #include "video/painter.hpp"
 
 RetroPlayer::RetroPlayer() :
-	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
+	Player(),
 	m_moving(false)
 	//MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
 {
@@ -87,6 +87,7 @@ RetroPlayer::update(Tilemap &tilemap)
 			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
 			if (!objects)
 				continue;
+			
 			for (MovingObject *obj : *objects)
 			{
 				if (obj == this)
@@ -96,7 +97,7 @@ RetroPlayer::update(Tilemap &tilemap)
 				if (!brick)
 				{
 					do_collision(*obj);
-					return;
+					continue;
 				}
 				auto collide = do_collision(*obj, !obj->m_likes_falling);
 				if (collide)

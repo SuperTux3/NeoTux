@@ -85,13 +85,19 @@ Sector::Sector(SexpElt root) :
 }
 
 void
-Sector::update() const
+Sector::update()
 {
 	assert(m_zero_tilemap);
-	for (auto &object : m_objects)
+	for (auto it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
-		object.get()->update(*m_zero_tilemap);
-		m_zero_tilemap->try_object_collision(*object.get());
+		MovingObject *obj = it->get();
+		obj->update(*m_zero_tilemap);
+		if (obj->destroy_me())
+		{
+			m_objects.erase(it);
+			continue;
+		}
+		m_zero_tilemap->try_object_collision(*obj);
 	}
 }
 

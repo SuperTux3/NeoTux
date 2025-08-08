@@ -19,8 +19,9 @@
 
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
+#include "object/player.hpp"
 
-class RetroPlayer : public MovingSprite
+class RetroPlayer : public Player
 {
 public:
 	RetroPlayer();
