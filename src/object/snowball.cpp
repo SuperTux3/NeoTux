@@ -41,7 +41,7 @@ Snowball::construct(SexpElt elt)
 void
 Snowball::update(Tilemap &tilemap)
 {
-	move((m_dir ? 1.0 : -1.0) * 0.5, 0);
+	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
 	MovingSprite::update(tilemap);
 	
 	for (auto &colinfo : m_colinfo)
