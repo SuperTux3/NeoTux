@@ -43,10 +43,12 @@ Coin::update(Tilemap &tilemap)
 {
 	//if (m_grounded)
 	//	m_y_vel = -15 * g_dtime;
+	
 	MovingSprite::update(tilemap);
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)
+	{
 		for (int y = colbox.top; y <= colbox.bottom; ++y)
 		{
 			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
@@ -55,7 +57,7 @@ Coin::update(Tilemap &tilemap)
 			for (MovingObject *obj : *objects)
 			{
 				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(player);
+				Player *player = dynamic_cast<Player*>(obj);
 				if (!player)
 					continue;
 				
@@ -66,6 +68,7 @@ Coin::update(Tilemap &tilemap)
 				}
 			}
 		}
+	}
 }
 
 void
