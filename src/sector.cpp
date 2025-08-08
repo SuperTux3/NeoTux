@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "sector.hpp"
+#include "camera.hpp"
 #include "collision_system.hpp"
 #include "util/logger.hpp"
 #include <cassert>
@@ -78,11 +79,16 @@ Sector::update() const
 }
 
 void
-Sector::draw() const
+Sector::draw()
 {
 	for (auto &object : m_objects)
 	{
 		object.get()->draw();
+	}
+	
+	for (auto &object : m_tilemaps)
+	{
+		object.draw(g_camera);
 	}
 }
 

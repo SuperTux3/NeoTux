@@ -97,7 +97,7 @@ Milestone1Test::run()
 				         (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f));
 		g_camera.y = 200;
 		
-		tilemap->draw(g_camera);
+		//tilemap->draw(g_camera);
 		level->draw();
 		player.draw();
 		

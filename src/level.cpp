@@ -70,6 +70,6 @@ Level::update()
 void
 Level::draw()
 {
-	for (const Sector& sector : m_sectors)
+	for (Sector& sector : m_sectors)
 		sector.draw();
 }

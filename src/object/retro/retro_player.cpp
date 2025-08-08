@@ -107,6 +107,10 @@ RetroPlayer::update(Tilemap &tilemap)
 						{
 							obj->enable_gravity();
 						}
+						else
+						{
+							obj->set_y_vel(0.3);
+						}
 					}
 					if (collide.bottom)
 					{

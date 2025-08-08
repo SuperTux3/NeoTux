@@ -92,6 +92,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 			Tile &tile = get_tile(x, y);
 			if (tile.get_id() == 0)
 				continue;
+			try {
 			const TileMeta &meta = g_tiles_reader.m_tiles.at(tile.get_id());
 			if ((meta.attrs & TileMeta::SOLID) == 0 &&
 			    (meta.attrs & TileMeta::UNISOLID) == 0 &&
@@ -101,6 +102,11 @@ Tilemap::try_object_collision(MovingObject& obj)
 			Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
 			if (obj.do_collision(rrect))
 				return true;
+			}
+			catch (...)
+			{
+				std::cout << "No: " << tile.get_id() << std::endl;
+			}
 		}
 	}
 	

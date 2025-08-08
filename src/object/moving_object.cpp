@@ -147,12 +147,12 @@ MovingObject::update(Tilemap &tilemap)
 		}
 	}
 	
-	
+
 	// Update collision spatial hash
 	if (colbox != m_last_colbox)
 	{
-		std::cout << std::endl << "m_last_colbox: " << m_last_colbox.to_string() << std::endl;
-		std::cout << "colbox: " << colbox.to_string() << std::endl;
+		//std::cout << std::endl << "m_last_colbox: " << m_last_colbox.to_string() << std::endl;
+		//std::cout << "colbox: " << colbox.to_string() << std::endl;
 		for (long l = colbox.left; l <= colbox.right; ++l)
 		{
 			for (long ol = m_last_colbox.left; ol <= m_last_colbox.right; ++ol)
