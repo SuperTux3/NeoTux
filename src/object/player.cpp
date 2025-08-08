@@ -23,8 +23,8 @@
 
 Player::Player() :
 	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
-	m_moving(false)
-	//MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
+	m_moving(false),
+	m_dead(false)
 {
 	enable_gravity();
 	
@@ -65,6 +65,21 @@ Player::jump()
 }
 
 void
+Player::reset()
+{
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	
+	// DISGUSTING HACK: Remove any adjacent cells, since the collision system can be off sometimes
+	// Remove object from collision system
+	for (int x = colbox.left - 1; x <= colbox.right + 1; ++x)
+		for (int y = colbox.top - 1; y <= colbox.bottom + 1; ++y)
+			g_collision_system.remove(x, y, this);
+
+	move_to(0, 0);
+	m_dead = false;
+}
+
+void
 Player::update(Tilemap &tilemap)
 {
 
@@ -82,11 +97,14 @@ Player::update(Tilemap &tilemap)
 }
 
 void
+Player::die()
+{
+	m_dead = true;
+}
+
+void
 Player::draw()
 {
-	//MovingObject::draw();
 	MovingSprite::draw();
-	//TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
-	//g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
 }
 

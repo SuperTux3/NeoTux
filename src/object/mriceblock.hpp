@@ -14,27 +14,30 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ALL_OBJECTS_HPP
-#define ALL_OBJECTS_HPP
+#ifndef SUPERTUX_SRC_OBJECT_MRICEBLOCK_HPP
+#define SUPERTUX_SRC_OBJECT_MRICEBLOCK_HPP
 
-#include "object/mriceblock.hpp"
-#include "object/snowball.hpp"
-#include "object/spiky.hpp"
-#include "object/coin.hpp"
-#include "object/game_object.hpp"
-#include "object/player.hpp"
-#include "object/retro/retro_brick.hpp"
-#include "object/retro/retro_player.hpp"
+#include "object/moving_object.hpp"
+#include "object/moving_sprite.hpp"
+#include "timer.hpp"
 
-static void init_all_objects()
+class MrIceBlock : public MovingSprite
 {
-	GameObject::register_object<Coin>();
-	GameObject::register_object<MrIceBlock>();
-	GameObject::register_object<Snowball>();
-	//GameObject::register_object<Player>();
-	//GameObject::register_object<RetroPlayer>();
-	GameObject::register_object<Spiky>();
-	GameObject::register_object<RetroBrick>();
-}
+public:
+	MrIceBlock();
+	virtual ~MrIceBlock() = default;
+	
+	static std::string_view class_id() { return "mriceblock"; }
+	static GameObject* construct(SexpElt elt);
+	
+	void update(Tilemap &tilemap) override;
+	void draw() override;
+private:
+	bool m_dir;
+	bool m_flat;
+	bool m_kicked;
+	Timer m_wakeup;
+	Timer m_iframe;
+};
 
 #endif

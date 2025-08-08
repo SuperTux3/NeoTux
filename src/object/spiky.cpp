@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spiky.hpp"
+#include "collision_system.hpp"
+#include "object/player.hpp"
 #include "video/painter.hpp"
 
 Spiky::Spiky() :
@@ -44,6 +46,28 @@ Spiky::update(Tilemap &tilemap)
 	}
 	
 	MovingSprite::update(tilemap);
+	
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	for (int x = colbox.left; x <= colbox.right; ++x)
+	{
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
+		{
+			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
+			if (!objects)
+				continue;
+			for (MovingObject *obj : *objects)
+			{
+				if (obj == this) continue;
+				Player *player = dynamic_cast<Player*>(obj);
+				if (!player)
+					continue;
+				
+				auto collide = do_collision(*obj, false);
+				if (collide.is_colliding())
+					player->die();
+			}
+		}
+	}
 }
 
 void

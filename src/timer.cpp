@@ -55,10 +55,10 @@ Timer::get_iterations() const
 bool
 Timer::tick()
 {
-	if (SDL_GetTicks() > m_last_time + m_duration && m_loops != 0)
+	if (SDL_GetTicks() > m_last_time + m_duration)
 	{
-		if (m_loops != -1)
-			--m_loops;
+		if (m_iterations >= m_loops && m_loops != -1)
+			return true;
 		
 		++m_iterations;
 		m_last_time = SDL_GetTicks();

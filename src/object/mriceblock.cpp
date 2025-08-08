@@ -14,15 +14,20 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "snowball.hpp"
+#include "mriceblock.hpp"
+#include "audio/mixer.hpp"
 #include "collision.hpp"
 #include "collision_system.hpp"
 #include "object/player.hpp"
 #include "video/painter.hpp"
 
-Snowball::Snowball() :
-	MovingSprite("", "snowball"),
-	m_dir(false)
+MrIceBlock::MrIceBlock() :
+	MovingSprite("", "mriceblock"),
+	m_dir(false),
+	m_flat(false),
+	m_kicked(false),
+	m_wakeup(5000.0, -1),
+	m_iframe(400.0, 1)
 {
 	enable_gravity();
 	set_collidable(true);
@@ -31,17 +36,28 @@ Snowball::Snowball() :
 }
 
 GameObject*
-Snowball::construct(SexpElt elt)
+MrIceBlock::construct(SexpElt elt)
 {
-	Snowball *that = new Snowball();
+	MrIceBlock *that = new MrIceBlock();
 	that->parse_sexp(elt);
 	return that;
 }
 
 void
-Snowball::update(Tilemap &tilemap)
+MrIceBlock::update(Tilemap &tilemap)
 {
-	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
+	if (!m_flat || m_kicked)
+		move((m_dir ? 1.0 : -1.0) * (m_kicked ? 0.7 : 0.1) * g_dtime, 0);
+	
+	if (m_flat && !m_kicked)
+	{
+		if (m_wakeup.tick())
+		{
+			m_flat = false;
+			set_action("left");
+		}
+	}
+	
 	MovingSprite::update(tilemap);
 	
 	for (auto &colinfo : m_colinfo)
@@ -70,22 +86,63 @@ Snowball::update(Tilemap &tilemap)
 			{
 				if (obj == this) continue;
 				Player *player = dynamic_cast<Player*>(obj);
-				if (!player)
-					continue;
 				
 				auto collide = do_collision(*obj, false);
 				if (collide.is_colliding())
 				{
+					if (m_kicked || (!m_kicked && !m_flat))
+					{
+						if ((collide.left || collide.right) && m_iframe.tick())
+						{
+							if (player)
+							{
+								player->die();
+							}
+						}
+						
+						if (m_kicked && !player)
+						{
+							g_mixer.play_sound("sounds/retro/fall.wav");
+							obj->mark_for_destruction();
+						}
+					}
+					
+					if (!player)
+						return;
+					
 					if (collide.top)
 					{
-						g_mixer.play_sound("sounds/retro/squish.wav");
-						mark_for_destruction();
+						if (!m_flat)
+						{
+							m_wakeup.reset();
+							m_iframe.reset();
+							m_flat = true;
+							set_action("flat-left");
+						}
+						else {
+							m_wakeup.reset();
+							m_iframe.reset();
+							m_kicked = false;
+						}
 						player->set_y_vel(0.4);
-						continue;
 					}
-					if (collide.left || collide.right)
+					
+					if (m_flat && !m_kicked && !m_iframe.tick())
 					{
-						player->die();
+						if (collide.left)
+						{
+							m_iframe.reset();
+							m_kicked = true;
+							g_mixer.play_sound("sounds/retro/kick.wav");
+							m_dir = true;
+						}
+						if (collide.right)
+						{
+							m_iframe.reset();
+							m_kicked = true;
+							g_mixer.play_sound("sounds/retro/kick.wav");
+							m_dir = false;
+						}
 					}
 				}
 			}
@@ -94,11 +151,8 @@ Snowball::update(Tilemap &tilemap)
 }
 
 void
-Snowball::draw()
+MrIceBlock::draw()
 {
-	//MovingObject::draw();
 	MovingSprite::draw();
-	//TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
-	//g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
 }
 

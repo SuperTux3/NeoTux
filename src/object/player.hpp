@@ -32,7 +32,13 @@ public:
 	void move_left();
 	void move_right();
 	void jump();
+	
+	void reset();
+	
+	void die();
+	bool is_dead() const { return m_dead; }
 private:
+	bool m_dead;
 	bool m_moving;
 };
 

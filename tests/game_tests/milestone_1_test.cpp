@@ -60,6 +60,12 @@ Milestone1Test::run()
 		handle_events();
 		painter->clear();
 		
+		if (player.is_dead())
+		{
+			g_mixer.play_sound("sounds/retro/hurt.wav");
+			player.reset();
+		}
+		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)
 		{
