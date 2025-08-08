@@ -21,7 +21,8 @@
 #include "video/painter.hpp"
 
 Snowball::Snowball() :
-	MovingSprite("", "snowball")
+	MovingSprite("", "snowball"),
+	m_dir(false)
 {
 	enable_gravity();
 	set_collidable(true);
@@ -40,8 +41,23 @@ Snowball::construct(SexpElt elt)
 void
 Snowball::update(Tilemap &tilemap)
 {
-	move(-0.5, 0);
+	move((m_dir ? 1.0 : -1.0) * 0.5, 0);
 	MovingSprite::update(tilemap);
+	
+	for (auto &colinfo : m_colinfo)
+	{
+		if (colinfo.left && m_dir == false)
+		{
+			m_dir = true;
+			m_flip = FLIP_HORIZONTAL;
+		}
+		if (colinfo.right && m_dir == true)
+		{
+			m_dir = false;
+			m_flip = 0;
+		}
+	}
+	
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)

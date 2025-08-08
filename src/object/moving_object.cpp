@@ -128,11 +128,14 @@ MovingObject::update(Tilemap &tilemap)
 		}
 
 		move(0, -1);
-		if (!tilemap.try_object_collision(*this) && m_grounded)
+		auto col = tilemap.try_object_collision(*this);
+		if (!col && m_grounded)
 		{
 			m_y_vel = 0;
 			m_grounded = false;
 		}
+		if (col)
+			m_colinfo = std::move(*col);
 		move(0, 1);
 	}
 

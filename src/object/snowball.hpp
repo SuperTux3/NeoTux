@@ -31,6 +31,8 @@ public:
 	
 	void update(Tilemap &tilemap) override;
 	void draw() override;
+private:
+	bool m_dir;
 };
 
 #endif

@@ -65,6 +65,7 @@ public:
 	Rectf m_rect;
 	Rectf m_colbox;
 	Rectf m_last_colbox;
+	std::vector<Collision::CollideInfo<float>> m_colinfo;
 };
 
 #endif
