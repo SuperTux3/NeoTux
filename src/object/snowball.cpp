@@ -23,8 +23,8 @@
 Snowball::Snowball() :
 	MovingSprite("", "snowball")
 {
-	disable_gravity();
-	set_collidable(false);
+	enable_gravity();
+	set_collidable(true);
 	
 	set_action("left");
 }
@@ -40,8 +40,8 @@ Snowball::construct(SexpElt elt)
 void
 Snowball::update(Tilemap &tilemap)
 {
+	move(-0.5, 0);
 	MovingSprite::update(tilemap);
-	move(-3.2, 0);
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)

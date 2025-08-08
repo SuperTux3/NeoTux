@@ -128,7 +128,7 @@ MovingObject::update(Tilemap &tilemap)
 		}
 
 		move(0, -1);
-		if (tilemap.try_object_collision(*this) == false && m_grounded)
+		if (!tilemap.try_object_collision(*this) && m_grounded)
 		{
 			m_y_vel = 0;
 			m_grounded = false;

@@ -17,8 +17,10 @@
 #ifndef SUPERTUX_SRC_TILEMAP_HPP
 #define SUPERTUX_SRC_TILEMAP_HPP
 
+#include <optional>
 #include <vector>
 #include <string>
+#include "collision.hpp"
 #include "spatial_hash.hpp"
 #include "math/size.hpp"
 #include "tile.hpp"
@@ -40,7 +42,7 @@ public:
 	Size get_size() const { return m_size; }
 	
 	// TODO: Make tiles_reader a member
-	bool try_object_collision(MovingObject &obj);
+	std::optional<std::vector<Collision::CollideInfo<float>>> try_object_collision(MovingObject &obj);
 	
 	void draw(const Camera &camera);
 private:

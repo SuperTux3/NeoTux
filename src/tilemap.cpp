@@ -79,7 +79,7 @@ Tilemap::get_tile(unsigned long x, unsigned long y)
 	return chunk->get_tile(rel_x, rel_y);
 }
 
-bool
+std::optional<std::vector<Collision::CollideInfo<float>>>
 Tilemap::try_object_collision(MovingObject& obj)
 {
 	Rectf obj_rect = obj.get_colbox();
@@ -100,8 +100,9 @@ Tilemap::try_object_collision(MovingObject& obj)
 				continue;
 			
 			Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
-			if (obj.do_collision(rrect))
-				return true;
+			auto col = obj.do_collision(rrect);
+			if (col)
+			return std::make_optional<std::vector<decltype(col)>>({col});
 			}
 			catch (...)
 			{
@@ -110,7 +111,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 		}
 	}
 	
-	return false;
+	return std::nullopt;
 }
 
 void
