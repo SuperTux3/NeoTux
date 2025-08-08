@@ -29,14 +29,48 @@ MovingSprite::MovingSprite(std::string sprite_file, std::string_view name) :
 	m_action_timer(0, 0),
 	m_flip(0)
 {
-	m_parent_dir = FS::parent_dir(m_filename);
-	parse_sprite();
+	if (!m_filename.empty())
+	{
+		m_parent_dir = FS::parent_dir(m_filename);
+		parse_sprite();
+	}
+}
+
+bool
+MovingSprite::parse_sexp(SexpElt elt)
+{
+	SexpElt telt;
+	std::string sprite;
+	
+	MovingObject::parse_sexp(elt);
+	
+	telt = elt.find_car("sprite");
+	if (telt)
+		sprite = telt.next().get_value();
+	
+	if (!sprite.empty())
+	{
+		m_filename = sprite;
+		m_parent_dir = FS::parent_dir(sprite);
+		parse_sprite();
+	}
+	
+	return true;
 }
 
 void
 MovingSprite::parse_sprite()
 {
 	SexpElt root, elt, aelt;
+	bool not_new = false;
+	
+	if (m_actions.size() != 0)
+	{
+		m_actions.clear();
+		m_action = nullptr;
+		m_action_timer.reset();
+		not_new = true;
+	}
 	
 	root = m_parser.read_file(FS::path(m_filename));
 	if (!root.is_list())
@@ -81,6 +115,7 @@ MovingSprite::parse_sprite()
 				images.push_back(aelt.get_value());
 		}
 		
+		
 		aelt = elt.find_car("hitbox");
 		if (aelt)
 		{
@@ -96,25 +131,37 @@ MovingSprite::parse_sprite()
 		sprite_action = new SpriteAction(fps, loops, images, hitboxes);
 		m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 	}
+	
+	if (not_new)
+		set_action(m_action_string);
 }
 
 void
 MovingSprite::set_action(const std::string &action)
 {
-	SpriteAction *s_action = m_actions.at(action).get();
-	if (s_action == m_action)
+	m_action_string = action;
+	SpriteAction *s_action;
+	try
+	{
+		s_action = m_actions.at(action).get();
+		if (s_action == m_action)
+			return;
+	}
+	catch (const std::out_of_range &err)
+	{
 		return;
+	}
 	m_action = s_action;
 	
 	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
 	
 	m_rect.right = m_rect.left + tex->get_size().width;
 	m_rect.bottom = m_rect.top + tex->get_size().height;
-	m_colbox.left = m_action->hitboxes[0] != -1 ? m_action->hitboxes[0] : m_rect.left;
-	m_colbox.top = m_action->hitboxes[1] != -1 ? m_action->hitboxes[1] : m_rect.top;
-	m_colbox.right = m_action->hitboxes[2] != -1 ? m_action->hitboxes[2] : m_rect.right;
-	m_colbox.bottom = m_action->hitboxes[3] != -1 ? m_action->hitboxes[3] : m_rect.bottom;
-	
+	m_colbox.left = m_action->hitboxes[0] != -1 ? m_action->hitboxes[0] : 0;
+	m_colbox.top = m_action->hitboxes[1] != -1 ? m_action->hitboxes[1] : 0;
+	m_colbox.right = m_action->hitboxes[2] != -1 ? m_action->hitboxes[2] : m_rect.get_width();
+	m_colbox.bottom = m_action->hitboxes[3] != -1 ? m_action->hitboxes[3] : m_rect.get_height();
+
 	m_action_timer.set_duration((1.0/m_action->fps)*1000);
 	m_action_timer.set_loops(m_action->loops);
 }

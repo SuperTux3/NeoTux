@@ -29,7 +29,7 @@ GameObject*
 RetroBag::construct(SexpElt elt)
 {
 	RetroBag *that = new RetroBag();
-	that->parse_moving_object_sexp(elt);
+	that->parse_sexp(elt);
 	return that;
 }
 

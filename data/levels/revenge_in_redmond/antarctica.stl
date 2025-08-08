@@ -336,7 +336,7 @@
       (y 768)
     )
     (retro-bag
-      (sprite "/images/creatures/bag/bag.sprite")
+      ;(sprite "/images/creatures/bag/bag.sprite")
       (x 512)
       (y 576)
     )

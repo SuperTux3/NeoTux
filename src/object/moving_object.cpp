@@ -34,11 +34,11 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 }
 
 bool
-MovingObject::parse_moving_object_sexp(SexpElt elt)
+MovingObject::parse_sexp(SexpElt elt)
 {
+	SexpElt telt;
 	double x{};
 	double y{};
-	SexpElt telt;
 	telt = elt.find_car("x");
 	if (telt)
 		x = telt.next().get_number();

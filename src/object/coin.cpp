@@ -18,19 +18,20 @@
 #include "video/painter.hpp"
 
 Coin::Coin() :
-	MovingSprite("images/objects/coin/coin.sprite", "old-bag")
+	MovingSprite("", "old-bag")
 {
 	disable_gravity();
 	set_collidable(false);
 	
-	set_action("normal");
+	//set_action("normal");
 }
 
 GameObject*
 Coin::construct(SexpElt elt)
 {
 	Coin *that = new Coin();
-	that->parse_moving_object_sexp(elt);
+	that->parse_sexp(elt);
+	that->set_action("normal");
 	return that;
 }
 

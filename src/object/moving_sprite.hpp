@@ -55,6 +55,8 @@ public:
 	MovingSprite(std::string sprite_dir, std::string_view name);
 	virtual ~MovingSprite() = default;
 	
+	bool parse_sexp(SexpElt);
+	
 	virtual void update(Tilemap &tilemap) override;
 	virtual void draw() override;
 	
@@ -65,6 +67,7 @@ protected:
 	
 	std::string m_parent_dir;
 	std::string m_filename;
+	std::string m_action_string;
 	SpriteAction *m_action;
 	std::unordered_map<std::string, std::unique_ptr<SpriteAction>> m_actions;
 	SexpParser m_parser;

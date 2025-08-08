@@ -30,7 +30,7 @@ GameObject*
 RetroBrick::construct(SexpElt elt)
 {
 	RetroBrick *that = new RetroBrick();
-	that->parse_moving_object_sexp(elt);
+	that->parse_sexp(elt);
 	return that;
 }
 
