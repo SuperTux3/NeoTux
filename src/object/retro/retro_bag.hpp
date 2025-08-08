@@ -30,7 +30,7 @@ public:
 	static GameObject* construct(SexpElt elt);
 	
 	void update(Tilemap &tilemap) override;
-	void draw();
+	void draw() override;
 };
 
 #endif

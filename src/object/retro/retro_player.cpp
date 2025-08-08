@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "retro_player.hpp"
+#include "collision_system.hpp"
+#include "object/retro/retro_brick.hpp"
 #include "video/painter.hpp"
 
 RetroPlayer::RetroPlayer() :
@@ -75,6 +77,56 @@ RetroPlayer::update(Tilemap &tilemap)
 		set_action("small-fall-right");
 	
 	MovingSprite::update(tilemap);
+		
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	
+	for (int x = colbox.left; x <= colbox.right; ++x)
+	{
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
+		{
+			const std::vector<MovingObject*> *objects = g_collision_system.get_objects(x, y);
+			if (!objects)
+				continue;
+			for (MovingObject *obj : *objects)
+			{
+				if (obj == this)
+					continue;
+				
+				RetroBrick *brick = dynamic_cast<RetroBrick*>(obj);
+				if (!brick)
+				{
+					do_collision(*obj);
+					return;
+				}
+				auto collide = do_collision(*obj, !obj->m_likes_falling);
+				if (collide)
+				{
+					if (collide.top)
+					{
+						if (!obj->m_likes_falling)
+						{
+							obj->enable_gravity();
+						}
+					}
+					if (collide.bottom)
+					{
+						if (obj->m_grounded && obj->m_likes_falling)
+						{
+							obj->set_y_vel(1.0);;
+						}
+						move(0, -collide.bottom_constraint);
+					}
+					if (obj->m_likes_falling)
+					{
+					if (collide.left)
+						obj->move(-collide.left_constraint, 0);
+					if (collide.right)
+						obj->move(collide.right_constraint, 0);
+					}
+				}
+			}
+		}
+	}
 }
 
 void

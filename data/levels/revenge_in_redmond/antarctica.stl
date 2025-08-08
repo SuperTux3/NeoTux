@@ -191,55 +191,55 @@
       (x 3488)
       (y 384)
     )
-    (brick
+    (retro-brick
       (x 800)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 864)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 928)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 3392)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 3456)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 7840)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 7904)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 7936)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")
       (breakable #t)
     )
-    (brick
+    (retro-brick
       (x 8000)
       (y 512)
       (sprite "/images/objects/bonus_block/retro_brick.sprite")

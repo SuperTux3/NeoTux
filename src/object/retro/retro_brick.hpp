@@ -14,44 +14,23 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "retro_bag.hpp"
-#include "video/painter.hpp"
+#ifndef SUPERTUX_SRC_OBJECT_RETRO_RETRO_BRICK_HPP
+#define SUPERTUX_SRC_OBJECT_RETRO_RETRO_BRICK_HPP
 
-RetroBag::RetroBag() :
-	MovingSprite("images/creatures/retro/bag/bag.sprite", "old-bag")
+#include "object/moving_object.hpp"
+#include "object/moving_sprite.hpp"
+
+class RetroBrick : public MovingSprite
 {
-	enable_gravity();
+public:
+	RetroBrick();
+	virtual ~RetroBrick() = default;
 	
-	set_action("bag");
-}
-
-GameObject*
-RetroBag::construct(SexpElt elt)
-{
-	RetroBag *that = new RetroBag();
-	that->parse_moving_object_sexp(elt);
-	return that;
-}
-
-void
-RetroBag::update(Tilemap &tilemap)
-{
-	//if (m_grounded)
-	//	m_y_vel = -15 * g_dtime;
-	if (m_grounded)
-	{
-		set_y_vel(1);
-	}
+	static std::string_view class_id() { return "retro-brick"; }
+	static GameObject* construct(SexpElt elt);
 	
-	MovingSprite::update(tilemap);
-}
+	void update(Tilemap &tilemap) override;
+	void draw() override;
+};
 
-void
-RetroBag::draw()
-{
-	//MovingObject::draw();
-	MovingSprite::draw();
-	//TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
-	//g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
-}
-
+#endif

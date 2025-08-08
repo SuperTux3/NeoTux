@@ -14,40 +14,35 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "retro_bag.hpp"
-#include "video/painter.hpp"
+#include "retro_brick.hpp"
+#include "collision.hpp"
+#include "collision_system.hpp"
+#include "object/player.hpp"
 
-RetroBag::RetroBag() :
-	MovingSprite("images/creatures/retro/bag/bag.sprite", "old-bag")
+RetroBrick::RetroBrick() :
+	MovingSprite("images/objects/bonus_block/retro_brick.sprite", class_id())
 {
-	enable_gravity();
-	
-	set_action("bag");
+	disable_gravity();
+	set_action("normal");
 }
 
 GameObject*
-RetroBag::construct(SexpElt elt)
+RetroBrick::construct(SexpElt elt)
 {
-	RetroBag *that = new RetroBag();
+	RetroBrick *that = new RetroBrick();
 	that->parse_moving_object_sexp(elt);
 	return that;
 }
 
 void
-RetroBag::update(Tilemap &tilemap)
+RetroBrick::update(Tilemap &tilemap)
 {
-	//if (m_grounded)
-	//	m_y_vel = -15 * g_dtime;
-	if (m_grounded)
-	{
-		set_y_vel(1);
-	}
-	
 	MovingSprite::update(tilemap);
+	
 }
 
 void
-RetroBag::draw()
+RetroBrick::draw()
 {
 	//MovingObject::draw();
 	MovingSprite::draw();

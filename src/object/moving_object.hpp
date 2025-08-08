@@ -17,6 +17,7 @@
 #ifndef SUPERTUX_SRC_OBJECT_MOVING_OBJECT_HPP
 #define SUPERTUX_SRC_OBJECT_MOVING_OBJECT_HPP
 
+#include "collision.hpp"
 #include "math/rect.hpp"
 #include "math/size.hpp"
 #include "game_object.hpp"
@@ -38,8 +39,13 @@ public:
 	void move(double x, double y);
 	void move_to(float x, float y);
 	void set_y_vel(double y_vel);
-	
-	bool colliding_with(const MovingObject &other) const;
+
+	Collision::CollideInfo<float> do_collision(Rectf rect, bool do_real_collision_stuff = true);
+	Collision::CollideInfo<float>  do_collision(const MovingObject &other, bool do_real_collision_stuff = true)
+	{
+		return do_collision(other.get_colbox(), do_real_collision_stuff);
+	}
+	Collision::CollideInfo<float> colliding_with(const MovingObject &other) const;
 	
 	const Rectf& get_rect() const { return m_rect; }
 	Rectf get_colbox() const;

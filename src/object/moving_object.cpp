@@ -68,7 +68,37 @@ MovingObject::get_colbox() const
 	return res;
 }
 
-bool
+Collision::CollideInfo<float>
+MovingObject::do_collision(Rectf rect, bool do_real_collision_stuff)
+{
+	auto collide = Collision::aabb(get_colbox(), rect);
+	if (collide.is_colliding() && do_real_collision_stuff)
+	{
+		if (collide.top)
+		{
+			if (m_y_vel > 0)
+			{
+				m_y_vel = 0;
+				move(0, collide.top_constraint);
+			}
+		}
+		else if (collide.bottom)
+		{
+			if (m_y_vel < 0)
+			{	
+				m_grounded = true;
+				move(0, -collide.bottom_constraint);
+			}
+		}
+		else if (collide.left)
+			move(collide.left_constraint, 0);
+		else if (collide.right)
+			move(-collide.right_constraint, 0);
+	}
+	return collide;
+}
+
+Collision::CollideInfo<float>
 MovingObject::colliding_with(const MovingObject &other) const
 {
 	return Collision::aabb(get_colbox(), other.get_colbox());
@@ -109,10 +139,10 @@ MovingObject::update(Tilemap &tilemap)
 				if (obj == this)
 					break;
 				
-				if (colliding_with(*obj))
-				{
-					obj->move_to(0, 0);
-				}
+				// if (colliding_with(*obj))
+				// {
+				// 	obj->move_to(0, 0);
+				// }
 			}
 		}
 	}

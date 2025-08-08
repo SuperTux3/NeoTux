@@ -27,7 +27,7 @@ public:
 	virtual ~Player() = default;
 	
 	void update(Tilemap &tilemap) override;
-	void draw();
+	void draw() override;
 	
 	void move_left();
 	void move_right();

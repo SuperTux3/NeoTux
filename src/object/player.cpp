@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "player.hpp"
+#include "collision_system.hpp"
 #include "object/moving_object.hpp"
 #include "video/painter.hpp"
 #include "video/texture_manager.hpp"

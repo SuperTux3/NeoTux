@@ -20,6 +20,7 @@
 #include "math/size.hpp"
 #include "camera.hpp"
 #include "object/retro/retro_bag.hpp"
+#include "object/retro/retro_brick.hpp"
 #include "object/retro/retro_player.hpp"
 #include "timer.hpp"
 #include "util/filesystem.hpp"
@@ -37,6 +38,7 @@ void
 Milestone1Test::run()
 {
 	GameObject::register_object<RetroBag>();
+	GameObject::register_object<RetroBrick>();
 	Size winsize = g_video_system->get_window_size();
 	g_camera.width = winsize.width;
 	g_camera.height = winsize.height;
@@ -77,8 +79,8 @@ Milestone1Test::run()
 				player.enable_gravity();
 			}
 		}
-		player.update(*tilemap);
 		level->update();
+		player.update(*tilemap);
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))

@@ -53,7 +53,7 @@ MovingSprite::parse_sprite()
 		double fps = 0.0;
 		int loops = -1;
 		std::vector<std::string> images;
-		int hitboxes[4];
+		int hitboxes[4] = { -1, -1, -1, -1 };
 		SpriteAction *sprite_action;
 		
 		if (!root.is_list())
@@ -110,10 +110,10 @@ MovingSprite::set_action(const std::string &action)
 	
 	m_rect.right = m_rect.left + tex->get_size().width;
 	m_rect.bottom = m_rect.top + tex->get_size().height;
-	m_colbox.left = m_action->hitboxes[0];
-	m_colbox.top = m_action->hitboxes[1];
-	m_colbox.right = m_action->hitboxes[2];
-	m_colbox.bottom = m_action->hitboxes[3];
+	m_colbox.left = m_action->hitboxes[0] != -1 ? m_action->hitboxes[0] : m_rect.left;
+	m_colbox.top = m_action->hitboxes[1] != -1 ? m_action->hitboxes[1] : m_rect.top;
+	m_colbox.right = m_action->hitboxes[2] != -1 ? m_action->hitboxes[2] : m_rect.right;
+	m_colbox.bottom = m_action->hitboxes[3] != -1 ? m_action->hitboxes[3] : m_rect.bottom;
 	
 	m_action_timer.set_duration((1.0/m_action->fps)*1000);
 	m_action_timer.set_loops(m_action->loops);

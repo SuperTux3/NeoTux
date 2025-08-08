@@ -56,7 +56,7 @@ public:
 	virtual ~MovingSprite() = default;
 	
 	virtual void update(Tilemap &tilemap) override;
-	void draw();
+	virtual void draw() override;
 	
 	void set_action(const std::string &action);
 

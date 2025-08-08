@@ -99,31 +99,8 @@ Tilemap::try_object_collision(MovingObject& obj)
 				continue;
 			
 			Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
-			auto collide = Collision::aabb(obj_rect, rrect);
-			if (collide.is_colliding())
-			{
-				if (collide.top)
-				{
-					if (obj.m_y_vel > 0)
-					{
-						obj.m_y_vel = 0;
-						obj.move(0, collide.top_constraint);
-					}
-				}
-				else if (collide.bottom)
-				{
-					if (obj.m_y_vel < 0)
-					{	
-						obj.m_grounded = true;
-						obj.move(0, -collide.bottom_constraint);
-					}
-				}
-				else if (collide.left)
-					obj.move(collide.left_constraint, 0);
-				else if (collide.right)
-					obj.move(-collide.right_constraint, 0);
+			if (obj.do_collision(rrect))
 				return true;
-			}
 		}
 	}
 	
