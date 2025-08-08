@@ -95,6 +95,7 @@ Sector::update()
 		if (obj->destroy_me())
 		{
 			m_objects.erase(it);
+			--it;
 			continue;
 		}
 		m_zero_tilemap->try_object_collision(*obj);
