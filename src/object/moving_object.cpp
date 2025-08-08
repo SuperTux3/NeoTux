@@ -32,6 +32,30 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	
 }
 
+bool
+MovingObject::parse_moving_object_sexp(SexpElt elt)
+{
+	double x{};
+	double y{};
+	SexpElt telt;
+	telt = elt.find_car("x");
+	if (telt)
+		x = telt.next().get_number();
+	
+	telt = elt.find_car("y");
+	if (telt)
+		y = telt.next().get_number();
+		
+	std::cout << x << " " << y << std::endl;
+	
+	if (x != 0.0 && y != 0.0)
+	{
+		move_to(x, y);
+	}
+	
+	return true;
+}
+
 Rectf
 MovingObject::get_colbox() const
 {

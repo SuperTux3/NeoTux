@@ -54,10 +54,6 @@ Milestone1Test::run()
 	painter->register_camera(&g_camera);
 	
 	RetroPlayer player{};
-	RetroBag    bag{};
-	
-	g_collision_system.register_object(&player);
-	g_collision_system.register_object(&bag);
 	
 	BEGIN_GAME_LOOP
 		handle_events();
@@ -82,9 +78,8 @@ Milestone1Test::run()
 			}
 		}
 		player.update(*tilemap);
-		bag.update(*tilemap);
+		level->update();
 		tilemap->try_object_collision(player);
-		tilemap->try_object_collision(bag);
 		
 		if (g_input_manager.is_key_down('a'))
 			player.move_left();
@@ -101,8 +96,8 @@ Milestone1Test::run()
 		g_camera.y = 200;
 		
 		tilemap->draw(g_camera);
+		level->draw();
 		player.draw();
-		bag.draw();
 		
 		g_collision_system.debug_draw();
 

@@ -17,11 +17,14 @@
 #include "sector.hpp"
 #include "collision_system.hpp"
 #include "util/logger.hpp"
+#include <cassert>
 
 Sector::Sector(SexpElt root) :
-	m_objects()
+	m_objects(),
+	m_zero_tilemap(nullptr)
 {
 	SexpElt elt;
+	size_t zero_tilemap_idx = 0;
 	
 	while (root)
 	{
@@ -42,15 +45,44 @@ Sector::Sector(SexpElt root) :
 			else if (elt.get_value() == "tilemap") {
 				Logger::debug("Parsing tilemap");
 				m_tilemaps.emplace_back(elt);
+				if (m_tilemaps.back().get_zpos() == 0)
+				{
+					// iterators/pointers become invalidated, so we get at this last
+					zero_tilemap_idx = m_tilemaps.size()-1;
+				}
 			}
 			else {
 				std::string obj_name = elt.get_value();
 				MovingObject *obj = static_cast<MovingObject*>(GameObject::create(elt));
-				m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
+				if (obj)
+					m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
 			}
 			
 		}
 		root.next_inplace();
+	}
+	
+	// Cache zero tilemap for update calls
+	m_zero_tilemap = &m_tilemaps[zero_tilemap_idx];
+}
+
+void
+Sector::update() const
+{
+	assert(m_zero_tilemap);
+	for (auto &object : m_objects)
+	{
+		object.get()->update(*m_zero_tilemap);
+		m_zero_tilemap->try_object_collision(*object.get());
+	}
+}
+
+void
+Sector::draw() const
+{
+	for (auto &object : m_objects)
+	{
+		object.get()->draw();
 	}
 }
 

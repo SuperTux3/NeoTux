@@ -59,3 +59,17 @@ Level::Level(SexpElt root) :
 		root.next_inplace();
 	}
 }
+
+void
+Level::update()
+{
+	for (const Sector& sector : m_sectors)
+		sector.update();
+}
+
+void
+Level::draw()
+{
+	for (const Sector& sector : m_sectors)
+		sector.draw();
+}

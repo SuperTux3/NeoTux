@@ -33,6 +33,9 @@ public:
 	Sector &get_sector(size_t idx) { return m_sectors[idx]; }
 	const size_t num_sectors() const { return m_sectors.size(); }
 	Sector &operator[](size_t idx) { return get_sector(idx); }
+	
+	void update();
+	void draw();
 private:
 	std::vector<Sector> m_sectors;
 	

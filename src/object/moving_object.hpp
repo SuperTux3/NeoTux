@@ -30,6 +30,7 @@ public:
 	virtual ~MovingObject() = default;
 	
 	static std::string_view class_id() { return "moving-object"; }
+	bool parse_moving_object_sexp(SexpElt elt);
 	
 	virtual void update(Tilemap &tilemap);
 	void draw();

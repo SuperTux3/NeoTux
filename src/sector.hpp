@@ -35,11 +35,15 @@ public:
 	Tilemap* get_tilemap_by_zpos(long zpos);
 	const size_t num_tilemaps() const { return m_tilemaps.size(); }
 	Tilemap& operator[](size_t idx) { return get_tilemap(idx); }
+	
+	void update() const;
+	void draw() const;
 private:
 	std::string m_name;
 	
 	std::vector<std::shared_ptr<MovingObject>> m_objects;
 	std::vector<Tilemap> m_tilemaps;
+	Tilemap *m_zero_tilemap;
 };
 
 #endif
