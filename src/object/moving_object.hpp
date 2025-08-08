@@ -28,7 +28,7 @@ class MovingObject : public GameObject
 {
 public:
 	MovingObject(Rectf rect, Rectf colbox, std::string_view name);
-	virtual ~MovingObject() = default;
+	virtual ~MovingObject();
 	
 	static std::string_view class_id() { return "moving-object"; }
 	bool parse_sexp(SexpElt elt);
@@ -43,7 +43,7 @@ public:
 	bool is_collidable() const { return m_collidable; };
 
 	Collision::CollideInfo<float> do_collision(Rectf rect, bool do_real_collision_stuff = true);
-	Collision::CollideInfo<float>  do_collision(const MovingObject &other, bool do_real_collision_stuff = true)
+	Collision::CollideInfo<float> do_collision(const MovingObject &other, bool do_real_collision_stuff = true)
 	{
 		if (!other.is_collidable())
 			return do_collision(other.get_colbox(), false);

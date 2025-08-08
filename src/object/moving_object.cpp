@@ -33,6 +33,16 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	
 }
 
+MovingObject::~MovingObject()
+{
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	
+	// Remove object from collision system
+	for (int x = colbox.left; x <= colbox.right; ++x)
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
+			g_collision_system.remove(x, y, this);
+}
+
 bool
 MovingObject::parse_sexp(SexpElt elt)
 {
