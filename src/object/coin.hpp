@@ -31,6 +31,9 @@ public:
 	
 	void update(Tilemap &tilemap) override;
 	void draw() override;
+private:
+	bool m_just_collected;
+	Timer m_collected_timer;
 };
 
 #endif

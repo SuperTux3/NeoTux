@@ -37,9 +37,10 @@ MovingObject::~MovingObject()
 {
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
+	// DISGUSTING HACK: Remove any adjacent cells, since the collision system can be off sometimes
 	// Remove object from collision system
-	for (int x = colbox.left; x <= colbox.right; ++x)
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
+	for (int x = colbox.left - 1; x <= colbox.right + 1; ++x)
+		for (int y = colbox.top - 1; y <= colbox.bottom + 1; ++y)
 			g_collision_system.remove(x, y, this);
 }
 

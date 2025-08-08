@@ -21,7 +21,9 @@
 #include "video/painter.hpp"
 
 Coin::Coin() :
-	MovingSprite("", "old-bag")
+	MovingSprite("", "old-bag"),
+	m_just_collected(false),
+	m_collected_timer(400.0, 1)
 {
 	disable_gravity();
 	set_collidable(false);
@@ -44,6 +46,17 @@ Coin::update(Tilemap &tilemap)
 	//if (m_grounded)
 	//	m_y_vel = -15 * g_dtime;
 	
+	if (m_just_collected)
+	{
+		if (m_collected_timer.tick())
+		{
+			mark_for_destruction();
+			return;
+		}
+		move(0, -0.3);
+		return;
+	}
+	
 	MovingSprite::update(tilemap);
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
@@ -64,7 +77,9 @@ Coin::update(Tilemap &tilemap)
 				auto collide = do_collision(*obj, false);
 				if (collide.is_colliding())
 				{
-					mark_for_destruction();
+					m_just_collected = true;
+					m_collected_timer.reset();
+					break;
 				}
 			}
 		}
