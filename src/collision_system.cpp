@@ -68,6 +68,10 @@ CollisionSystem::remove(int x, int y, MovingObject *object)
 	
 	if (it != objs.end())
 		objs.erase(it);
+	if (objs.size() == 0)
+	{
+		m_object_shash.m_hash.at(x).erase(y);
+	}
 }
 
 void
