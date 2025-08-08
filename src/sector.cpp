@@ -45,8 +45,24 @@ Sector::Sector(SexpElt root) :
 			}
 			else if (elt.get_value() == "tilemap") {
 				Logger::debug("Parsing tilemap");
-				m_tilemaps.emplace_back(elt);
-				if (m_tilemaps.back().get_zpos() == 0)
+				Tilemap tm(elt);
+				// HACK: Insert zpos in order for now
+				long zpos = tm.get_zpos();
+				if (m_tilemaps.size() > 0)
+				for (int i = 0; i < m_tilemaps.size(); ++i)
+				{
+					if (zpos <= m_tilemaps[i].get_zpos())
+					{
+						m_tilemaps.emplace(m_tilemaps.begin() + i, tm);
+						if (i <= zero_tilemap_idx)
+							++zero_tilemap_idx;
+						break;
+					}
+				}
+				else
+					m_tilemaps.emplace_back(tm);
+				
+				if (tm.get_zpos() == 0)
 				{
 					// iterators/pointers become invalidated, so we get at this last
 					zero_tilemap_idx = m_tilemaps.size()-1;
@@ -65,6 +81,7 @@ Sector::Sector(SexpElt root) :
 	
 	// Cache zero tilemap for update calls
 	m_zero_tilemap = &m_tilemaps[zero_tilemap_idx];
+	assert(m_zero_tilemap->get_zpos() == 0);
 }
 
 void
