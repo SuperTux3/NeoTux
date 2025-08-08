@@ -77,7 +77,11 @@ Snowball::update(Tilemap &tilemap)
 				auto collide = do_collision(*obj, false);
 				if (collide.is_colliding())
 				{
-					break;
+					if (collide.top)
+					{
+						mark_for_destruction();
+						player->set_y_vel(0.4);
+					}
 				}
 			}
 		}

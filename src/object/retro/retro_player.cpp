@@ -96,7 +96,7 @@ RetroPlayer::update(Tilemap &tilemap)
 				RetroBrick *brick = dynamic_cast<RetroBrick*>(obj);
 				if (!brick)
 				{
-					do_collision(*obj);
+					do_collision(*obj, false);
 					continue;
 				}
 				auto collide = do_collision(*obj, !obj->m_likes_falling);
