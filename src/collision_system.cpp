@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "collision.hpp"
+#include "settings.hpp"
 #include "video/video_system.hpp"
 #include "collision_system.hpp"
 
@@ -35,6 +36,9 @@ CollisionSystem::get_objects(int x, int y)
 void
 CollisionSystem::debug_draw()
 {
+	if (!g_settings->show_hitboxes)
+		return;
+	
 	for (auto &x : m_object_shash.m_hash)
 	{
 		int count = x.second.size();
