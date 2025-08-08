@@ -104,14 +104,14 @@ Sector::update()
 void
 Sector::draw()
 {
-	for (auto &object : m_objects)
-	{
-		object.get()->draw();
-	}
-	
 	for (auto &object : m_tilemaps)
 	{
 		object.draw(g_camera);
+	}
+	
+	for (auto &object : m_objects)
+	{
+		object.get()->draw();
 	}
 }
 

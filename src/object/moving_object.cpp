@@ -139,27 +139,6 @@ MovingObject::update(Tilemap &tilemap)
 	// Test collision	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this)
-					break;
-				
-				// if (colliding_with(*obj))
-				// {
-				// 	obj->move_to(0, 0);
-				// }
-			}
-		}
-	}
-	
-
 	// Update collision spatial hash
 	if (colbox != m_last_colbox)
 	{

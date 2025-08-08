@@ -14,25 +14,23 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ALL_OBJECTS_HPP
-#define ALL_OBJECTS_HPP
+#ifndef SUPERTUX_SRC_OBJECT_SNOWBALL_HPP
+#define SUPERTUX_SRC_OBJECT_SNOWBALL_HPP
 
-#include "object/snowball.hpp"
-#include "object/spiky.hpp"
-#include "object/coin.hpp"
-#include "object/game_object.hpp"
-#include "object/player.hpp"
-#include "object/retro/retro_brick.hpp"
-#include "object/retro/retro_player.hpp"
+#include "object/moving_object.hpp"
+#include "object/moving_sprite.hpp"
 
-static void init_all_objects()
+class Snowball : public MovingSprite
 {
-	GameObject::register_object<Coin>();
-	GameObject::register_object<Snowball>();
-	//GameObject::register_object<Player>();
-	//GameObject::register_object<RetroPlayer>();
-	GameObject::register_object<Spiky>();
-	GameObject::register_object<RetroBrick>();
-}
+public:
+	Snowball();
+	virtual ~Snowball() = default;
+	
+	static std::string_view class_id() { return "snowball"; }
+	static GameObject* construct(SexpElt elt);
+	
+	void update(Tilemap &tilemap) override;
+	void draw() override;
+};
 
 #endif
