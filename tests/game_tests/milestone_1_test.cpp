@@ -19,8 +19,7 @@
 #include "input_manager.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
-#include "object/retro/retro_bag.hpp"
-#include "object/retro/retro_brick.hpp"
+#include "object/all_objects.hpp"
 #include "object/retro/retro_player.hpp"
 #include "timer.hpp"
 #include "util/filesystem.hpp"
@@ -37,8 +36,8 @@ static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 void
 Milestone1Test::run()
 {
-	GameObject::register_object<RetroBag>();
-	GameObject::register_object<RetroBrick>();
+	init_all_objects();
+	
 	Size winsize = g_video_system->get_window_size();
 	g_camera.width = winsize.width;
 	g_camera.height = winsize.height;

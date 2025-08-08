@@ -27,7 +27,8 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	m_rect(std::move(rect)),
 	m_colbox(std::move(colbox)),
 	m_grounded(false),
-	m_y_vel(0)
+	m_y_vel(0),
+	m_collidable(true)
 {
 	
 }

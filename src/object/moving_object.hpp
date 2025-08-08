@@ -39,10 +39,14 @@ public:
 	void move(double x, double y);
 	void move_to(float x, float y);
 	void set_y_vel(double y_vel);
+	void set_collidable(bool state) { m_collidable = state; }
+	bool is_collidable() const { return m_collidable; };
 
 	Collision::CollideInfo<float> do_collision(Rectf rect, bool do_real_collision_stuff = true);
 	Collision::CollideInfo<float>  do_collision(const MovingObject &other, bool do_real_collision_stuff = true)
 	{
+		if (!other.is_collidable())
+			return do_collision(other.get_colbox(), false);
 		return do_collision(other.get_colbox(), do_real_collision_stuff);
 	}
 	Collision::CollideInfo<float> colliding_with(const MovingObject &other) const;
@@ -56,7 +60,8 @@ protected:
 public:
 	double m_y_vel;
 	bool m_likes_falling,
-		 m_grounded;
+		 m_grounded,
+		 m_collidable;
 	Rectf m_rect;
 	Rectf m_colbox;
 	Rectf m_last_colbox;
