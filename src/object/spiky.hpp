@@ -14,19 +14,19 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_RETRO_RETRO_BAG_HPP
-#define SUPERTUX_SRC_OBJECT_RETRO_RETRO_BAG_HPP
+#ifndef SUPERTUX_SRC_OBJECT_SPIKY_HPP
+#define SUPERTUX_SRC_OBJECT_SPIKY_HPP
 
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
 
-class RetroBag : public MovingSprite
+class Spiky : public MovingSprite
 {
 public:
-	RetroBag();
-	virtual ~RetroBag() = default;
+	Spiky();
+	virtual ~Spiky() = default;
 	
-	static std::string_view class_id() { return "retro-bag"; }
+	static std::string_view class_id() { return "spiky"; }
 	static GameObject* construct(SexpElt elt);
 	
 	void update(Tilemap &tilemap) override;

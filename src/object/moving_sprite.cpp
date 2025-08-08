@@ -132,7 +132,7 @@ MovingSprite::parse_sprite()
 		m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 	}
 	
-	if (not_new)
+	if (!m_action_string.empty())
 		set_action(m_action_string);
 }
 

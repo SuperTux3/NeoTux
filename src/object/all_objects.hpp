@@ -17,10 +17,10 @@
 #ifndef ALL_OBJECTS_HPP
 #define ALL_OBJECTS_HPP
 
+#include "object/spiky.hpp"
 #include "object/coin.hpp"
 #include "object/game_object.hpp"
 #include "object/player.hpp"
-#include "object/retro/retro_bag.hpp"
 #include "object/retro/retro_brick.hpp"
 #include "object/retro/retro_player.hpp"
 
@@ -29,7 +29,7 @@ static void init_all_objects()
 	GameObject::register_object<Coin>();
 	//GameObject::register_object<Player>();
 	//GameObject::register_object<RetroPlayer>();
-	GameObject::register_object<RetroBag>();
+	GameObject::register_object<Spiky>();
 	GameObject::register_object<RetroBrick>();
 }
 

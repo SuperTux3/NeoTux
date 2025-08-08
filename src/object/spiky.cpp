@@ -14,11 +14,11 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "retro_bag.hpp"
+#include "spiky.hpp"
 #include "video/painter.hpp"
 
-RetroBag::RetroBag() :
-	MovingSprite("images/creatures/retro/bag/bag.sprite", "old-bag")
+Spiky::Spiky() :
+	MovingSprite("", "spiky")
 {
 	enable_gravity();
 	
@@ -26,15 +26,15 @@ RetroBag::RetroBag() :
 }
 
 GameObject*
-RetroBag::construct(SexpElt elt)
+Spiky::construct(SexpElt elt)
 {
-	RetroBag *that = new RetroBag();
+	Spiky *that = new Spiky();
 	that->parse_sexp(elt);
 	return that;
 }
 
 void
-RetroBag::update(Tilemap &tilemap)
+Spiky::update(Tilemap &tilemap)
 {
 	//if (m_grounded)
 	//	m_y_vel = -15 * g_dtime;
@@ -47,7 +47,7 @@ RetroBag::update(Tilemap &tilemap)
 }
 
 void
-RetroBag::draw()
+Spiky::draw()
 {
 	//MovingObject::draw();
 	MovingSprite::draw();
