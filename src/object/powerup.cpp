@@ -14,53 +14,60 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "bonus_block.hpp"
+#include "powerup.hpp"
 #include "collision.hpp"
 #include "collision_system.hpp"
 #include "object/player.hpp"
-#include "sector.hpp"
+#include "video/painter.hpp"
 
-BonusBlock::BonusBlock() :
-	MovingSprite("", "bonusblock"),
-	m_type(Powerup::NONE),
-	m_activated(false)
+Powerup::Powerup(enum PowerupType type) :
+	MovingSprite("", "powerup"),
+	m_dir(false),
+	m_type(std::move(type))
 {
-	disable_gravity();
+	enable_gravity();
 	set_collidable(true);
-	set_tilelike(true);
 	
-	set_action("normal");
-}
-
-bool
-BonusBlock::parse_sexp(SexpElt elt)
-{
-	SexpElt telt;
-	std::string contents;
-	
-	telt = elt.find_car("contents");
-	if (telt)
+	switch (m_type)
 	{
-		contents = telt.next().get_value();
-		m_type = Powerup::EGG;
+	case Powerup::EGG:
+		set_sprite("images/powerups/egg/egg.sprite");
+		break;
+	case Powerup::COFFEE:
+		//wtf
+		break;
 	}
 	
-	return MovingSprite::parse_sexp(elt);
+	set_action("default");
 }
 
 GameObject*
-BonusBlock::construct(SexpElt elt)
+Powerup::construct(SexpElt elt)
 {
-	BonusBlock *that = new BonusBlock();
+	Powerup *that = new Powerup(Powerup::COFFEE);
 	that->parse_sexp(elt);
 	return that;
 }
 
 void
-BonusBlock::update(Sector &sector, Tilemap &tilemap)
+Powerup::update(Sector &sector, Tilemap &tilemap)
 {
-	
+	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
 	MovingSprite::update(sector, tilemap);
+	
+	for (auto &colinfo : m_colinfo)
+	{
+		if (colinfo.left && m_dir == false)
+		{
+			m_dir = true;
+			m_flip = FLIP_HORIZONTAL;
+		}
+		if (colinfo.right && m_dir == true)
+		{
+			m_dir = false;
+			m_flip = 0;
+		}
+	}
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)
@@ -74,23 +81,22 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 			{
 				if (obj == this) continue;
 				Player *player = dynamic_cast<Player*>(obj);
+				if (!player)
+					continue;
 				
-				auto collide = obj->do_collision(*this, false);
+				auto collide = do_collision(*obj, false);
 				if (collide.is_colliding())
 				{
-					if (!player)
-						continue;
-					
-					if (collide.top && !m_activated)
+					if (collide.top)
 					{
-						set_action("empty");
-						if (m_type != Powerup::NONE)
-						{
-							Powerup *powerup = new Powerup(m_type);
-							powerup->move_to(m_rect.left, m_rect.top);
-							m_activated = true;
-							sector.add_object(powerup);
-						}
+						g_mixer.play_sound("sounds/retro/squish.wav");
+						mark_for_destruction();
+						player->set_y_vel(0.4);
+						continue;
+					}
+					if (collide.left || collide.right)
+					{
+						player->damage();
 					}
 				}
 			}
@@ -99,7 +105,7 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 }
 
 void
-BonusBlock::draw()
+Powerup::draw()
 {
 	MovingSprite::draw();
 }

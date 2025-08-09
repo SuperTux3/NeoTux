@@ -14,29 +14,34 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_BONUS_BLOCK_HPP
-#define SUPERTUX_SRC_OBJECT_BONUS_BLOCK_HPP
+#ifndef SUPERTUX_SRC_OBJECT_POWERUP_HPP
+#define SUPERTUX_SRC_OBJECT_POWERUP_HPP
 
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
-#include "object/powerup.hpp"
 
-class BonusBlock : public MovingSprite
+class Powerup : public MovingSprite
 {
 public:
-	BonusBlock();
-	virtual ~BonusBlock() = default;
+	enum PowerupType
+	{
+		NONE,
+		EGG,
+		COFFEE,
+		HERRING
+	};
+public:
+	Powerup(enum PowerupType type);
+	virtual ~Powerup() = default;
 	
-	bool parse_sexp(SexpElt);
-	
-	static std::string_view class_id() { return "bonusblock"; }
+	static std::string_view class_id() { return "powerup"; }
 	static GameObject* construct(SexpElt elt);
 	
 	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 private:
-	enum Powerup::PowerupType m_type;
-	bool m_activated;
+	bool m_dir;
+	enum PowerupType m_type;
 };
 
 #endif
