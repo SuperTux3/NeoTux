@@ -24,17 +24,10 @@
 #include "object/retro/retro_player.hpp"
 #include "stats.hpp"
 #include "stats_overlay.hpp"
-#include "timer.hpp"
-#include "util/filesystem.hpp"
-#include "video/font_cache.hpp"
-#include "video/texture_manager.hpp"
+#include "video/font_manager.hpp"
 #include "video/video_system.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
-
-#include "collision.hpp"
-
-static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 std::vector<std::string> _levels = {
 	"antarctica.stl",
@@ -49,6 +42,7 @@ int _levels_idx = -1;
 void
 Milestone1Test::run()
 {
+	FontManager::load_builtin_fonts();
 	init_all_objects();
 	
 	// First is considered a completion to start
@@ -124,8 +118,6 @@ Milestone1Test::run()
 			g_stats.reset(true);
 			levelscreen.reset();
 		}
-		
-		std::cout << g_dtime << std::endl;
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)

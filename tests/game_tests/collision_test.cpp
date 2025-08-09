@@ -19,16 +19,13 @@
 #include "math/size.hpp"
 #include "camera.hpp"
 #include "object/player.hpp"
-#include "util/filesystem.hpp"
-#include "video/font_cache.hpp"
+#include "video/font_manager.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
 
 #include "collision.hpp"
-
-static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 void
 CollisionTest::run()
@@ -72,13 +69,16 @@ CollisionTest::run()
 			}
 		}
 		
-		TextureRef help_1 = g_font_cache.load("Left click to move relative", {255, 255, 255, 155});
+		TextureRef help_1 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
+			"Left click to move relative", {255, 255, 255, 155});
 		painter->draw(help_1, std::nullopt,
 			Rectf{0, 0, {(float)help_1->get_size().width, (float)help_1->get_size().height}});
-		TextureRef help_2 = g_font_cache.load("Middle click to move camera", {255, 255, 255, 155});
+		TextureRef help_2 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
+			"Middle click to move camera", {255, 255, 255, 155});
 		painter->draw(help_2, std::nullopt,
 			Rectf{0, (float)help_1->get_size().height*2, {(float)help_2->get_size().width, (float)help_2->get_size().height}});
-		TextureRef help_3 = g_font_cache.load("Right click to move Tux to cursor", {255, 255, 255, 155});
+		TextureRef help_3 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
+			"Right click to move Tux to cursor", {255, 255, 255, 155});
 		painter->draw(help_3, std::nullopt,
 			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
 		

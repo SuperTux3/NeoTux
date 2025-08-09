@@ -16,13 +16,10 @@
 
 #include "stats_overlay.hpp"
 #include "camera.hpp"
-#include "util/filesystem.hpp"
-#include "video/font_cache.hpp"
 #include "stats.hpp"
+#include "video/font_manager.hpp"
 #include "video/video_system.hpp"
 #include <format>
-
-static FontCache font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 24};
 
 StatsOverlay::StatsOverlay()
 {
@@ -36,9 +33,12 @@ StatsOverlay::draw()
 	Camera camera{last_camera->width, last_camera->height};
 	painter->register_camera(&camera);
 	
-	TextureRef time = font_cache.load(std::format("Time: {}", g_stats.time), {255, 220, 220, 225});
-	TextureRef coins = font_cache.load(std::format("Coins: {}", g_stats.coins), {255, 220, 220, 225});
-	TextureRef lives = font_cache.load(std::format("Lives: {}", g_stats.lives), {255, 220, 220, 225});
+	TextureRef time = g_font_manager.load(SUPERTUX_MEDIUM, 24,
+		std::format("Time: {}", g_stats.time), {255, 220, 220, 225});
+	TextureRef coins = g_font_manager.load(SUPERTUX_MEDIUM, 24,
+		std::format("Coins: {}", g_stats.coins), {255, 220, 220, 225});
+	TextureRef lives = g_font_manager.load(SUPERTUX_MEDIUM, 24,
+		std::format("Lives: {}", g_stats.lives), {255, 220, 220, 225});
 
 	
 	painter->draw(time, std::nullopt,

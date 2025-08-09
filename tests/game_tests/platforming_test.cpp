@@ -21,16 +21,9 @@
 #include "object/moving_sprite.hpp"
 #include "object/player.hpp"
 #include "timer.hpp"
-#include "util/filesystem.hpp"
-#include "video/font_cache.hpp"
-#include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
-
-#include "collision.hpp"
-
-static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
 void
 PlatformingTest::run()

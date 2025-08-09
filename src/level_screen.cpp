@@ -20,6 +20,7 @@
 #include "util/filesystem.hpp"
 #include "video/font_cache.hpp"
 #include "stats.hpp"
+#include "video/font_manager.hpp"
 #include "video/video_system.hpp"
 #include <format>
 
@@ -67,8 +68,10 @@ LevelScreen::draw()
 	Camera camera{last_camera->width, last_camera->height};
 	painter->register_camera(&camera);
 	
-	TextureRef lvlname = font_cache.load(std::format("{}", m_level->get_name()), {255, 220, 220, 225});
-	TextureRef lives = font_cache.load(std::format("Lives x {}", g_stats.lives), {255, 220, 220, 255});
+	TextureRef lvlname = g_font_manager.load(SUPERTUX_MEDIUM, 30,
+		std::format("{}", m_level->get_name()), {255, 220, 220, 225});
+	TextureRef lives = g_font_manager.load(SUPERTUX_MEDIUM, 30,
+		std::format("Lives x {}", g_stats.lives), {255, 220, 220, 255});
 
 	painter->draw_fill_rect({0, 0, (float)camera.width, (float)camera.height}, {0, 0, 0, 255});
 	

@@ -26,6 +26,7 @@ class TTFFont
 {
 public:
 	TTFFont(std::string_view filename, int font_size, float line_spacing = 1.0f, int shadow_size = 0, int border = 0);
+	TTFFont() : m_font{nullptr, &TTF_CloseFont} {}
 	~TTFFont() = default;
 	
 	SDL_Surface* render_text_solid(const std::string &msg, SDL_Color color);
