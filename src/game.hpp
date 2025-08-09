@@ -22,17 +22,17 @@
 #include "settings.hpp"
 #include <memory>
 
-#define BEGIN_GAME_LOOP uint64_t __last_time; \
+#define BEGIN_GAME_LOOP double __last_time; \
 	g_dtime = 0; \
 	while (is_running()) { \
-		__last_time = SDL_GetTicks(); \
+		__last_time = ((double)SDL_GetTicksNS() / 1000000.0); \
 		if (!g_video_system) continue; \
 	
 #define END_GAME_LOOP g_video_system->flip(); \
 	g_input_manager.reset(); \
 	if (g_settings->forced_delay != 0) \
 		SDL_Delay(g_settings->forced_delay); \
-	g_dtime = (SDL_GetTicks() - __last_time) * g_settings->speed; \
+	g_dtime = (((double)SDL_GetTicksNS() / 1000000.0) - __last_time) * g_settings->speed; \
 }
 
 class Game
