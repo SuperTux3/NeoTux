@@ -93,7 +93,6 @@ Player::get_size_str()
 void
 Player::grow(int amount)
 {
-	g_mixer.play_sound("sounds/retro/upgrade.wav");
 	g_mixer.play_sound("sounds/retro/excellent.wav");
 	m_powerup_state += amount;
 	m_just_grew = true;

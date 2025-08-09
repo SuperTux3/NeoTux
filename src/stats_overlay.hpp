@@ -14,47 +14,18 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "painter.hpp"
-#include "camera.hpp"
+#ifndef SUPERTUX_SRC_STATS_OVERLAY_HPP
+#define SUPERTUX_SRC_STATS_OVERLAY_HPP
 
-bool
-Painter::in_camera_bounds(std::optional<Rectf> dest)
+class StatsOverlay
 {
-	if (!m_camera || !dest)
-		return true;
+public:
+	StatsOverlay();
+	~StatsOverlay() = default;
 	
-	if (dest->bottom - m_camera->y < 0 ||
-	    dest->top - m_camera->y > m_camera->height ||
-		dest->right - m_camera->x < 0 ||
-		dest->left - m_camera->x > m_camera->width)
-		return false;
+	void draw();
+private:
 	
-	return true;
-}
+};
 
-void
-Painter::register_camera(Camera *camera)
-{
-	m_camera = camera;
-}
-
-Camera*
-Painter::unregister_camera()
-{
-	Camera *old_camera = m_camera;
-	m_camera = nullptr;
-	return old_camera;
-}
-
-void
-Painter::begin_clip(Rect clip)
-{
-	m_do_clip = true;
-	m_clip = std::move(clip);
-}
-
-void
-Painter::end_clip()
-{
-	m_do_clip = false;
-}
+#endif

@@ -25,7 +25,7 @@ Powerup::Powerup(enum PowerupType type) :
 	MovingSprite("", "powerup"),
 	m_dir(true),
 	m_type(std::move(type)),
-	m_popout_timer(800, 1)
+	m_popout_timer(700, 1)
 {
 	enable_gravity();
 	set_collidable(true);
@@ -57,7 +57,7 @@ Powerup::update(Sector &sector, Tilemap &tilemap)
 	if (!m_popout_timer.tick())
 		return;
 	
-	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
+	move((m_dir ? 1.0 : -1.0) * 0.2 * g_dtime, 0);
 	MovingSprite::update(sector, tilemap);
 	
 	for (auto &colinfo : m_colinfo)

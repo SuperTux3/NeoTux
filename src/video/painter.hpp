@@ -54,7 +54,7 @@ public:
 	virtual void end_clip();
 	
 	void register_camera(Camera *camera);
-	void unregister_camera();
+	Camera* unregister_camera();
 	
 //#ifndef NDEBUG
 	inline unsigned long get_draw_count() const { return m_draw_count; }

@@ -86,6 +86,7 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 						set_action("empty");
 						if (m_type != Powerup::NONE)
 						{
+							g_mixer.play_sound("sounds/retro/upgrade.wav");
 							Powerup *powerup = new Powerup(m_type);
 							powerup->move_to(m_rect.left, m_rect.top - m_rect.get_height());
 							m_activated = true;

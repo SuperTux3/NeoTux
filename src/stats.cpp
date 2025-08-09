@@ -14,47 +14,34 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "painter.hpp"
-#include "camera.hpp"
+#include "stats.hpp"
+
+Stats g_stats{};
+
+Stats::Stats() :
+	m_timer(1000, -1)
+{
+	reset();
+}
+
+void
+Stats::reset()
+{
+	lives = 3;
+	coins = 0;
+	time = 120;
+	m_timer.reset();
+}
 
 bool
-Painter::in_camera_bounds(std::optional<Rectf> dest)
+Stats::tick_timer()
 {
-	if (!m_camera || !dest)
-		return true;
+	if (m_timer.tick() && time > 0)
+	{
+		if (--time == 0)
+			if (lives > 0)
+				--lives;
+	}
 	
-	if (dest->bottom - m_camera->y < 0 ||
-	    dest->top - m_camera->y > m_camera->height ||
-		dest->right - m_camera->x < 0 ||
-		dest->left - m_camera->x > m_camera->width)
-		return false;
-	
-	return true;
-}
-
-void
-Painter::register_camera(Camera *camera)
-{
-	m_camera = camera;
-}
-
-Camera*
-Painter::unregister_camera()
-{
-	Camera *old_camera = m_camera;
-	m_camera = nullptr;
-	return old_camera;
-}
-
-void
-Painter::begin_clip(Rect clip)
-{
-	m_do_clip = true;
-	m_clip = std::move(clip);
-}
-
-void
-Painter::end_clip()
-{
-	m_do_clip = false;
+	return time > 0;
 }

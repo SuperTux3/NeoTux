@@ -127,7 +127,7 @@ MrIceBlock::update(Sector &sector, Tilemap &tilemap)
 						player->set_y_vel(0.4);
 					}
 					
-					if (m_flat && !m_kicked && !m_iframe.tick())
+					if (m_flat && !m_kicked && m_iframe.tick())
 					{
 						if (collide.left)
 						{

@@ -21,6 +21,8 @@
 #include "camera.hpp"
 #include "object/all_objects.hpp"
 #include "object/retro/retro_player.hpp"
+#include "stats.hpp"
+#include "stats_overlay.hpp"
 #include "timer.hpp"
 #include "util/filesystem.hpp"
 #include "video/font_cache.hpp"
@@ -54,16 +56,19 @@ Milestone1Test::run()
 	Painter* painter = g_video_system->get_painter();
 	painter->register_camera(&g_camera);
 	
+	StatsOverlay stats;
+	
 	RetroPlayer player{};
 	
 	BEGIN_GAME_LOOP
 		handle_events();
 		painter->clear();
 		
-		if (player.is_dead())
+		if (player.is_dead() || !g_stats.tick_timer())
 		{
 			g_mixer.play_sound("sounds/retro/hurt.wav");
 			player.reset();
+			g_stats.reset();
 		}
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
@@ -107,6 +112,8 @@ Milestone1Test::run()
 		player.draw();
 		
 		g_collision_system.debug_draw();
+		
+		stats.draw();
 
 		painter->flip();
 	END_GAME_LOOP
