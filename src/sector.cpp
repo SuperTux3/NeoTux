@@ -48,24 +48,26 @@ Sector::Sector(SexpElt root) :
 				Tilemap tm(elt);
 				// HACK: Insert zpos in order for now
 				long zpos = tm.get_zpos();
-				if (m_tilemaps.size() > 0)
-				for (int i = 0; i < m_tilemaps.size(); ++i)
+				int i = 0;
+				bool placed = false;
+				for (i = 0; i < m_tilemaps.size(); ++i)
 				{
 					if (zpos <= m_tilemaps[i].get_zpos())
 					{
 						m_tilemaps.emplace(m_tilemaps.begin() + i, tm);
 						if (i <= zero_tilemap_idx)
 							++zero_tilemap_idx;
+						placed = true;
 						break;
 					}
 				}
-				else
+				if (!placed)
 					m_tilemaps.emplace_back(tm);
 				
 				if (tm.get_zpos() == 0)
 				{
 					// iterators/pointers become invalidated, so we get at this last
-					zero_tilemap_idx = m_tilemaps.size()-1;
+					zero_tilemap_idx = i;
 				}
 			}
 			else {
