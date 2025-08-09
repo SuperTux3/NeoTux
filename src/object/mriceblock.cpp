@@ -87,21 +87,14 @@ MrIceBlock::on_collision(Sector &sector, MovingObject &obj, Collision::CollideIn
 
 	if (m_flat && !m_kicked && m_iframe.tick())
 	{
-		if (collide.left)
+		if (collide.left || collide.right)
 		{
 			m_iframe.reset();
 			m_kicked = true;
 			g_mixer.play_sound("sounds/retro/kick.wav");
-			m_dir = true;
+			m_dir = player->m_direction;
 		}
-		if (collide.right)
-		{
-			m_iframe.reset();
-			m_kicked = true;
-			g_mixer.play_sound("sounds/retro/kick.wav");
-			m_dir = false;
-		}
-		}
+	}
 }
 
 void

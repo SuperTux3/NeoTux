@@ -35,6 +35,7 @@ RetroPlayer::move_left()
 	m_moving = true;
 	move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
+	m_direction = false;
 	if (m_grounded)
 		set_action(get_size_str()+"walk-right");
 
@@ -46,6 +47,7 @@ RetroPlayer::move_right()
 	m_moving = true;
 	move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
+	m_direction = true;
 	if (m_grounded)
 		set_action(get_size_str()+"walk-right");
 }

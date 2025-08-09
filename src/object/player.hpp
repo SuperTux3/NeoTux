@@ -39,9 +39,10 @@ public:
 	void grow(int amt = 1);
 	void damage(bool kill = false);
 	bool is_dead() const;
-protected:
+public:
 	std::string get_size_str();
 	int m_powerup_state;
+	bool m_direction;
 	bool m_just_grew;
 	bool m_moving;
 	Timer m_iframes;
