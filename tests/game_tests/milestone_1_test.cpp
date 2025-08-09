@@ -85,7 +85,7 @@ Milestone1Test::run()
 		if (completed)
 		{
 			++_levels_idx;
-			if (_levels_idx > _levels.size())
+			if (_levels_idx >= _levels.size())
 				_levels_idx = 0;
 			
 			delete level;
