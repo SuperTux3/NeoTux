@@ -72,7 +72,7 @@ Mixer::play_sound(const std::string &filename)
 	++m_current_channel;
 	if (m_current_channel == 4)
 		m_current_channel = 0;
-	Mix_PlayChannel(channel, chunk, false);
+	Mix_PlayChannel(m_current_channel, chunk, false);
 }
 
 void
