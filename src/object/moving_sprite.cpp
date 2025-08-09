@@ -51,12 +51,18 @@ MovingSprite::parse_sexp(SexpElt elt)
 	
 	if (!sprite.empty())
 	{
-		m_filename = sprite;
-		m_parent_dir = FS::parent_dir(sprite);
-		parse_sprite();
+		set_sprite(sprite);
 	}
 	
 	return true;
+}
+
+void
+MovingSprite::set_sprite(const std::string &filename)
+{
+	m_filename = filename;
+	m_parent_dir = FS::parent_dir(filename);
+	parse_sprite();
 }
 
 void
