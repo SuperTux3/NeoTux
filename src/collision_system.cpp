@@ -81,6 +81,7 @@ CollisionSystem::remove(int x, int y, MovingObject *object, bool dont_remove_buc
 void
 CollisionSystem::lazy_remove(MovingObject *object)
 {
+retry:
 	for (auto &x : m_object_shash.m_hash)
 	{
 		for (auto &y : x.second)
@@ -88,7 +89,6 @@ CollisionSystem::lazy_remove(MovingObject *object)
 			long xx = x.first;
 			long yy = y.first;
 			
-			retry:
 			for (auto it = y.second.begin(); it != y.second.end(); ++it)
 			{
 				if (object == *it)
