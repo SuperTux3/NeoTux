@@ -142,6 +142,7 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 	// Test collision	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
+	// FILTHY HACK: we are removing with an offset of 1 because this code is broken.
 	// Update collision spatial hash
 	if (colbox != m_last_colbox)
 	{
@@ -158,7 +159,7 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 				
 				// Old area
 				if (ol != std::clamp<float>(ol, colbox.left, colbox.right))
-					for (long ot = colbox.top; ot <= colbox.bottom; ++ot)
+					for (long ot = colbox.top - 1; ot <= colbox.bottom + 1; ++ot)
 						g_collision_system.remove(ol, ot, this);
 			}
 		}
@@ -174,7 +175,7 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 				
 				// Old area
 				if (ol != std::clamp<float>(ol, colbox.top, colbox.bottom))
-					for (long ot = colbox.left; ot <= colbox.right; ++ot)
+					for (long ot = colbox.left - 1; ot <= colbox.right + 1; ++ot)
 						g_collision_system.remove(ot, ol, this);
 			}
 		}
