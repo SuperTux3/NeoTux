@@ -145,7 +145,6 @@ Milestone1Test::run()
 			player.move_left();
 		else if (g_input_manager.is_key_down('d'))
 			player.move_right();
-		
 		if (g_input_manager.is_key_down('w'))
 			player.jump();
 		

@@ -34,7 +34,9 @@ public:
 	void move_right();
 	void jump();
 private:
-	bool m_moving;
+	bool m_moving,
+	     m_performed_jump,
+		 m_jumped;
 };
 
 #endif
