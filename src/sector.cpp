@@ -73,8 +73,7 @@ Sector::Sector(SexpElt root) :
 			else {
 				std::string obj_name = elt.get_value();
 				MovingObject *obj = static_cast<MovingObject*>(GameObject::create(elt));
-				if (obj)
-					m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
+				add_object(obj);
 			}
 			
 		}
@@ -84,6 +83,13 @@ Sector::Sector(SexpElt root) :
 	// Cache zero tilemap for update calls
 	m_zero_tilemap = &m_tilemaps[zero_tilemap_idx];
 	assert(m_zero_tilemap->get_zpos() == 0);
+}
+
+void
+Sector::add_object(MovingObject *obj)
+{
+	assert(obj);
+	m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
 }
 
 void
