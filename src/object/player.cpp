@@ -78,6 +78,7 @@ Player::reset()
 			g_collision_system.remove(x, y, this);
 
 	move_to(0, 0);
+	m_wants_destruction = false;
 	m_powerup_state = 0;
 }
 
@@ -135,6 +136,12 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		set_action(get_size_str()+"fall-right");
 	
 	MovingSprite::update(sector, tilemap);
+}
+
+bool
+Player::is_dead() const
+{
+	return m_powerup_state == -1 || destroy_me();
 }
 
 void

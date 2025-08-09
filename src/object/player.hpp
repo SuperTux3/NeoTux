@@ -38,7 +38,7 @@ public:
 	
 	void grow(int amt = 1);
 	void damage();
-	bool is_dead() const { return m_powerup_state == -1; }
+	bool is_dead() const;
 protected:
 	std::string get_size_str();
 	int m_powerup_state;

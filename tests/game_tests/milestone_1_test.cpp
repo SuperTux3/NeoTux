@@ -121,7 +121,6 @@ Milestone1Test::run()
 			levelscreen.reset();
 		}
 		
-		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)
 		{

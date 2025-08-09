@@ -53,9 +53,12 @@ public:
 	virtual void update(Sector &sector, Tilemap &tilemap) = 0;
 	virtual void draw() = 0;
 	virtual std::string_view get_name() const { return m_name; }
+	
+protected:
+	bool m_wants_destruction;
+
 private:
 	std::string_view m_name;
-	bool m_wants_destruction;
 };
 
 #endif
