@@ -19,6 +19,7 @@
 #include "collision_system.hpp"
 #include "object/player.hpp"
 #include "sector.hpp"
+#include "stats.hpp"
 
 BonusBlock::BonusBlock() :
 	MovingSprite("", "bonusblock"),
@@ -89,9 +90,14 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 							g_mixer.play_sound("sounds/retro/upgrade.wav");
 							Powerup *powerup = new Powerup(m_type);
 							powerup->move_to(m_rect.left, m_rect.top - m_rect.get_height());
-							m_activated = true;
 							sector.add_object(powerup);
 						}
+						else
+						{
+							g_mixer.play_sound("sounds/retro/distro.wav");
+							++g_stats.coins;
+						}
+						m_activated = true;
 					}
 				}
 			}
