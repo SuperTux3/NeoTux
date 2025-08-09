@@ -120,6 +120,7 @@ Milestone1Test::run()
 		{
 			g_mixer.play_sound("sounds/retro/hurt.wav");
 			player.reset();
+			sector->move_to_spawn(player);
 			g_stats.reset(true);
 			levelscreen.reset();
 		}
