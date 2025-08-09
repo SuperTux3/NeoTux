@@ -70,7 +70,7 @@ BonusBlock::on_collision(Sector &sector, MovingObject &obj, Collision::CollideIn
 	if (!player)
 		return;
 	
-	if (collide.top && !m_activated)
+	if (collide.bottom && !m_activated)
 	{
 		set_action("empty");
 		if (m_type != Powerup::NONE)

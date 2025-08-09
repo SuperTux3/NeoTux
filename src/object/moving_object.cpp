@@ -18,6 +18,7 @@
 #include "collision_system.hpp"
 #include "game.hpp"
 #include "moving_object.hpp"
+#include "object/player.hpp"
 #include "sector.hpp"
 #include "tilemap.hpp"
 #include "video/video_system.hpp"
@@ -117,9 +118,12 @@ MovingObject::colliding_with(const MovingObject &other) const
 void
 MovingObject::update(Sector &sector, Tilemap &tilemap)
 {
+	Rectf colbox_tmp = get_colbox();
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	
 	if (m_likes_falling)
 	{
-	m_y_vel -= .0020581 * g_dtime;
+		m_y_vel -= .0020581 * g_dtime;
 		if (!m_grounded)
 		{
 			move(0, -m_y_vel * g_dtime);
@@ -137,7 +141,6 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 		move(0, 1);
 	}
 	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)
 	{
 		for (int y = colbox.top; y <= colbox.bottom; ++y)
@@ -149,9 +152,11 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 			{
 				if (obj == this) continue;
 				
-				auto collide = do_collision(*obj, false);
+				auto collide = do_collision(*obj, obj->is_tilelike(), colbox_tmp);
 				if (collide)
+				{
 					on_collision(sector, *obj, collide);
+				}
 			}
 		}
 	}

@@ -87,72 +87,12 @@ RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 		
 	//Player::update(tilemap);
 	
-	MovingSprite::update(sector, tilemap);
 	
 	Rectf orig_colbox = get_colbox();
 		
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this)
-					continue;
-				
-				auto col = do_collision(*obj, obj->is_tilelike(), orig_colbox);
-				if (obj->is_tilelike())
-				{
-					if (col.is_colliding())
-						obj->on_collision(sector, *this, col);
-					//do_collision(*obj);
-				}
-				
-				RetroBrick *brick = dynamic_cast<RetroBrick*>(obj);
-				if (!brick)
-				{
-					do_collision(*obj, obj->is_tilelike());
-				 	continue;
-				}
-				auto collide = do_collision(*obj, !obj->m_likes_falling);
-				if (collide)
-				{
-					if (collide.top)
-					{
-						if (!obj->m_likes_falling)
-						{
-							obj->enable_gravity();
-						}
-						else
-						{
-							obj->set_y_vel(0.3);
-						}
-					}
-					if (collide.bottom)
-					{
-						if (obj->m_grounded && obj->m_likes_falling)
-						{
-							obj->set_y_vel(1.0);;
-						}
-						move(0, -collide.bottom_constraint);
-					}
-					if (obj->m_likes_falling)
-					{
-					if (collide.left)
-						obj->move(-collide.left_constraint, 0);
-					if (collide.right)
-						obj->move(collide.right_constraint, 0);
-					}
-				}
-			}
-		}
-	}
+	MovingSprite::update(sector, tilemap);
 }
 
 void
