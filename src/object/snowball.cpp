@@ -18,6 +18,7 @@
 #include "collision.hpp"
 #include "collision_system.hpp"
 #include "object/player.hpp"
+#include "object/retro/retro_player.hpp"
 #include "video/painter.hpp"
 
 Snowball::Snowball() :
@@ -48,6 +49,9 @@ Snowball::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo
 	{
 		g_mixer.play_sound("sounds/retro/squish.wav");
 		mark_for_destruction();
+		RetroPlayer *retroplayer = dynamic_cast<RetroPlayer*>(&obj);
+		if (retroplayer)
+			retroplayer->m_jumped = false;
 		obj.set_y_vel(0.4);
 		return;
 	}

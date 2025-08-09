@@ -33,7 +33,7 @@ public:
 	void move_left();
 	void move_right();
 	void jump();
-private:
+public:
 	bool m_moving,
 	     m_performed_jump,
 		 m_jumped;
