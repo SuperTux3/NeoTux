@@ -39,14 +39,9 @@ MovingObject::~MovingObject()
 {
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
-	g_collision_system.lazy_remove(this);
-#if 0
-	// DISGUSTING HACK: Remove any adjacent cells, since the collision system can be off sometimes
-	// Remove object from collision system
 	for (int x = colbox.left - 1; x <= colbox.right + 1; ++x)
 		for (int y = colbox.top - 1; y <= colbox.bottom + 1; ++y)
 			g_collision_system.remove(x, y, this);
-#endif
 }
 
 bool
@@ -145,53 +140,21 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 	// Test collision	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
-	// FILTHY HACK: we are removing with an offset of 1 because this code is broken.
-	// Update collision spatial hash
 	if (colbox != m_last_colbox)
 	{
-		g_collision_system.lazy_remove(this);
+		// B - A where B is colbox and A is m_last_colbox
+		for (long x = m_last_colbox.left; x <= m_last_colbox.right; ++x)
+			for (long y = m_last_colbox.top; y <= m_last_colbox.bottom; ++y)
+				if (x != std::clamp<long>(x, colbox.left, colbox.right) ||
+				    y != std::clamp<long>(y, colbox.top, colbox.bottom))
+					g_collision_system.remove(x, y, this);
 		
 		for (long x = colbox.left; x <= colbox.right; ++x)
 			for (long y = colbox.top; y <= colbox.bottom; ++y)
-			{
-				g_collision_system.add(x, y, this);
-			}
+				if (x != std::clamp<long>(x, m_last_colbox.left, m_last_colbox.right) ||
+				    y != std::clamp<long>(y, m_last_colbox.top, m_last_colbox.bottom))
+					g_collision_system.add(x, y, this);
 		
-#if 0
-		//std::cout << std::endl << "m_last_colbox: " << m_last_colbox.to_string() << std::endl;
-		//std::cout << "colbox: " << colbox.to_string() << std::endl;
-		for (long l = colbox.left; l <= colbox.right; ++l)
-		{
-			for (long ol = m_last_colbox.left; ol <= m_last_colbox.right; ++ol)
-			{
-				// New area
-				if (l != std::clamp<float>(l, m_last_colbox.left, m_last_colbox.right))
-					for (long t = colbox.top; t <= colbox.bottom; ++t)
-						g_collision_system.add(l, t, this);
-				
-				// Old area
-				if (ol != std::clamp<float>(ol, colbox.left, colbox.right))
-					for (long ot = colbox.top - 1; ot <= colbox.bottom + 1; ++ot)
-						g_collision_system.remove(ol, ot, this);
-			}
-		}
-		
-		for (long l = colbox.top; l <= colbox.bottom; ++l)
-		{
-			for (long ol = m_last_colbox.top; ol <= m_last_colbox.bottom; ++ol)
-			{
-				// New area
-				if (l != std::clamp<float>(l, m_last_colbox.top, m_last_colbox.bottom))
-					for (long t = colbox.left; t <= colbox.right; ++t)
-						g_collision_system.add(t, l, this);
-				
-				// Old area
-				if (ol != std::clamp<float>(ol, colbox.top, colbox.bottom))
-					for (long ot = colbox.left - 1; ot <= colbox.right + 1; ++ot)
-						g_collision_system.remove(ot, ol, this);
-			}
-		}
-#endif
 	}
 	m_last_colbox = colbox;
 }
