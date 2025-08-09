@@ -94,8 +94,7 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 						}
 						else
 						{
-							g_mixer.play_sound("sounds/retro/distro.wav");
-							++g_stats.coins;
+							g_stats.bump_coins();
 						}
 						m_activated = true;
 					}

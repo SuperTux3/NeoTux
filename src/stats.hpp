@@ -26,6 +26,7 @@ struct Stats
 	void reset();
 	
 	bool tick_timer();
+	void bump_coins();
 	
 	int lives;
 	int coins;

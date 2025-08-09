@@ -79,8 +79,7 @@ Coin::update(Sector &sector, Tilemap &tilemap)
 				if (collide.is_colliding())
 				{
 					m_just_collected = true;
-					g_mixer.play_sound("sounds/retro/distro.wav");
-					++g_stats.coins;
+					g_stats.bump_coins();
 					m_collected_timer.reset();
 					break;
 				}

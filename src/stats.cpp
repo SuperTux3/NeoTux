@@ -33,6 +33,19 @@ Stats::reset()
 	m_timer.reset();
 }
 
+void
+Stats::bump_coins()
+{
+	if (++coins >= 100)
+	{
+		coins = 0;
+		++lives;
+		g_mixer.play_sound("sounds/retro/lifeup.wav");
+	}
+	else
+		g_mixer.play_sound("sounds/retro/distro.wav");
+}
+
 bool
 Stats::tick_timer()
 {
