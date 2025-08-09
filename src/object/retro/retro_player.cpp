@@ -94,7 +94,6 @@ RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 				if (obj == this)
 					continue;
 				
-				std::cout << obj << std::endl;
 				if (obj->is_tilelike())
 				{
 					//do_collision(*obj);
