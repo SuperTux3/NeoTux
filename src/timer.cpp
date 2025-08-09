@@ -40,7 +40,7 @@ Timer::set_loops(int loops)
 double
 Timer::get_percentage() const
 {
-	if (m_loops == 0)
+	if (m_iterations >= m_loops)
 		return 100.0;
 	else
 		return ((double)(SDL_GetTicks() - m_last_time) / (double)m_duration) * 100;
@@ -55,11 +55,12 @@ Timer::get_iterations() const
 bool
 Timer::tick()
 {
+	// Finished looping
+	if (m_iterations >= m_loops && m_loops != -1)
+		return true;
+	
 	if (SDL_GetTicks() > m_last_time + m_duration)
 	{
-		if (m_iterations >= m_loops && m_loops != -1)
-			return true;
-		
 		++m_iterations;
 		m_last_time = SDL_GetTicks();
 		return true;
