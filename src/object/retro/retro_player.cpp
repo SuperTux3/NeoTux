@@ -78,6 +78,8 @@ RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 	//Player::update(tilemap);
 	
 	MovingSprite::update(sector, tilemap);
+	
+	Rectf orig_colbox = get_colbox();
 		
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
@@ -94,16 +96,19 @@ RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 				if (obj == this)
 					continue;
 				
+				auto col = do_collision(*obj, obj->is_tilelike(), orig_colbox);
 				if (obj->is_tilelike())
 				{
+					if (col.is_colliding())
+						obj->on_collision(sector, *this, col);
 					//do_collision(*obj);
 				}
 				
 				RetroBrick *brick = dynamic_cast<RetroBrick*>(obj);
 				if (!brick)
 				{
-					do_collision(*obj, false);
-					continue;
+					do_collision(*obj, obj->is_tilelike());
+				 	continue;
 				}
 				auto collide = do_collision(*obj, !obj->m_likes_falling);
 				if (collide)

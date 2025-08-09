@@ -29,6 +29,8 @@ public:
 	static std::string_view class_id() { return "coin"; }
 	static GameObject* construct(SexpElt elt);
 	
+	void on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide) override;
+	
 	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 private:

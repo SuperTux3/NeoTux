@@ -36,38 +36,24 @@ Spiky::construct(SexpElt elt)
 }
 
 void
+Spiky::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
+{
+	Player *player = dynamic_cast<Player*>(&obj);
+	if (!player)
+		return;
+	
+	player->damage();
+}
+
+void
 Spiky::update(Sector &sector, Tilemap &tilemap)
 {
-	//if (m_grounded)
-	//	m_y_vel = -15 * g_dtime;
 	if (m_grounded)
 	{
 		set_y_vel(1);
 	}
 	
 	MovingSprite::update(sector, tilemap);
-	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(obj);
-				if (!player)
-					continue;
-				
-				auto collide = do_collision(*obj, false);
-				if (collide.is_colliding())
-					player->damage();
-			}
-		}
-	}
 }
 
 void

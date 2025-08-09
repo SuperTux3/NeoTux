@@ -39,6 +39,25 @@ Snowball::construct(SexpElt elt)
 }
 
 void
+Snowball::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
+{
+	Player *player = dynamic_cast<Player*>(&obj);
+	if (!player)
+		return;
+	if (collide.top)
+	{
+		g_mixer.play_sound("sounds/retro/squish.wav");
+		mark_for_destruction();
+		obj.set_y_vel(0.4);
+		return;
+	}
+	if (collide.left || collide.right)
+	{
+		player->damage();
+	}
+}
+
+void
 Snowball::update(Sector &sector, Tilemap &tilemap)
 {
 	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
@@ -55,40 +74,6 @@ Snowball::update(Sector &sector, Tilemap &tilemap)
 		{
 			m_dir = false;
 			m_flip = 0;
-		}
-	}
-	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(obj);
-				if (!player)
-					continue;
-				
-				auto collide = do_collision(*obj, false);
-				if (collide.is_colliding())
-				{
-					if (collide.top)
-					{
-						g_mixer.play_sound("sounds/retro/squish.wav");
-						mark_for_destruction();
-						player->set_y_vel(0.4);
-						continue;
-					}
-					if (collide.left || collide.right)
-					{
-						player->damage();
-					}
-				}
-			}
 		}
 	}
 }

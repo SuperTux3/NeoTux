@@ -41,6 +41,20 @@ Coin::construct(SexpElt elt)
 }
 
 void
+Coin::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
+{
+	if (!dynamic_cast<Player*>(&obj))
+		return;
+	
+	if (!m_just_collected)
+	{
+		m_just_collected = true;
+		g_stats.bump_coins();
+		m_collected_timer.reset();
+	}
+}
+
+void
 Coin::update(Sector &sector, Tilemap &tilemap)
 {
 	//if (m_grounded)
@@ -57,33 +71,6 @@ Coin::update(Sector &sector, Tilemap &tilemap)
 		m_alpha = 1.0 - (m_collected_timer.get_percentage() / 100.0);
 		move(0, -0.4);
 		return;
-	}
-	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(obj);
-				if (!player)
-					continue;
-				
-				auto collide = do_collision(*obj, false);
-				if (collide.is_colliding())
-				{
-					m_just_collected = true;
-					g_stats.bump_coins();
-					m_collected_timer.reset();
-					break;
-				}
-			}
-		}
 	}
 }
 

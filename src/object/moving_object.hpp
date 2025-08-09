@@ -43,13 +43,19 @@ public:
 	bool is_tilelike() const { return m_tilelike; }
 	void set_collidable(bool state) { m_collidable = state; }
 	bool is_collidable() const { return m_collidable; };
+	
+	virtual void on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide) {}
 
-	Collision::CollideInfo<float> do_collision(Rectf rect, bool do_real_collision_stuff = true);
-	Collision::CollideInfo<float> do_collision(const MovingObject &other, bool do_real_collision_stuff = true)
+	Collision::CollideInfo<float> do_collision(Rectf rect,
+	                                           bool do_real_collision_stuff = true,
+											   std::optional<Rectf> custom_colbox = std::nullopt);
+	Collision::CollideInfo<float> do_collision(const MovingObject &other,
+	                                           bool do_real_collision_stuff = true,
+											   std::optional<Rectf> custom_colbox = std::nullopt)
 	{
 		if (!other.is_collidable())
 			return do_collision(other.get_colbox(), false);
-		return do_collision(other.get_colbox(), do_real_collision_stuff);
+		return do_collision(other.get_colbox(), do_real_collision_stuff, custom_colbox);
 	}
 	Collision::CollideInfo<float> colliding_with(const MovingObject &other) const;
 	

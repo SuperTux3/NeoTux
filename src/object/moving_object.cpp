@@ -79,9 +79,9 @@ MovingObject::get_colbox() const
 }
 
 Collision::CollideInfo<float>
-MovingObject::do_collision(Rectf rect, bool do_real_collision_stuff)
+MovingObject::do_collision(Rectf rect, bool do_real_collision_stuff, std::optional<Rectf> custom_colbox)
 {
-	auto collide = Collision::aabb(get_colbox(), rect);
+	auto collide = Collision::aabb(custom_colbox ? *custom_colbox : get_colbox(), rect);
 	if (collide.is_colliding() && do_real_collision_stuff)
 	{
 		if (collide.top)
@@ -136,10 +136,26 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 			m_colinfo = std::move(*col);
 		move(0, 1);
 	}
-
-	// Test collision	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
+	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
+	for (int x = colbox.left; x <= colbox.right; ++x)
+	{
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
+		{
+			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
+			if (!objects)
+				continue;
+			for (MovingObject *obj : *objects)
+			{
+				if (obj == this) continue;
+				
+				auto collide = do_collision(*obj, false);
+				if (collide)
+					on_collision(sector, *obj, collide);
+			}
+		}
+	}
+
 	if (colbox != m_last_colbox)
 	{
 		// B - A where B is colbox and A is m_last_colbox

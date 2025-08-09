@@ -52,6 +52,16 @@ Powerup::construct(SexpElt elt)
 }
 
 void
+Powerup::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
+{
+	Player *player = dynamic_cast<Player*>(&obj);
+	if (!player)
+		return;
+	player->grow();
+	mark_for_destruction();
+}
+
+void
 Powerup::update(Sector &sector, Tilemap &tilemap)
 {
 	if (!m_popout_timer.tick())
@@ -71,31 +81,6 @@ Powerup::update(Sector &sector, Tilemap &tilemap)
 		{
 			m_dir = false;
 			m_flip = 0;
-		}
-	}
-	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(obj);
-				if (!player)
-					continue;
-				
-				auto collide = do_collision(*obj, false);
-				if (collide.is_colliding())
-				{
-					player->grow();
-					mark_for_destruction();
-				}
-			}
 		}
 	}
 }

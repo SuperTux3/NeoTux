@@ -60,47 +60,31 @@ BonusBlock::construct(SexpElt elt)
 void
 BonusBlock::update(Sector &sector, Tilemap &tilemap)
 {
-	
 	MovingSprite::update(sector, tilemap);
+}
+
+void
+BonusBlock::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
+{
+	Player *player = dynamic_cast<Player*>(&obj);
+	if (!player)
+		return;
 	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
-	for (int x = colbox.left; x <= colbox.right; ++x)
+	if (collide.top && !m_activated)
 	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
+		set_action("empty");
+		if (m_type != Powerup::NONE)
 		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(obj);
-				
-				auto collide = obj->do_collision(*this, true);
-				if (collide.is_colliding())
-				{
-					if (!player)
-						continue;
-					
-					if (collide.top && !m_activated)
-					{
-						set_action("empty");
-						if (m_type != Powerup::NONE)
-						{
-							g_mixer.play_sound("sounds/retro/upgrade.wav");
-							Powerup *powerup = new Powerup(m_type);
-							powerup->move_to(m_rect.left, m_rect.top - m_rect.get_height());
-							sector.add_object(powerup);
-						}
-						else
-						{
-							g_stats.bump_coins();
-						}
-						m_activated = true;
-					}
-				}
-			}
+			g_mixer.play_sound("sounds/retro/upgrade.wav");
+			Powerup *powerup = new Powerup(m_type);
+			powerup->move_to(m_rect.left, m_rect.top - m_rect.get_height());
+			sector.add_object(powerup);
 		}
+		else
+		{
+			g_stats.bump_coins();
+		}
+		m_activated = true;
 	}
 }
 

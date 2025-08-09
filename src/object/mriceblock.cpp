@@ -44,6 +44,67 @@ MrIceBlock::construct(SexpElt elt)
 }
 
 void
+MrIceBlock::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
+{
+	Player *player = dynamic_cast<Player*>(&obj);
+	
+	if (m_kicked || (!m_kicked && !m_flat))
+	{
+		if ((collide.left || collide.right) && m_iframe.tick())
+		{
+			if (player)
+			{
+				player->damage();
+			}
+		}
+
+		if (m_kicked && !player)
+		{
+			g_mixer.play_sound("sounds/retro/fall.wav");
+			obj.mark_for_destruction();
+		}
+	}
+
+	if (!player)
+		return;
+
+	if (collide.top && m_iframe.tick())
+	{
+		if (!m_flat)
+		{
+			m_wakeup.reset();
+			m_iframe.reset();
+			m_flat = true;
+			set_action("flat-left");
+		}
+		else {
+			m_wakeup.reset();
+			m_iframe.reset();
+			m_kicked = false;
+		}
+		player->set_y_vel(0.4);
+	}
+
+	if (m_flat && !m_kicked && m_iframe.tick())
+	{
+		if (collide.left)
+		{
+			m_iframe.reset();
+			m_kicked = true;
+			g_mixer.play_sound("sounds/retro/kick.wav");
+			m_dir = true;
+		}
+		if (collide.right)
+		{
+			m_iframe.reset();
+			m_kicked = true;
+			g_mixer.play_sound("sounds/retro/kick.wav");
+			m_dir = false;
+		}
+		}
+}
+
+void
 MrIceBlock::update(Sector &sector, Tilemap &tilemap)
 {
 	if (!m_flat || m_kicked)
@@ -71,81 +132,6 @@ MrIceBlock::update(Sector &sector, Tilemap &tilemap)
 		{
 			m_dir = false;
 			m_flip = 0;
-		}
-	}
-	
-	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
-	for (int x = colbox.left; x <= colbox.right; ++x)
-	{
-		for (int y = colbox.top; y <= colbox.bottom; ++y)
-		{
-			const CollisionSystem::object_list_t *objects = g_collision_system.get_objects(x, y);
-			if (!objects)
-				continue;
-			for (MovingObject *obj : *objects)
-			{
-				if (obj == this) continue;
-				Player *player = dynamic_cast<Player*>(obj);
-				
-				auto collide = do_collision(*obj, false);
-				if (collide.is_colliding())
-				{
-					if (m_kicked || (!m_kicked && !m_flat))
-					{
-						if ((collide.left || collide.right) && m_iframe.tick())
-						{
-							if (player)
-							{
-								player->damage();
-							}
-						}
-						
-						if (m_kicked && !player)
-						{
-							g_mixer.play_sound("sounds/retro/fall.wav");
-							obj->mark_for_destruction();
-						}
-					}
-					
-					if (!player)
-						return;
-					
-					if (collide.top && m_iframe.tick())
-					{
-						if (!m_flat)
-						{
-							m_wakeup.reset();
-							m_iframe.reset();
-							m_flat = true;
-							set_action("flat-left");
-						}
-						else {
-							m_wakeup.reset();
-							m_iframe.reset();
-							m_kicked = false;
-						}
-						player->set_y_vel(0.4);
-					}
-					
-					if (m_flat && !m_kicked && m_iframe.tick())
-					{
-						if (collide.left)
-						{
-							m_iframe.reset();
-							m_kicked = true;
-							g_mixer.play_sound("sounds/retro/kick.wav");
-							m_dir = true;
-						}
-						if (collide.right)
-						{
-							m_iframe.reset();
-							m_kicked = true;
-							g_mixer.play_sound("sounds/retro/kick.wav");
-							m_dir = false;
-						}
-					}
-				}
-			}
 		}
 	}
 }

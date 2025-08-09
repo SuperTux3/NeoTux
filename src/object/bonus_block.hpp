@@ -17,6 +17,7 @@
 #ifndef SUPERTUX_SRC_OBJECT_BONUS_BLOCK_HPP
 #define SUPERTUX_SRC_OBJECT_BONUS_BLOCK_HPP
 
+#include "collision.hpp"
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
 #include "object/powerup.hpp"
@@ -31,6 +32,8 @@ public:
 	
 	static std::string_view class_id() { return "bonusblock"; }
 	static GameObject* construct(SexpElt elt);
+	
+	void on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> colbox) override;
 	
 	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
