@@ -45,6 +45,7 @@ Coin::update(Sector &sector, Tilemap &tilemap)
 {
 	//if (m_grounded)
 	//	m_y_vel = -15 * g_dtime;
+	MovingSprite::update(sector, tilemap);
 	
 	if (m_just_collected)
 	{
@@ -57,8 +58,6 @@ Coin::update(Sector &sector, Tilemap &tilemap)
 		move(0, -0.4);
 		return;
 	}
-	
-	MovingSprite::update(sector, tilemap);
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)
