@@ -25,10 +25,15 @@ Stats::Stats() :
 }
 
 void
-Stats::reset()
+Stats::reset(bool died /*= false*/, bool next_level /*= false*/)
 {
-	lives = 3;
-	coins = 0;
+	if (died)
+		--lives;
+	else if (!next_level)
+		lives = 3;
+		
+	if (!died && !next_level)
+		coins = 0;
 	time = 120;
 	m_timer.reset();
 }

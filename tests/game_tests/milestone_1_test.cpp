@@ -17,6 +17,7 @@
 #include "milestone_1_test.hpp"
 #include "collision_system.hpp"
 #include "input_manager.hpp"
+#include "level_screen.hpp"
 #include "math/size.hpp"
 #include "camera.hpp"
 #include "object/all_objects.hpp"
@@ -35,28 +36,39 @@
 
 static FontCache g_font_cache{FS::path("fonts/SuperTux-Medium.ttf"), 32};
 
+std::vector<std::string> _levels = {
+	"antarctica.stl",
+	"who_is_dawn.stl",
+	"long_office_nights.stl",
+	"get_to_choppa.stl",
+	"where_my_super_cape.stl",
+	"redmond_headquarters.stl",
+};
+int _levels_idx = -1;
+
 void
 Milestone1Test::run()
 {
 	init_all_objects();
 	
+	// First is considered a completion to start
+	bool completed = true;
 	Size winsize = g_video_system->get_window_size();
 	g_camera.width = winsize.width;
 	g_camera.height = winsize.height;
 	
-	g_mixer.play_music("music/antarctic/chipdisko.ogg");
-	
 	g_tiles_reader.open();	
 	
 	LevelReader reader;
-	Level *level = reader.open("levels/revenge_in_redmond/antarctica.stl");
-	Sector &sector = level->get_sector(0);
-	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
+	Level *level = nullptr;
+	Sector *sector = nullptr;
+	Tilemap *tilemap = nullptr;
 	
 	Painter* painter = g_video_system->get_painter();
 	painter->register_camera(&g_camera);
 	
 	StatsOverlay stats;
+	LevelScreen levelscreen{nullptr};
 	
 	RetroPlayer player{};
 	
@@ -64,12 +76,50 @@ Milestone1Test::run()
 		handle_events();
 		painter->clear();
 		
+		if (tilemap && player.get_rect().left > (tilemap->get_size().width * 32) - 220)
+			completed = true;
+		
+		if (completed)
+		{
+			++_levels_idx;
+			if (_levels_idx > _levels.size())
+				_levels_idx = 0;
+			
+			delete level;
+			level = reader.open("levels/revenge_in_redmond/" + _levels[_levels_idx]);
+			sector = &level->get_sector(0);
+			tilemap = sector->get_tilemap_by_zpos(0);
+			
+			player.reset();
+			g_stats.reset(false, true);
+			levelscreen.set_level(level);
+			levelscreen.reset();
+			completed = false;
+			continue;
+		}
+		
+		if (!levelscreen.finished())
+		{
+			if (g_mixer.is_playing_music())
+				g_mixer.stop_playing_music();
+			levelscreen.draw();
+			painter->flip();
+			continue;
+		}
+		
+		if (levelscreen.just_finished())
+		{
+			g_mixer.play_music("music/antarctic/chipdisko.ogg");
+		}
+		
 		if (player.is_dead() || !g_stats.tick_timer())
 		{
 			g_mixer.play_sound("sounds/retro/hurt.wav");
 			player.reset();
-			g_stats.reset();
+			g_stats.reset(true);
+			levelscreen.reset();
 		}
+		
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)
@@ -90,7 +140,7 @@ Milestone1Test::run()
 			}
 		}
 		level->update();
-		player.update(sector, *tilemap);
+		player.update(*sector, *tilemap);
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))
@@ -105,7 +155,11 @@ Milestone1Test::run()
 			std::max(0.f,
 				std::min<float>(tilemap->get_size().width * 32 - g_camera.width,
 				         (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f));
-		g_camera.y = 200;
+		g_camera.y = 
+			std::max(0.f,
+				std::min<float>(tilemap->get_size().height * 32 - g_camera.height,
+				         (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f));
+		
 		
 		//tilemap->draw(g_camera);
 		level->draw();

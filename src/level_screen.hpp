@@ -14,27 +14,28 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_STATS_HPP
-#define SUPERTUX_SRC_STATS_HPP
+#ifndef SUPERTUX_SRC_LEVEL_SCREEN_HPP
+#define SUPERTUX_SRC_LEVEL_SCREEN_HPP
 
 #include "timer.hpp"
+struct Level;
 
-struct Stats
+class LevelScreen
 {
-	Stats();
-	~Stats() = default;
-	void reset(bool died = false, bool next_level = false);
+public:
+	LevelScreen(Level *level);
+	~LevelScreen() = default;
 	
-	bool tick_timer();
-	void bump_coins();
+	void draw();
+	void reset();
+	bool just_finished();
+	bool finished();
 	
-	int lives;
-	int coins;
-	int time;
+	void set_level(Level *level) { m_level = level; }
 private:
+	bool m_checked, m_dont_check_again;
+	Level *m_level;
 	Timer m_timer;
 };
-
-extern Stats g_stats;
 
 #endif
