@@ -61,7 +61,7 @@ PlatformingTest::run()
 		handle_events();
 		painter->clear();
 		
-		sprite.update(*tilemap);
+		sprite.update(sector, *tilemap);
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		if (g_input_manager.is_mouse_down() == true)
@@ -81,7 +81,7 @@ PlatformingTest::run()
 				player.enable_gravity();
 			}
 		}
-		player.update(*tilemap);
+		player.update(sector, *tilemap);
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))

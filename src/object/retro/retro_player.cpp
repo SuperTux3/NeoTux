@@ -36,7 +36,7 @@ RetroPlayer::move_left()
 	move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
 	if (m_grounded)
-		set_action("small-walk-right");
+		set_action(get_size_str()+"walk-right");
 
 }
 
@@ -47,7 +47,7 @@ RetroPlayer::move_right()
 	move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	if (m_grounded)
-		set_action("small-walk-right");
+		set_action(get_size_str()+"walk-right");
 }
 
 void
@@ -59,24 +59,25 @@ RetroPlayer::jump()
 	m_y_vel = 0.75;
 	m_grounded = false;
 	g_mixer.play_sound("sounds/bigjump.wav");
-	set_action("small-jump-right");
+	set_action(get_size_str()+"jump-right");
 }
 
 void
-RetroPlayer::update(Tilemap &tilemap)
+RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 {
-
 	if (!m_moving && m_grounded)
 	{
-		set_action("small-stand-right");
+		set_action(get_size_str()+"stand-right");
 	}
 	else
 		m_moving = false;
 	
 	if (m_y_vel < -0.1)
-		set_action("small-fall-right");
+		set_action(get_size_str()+"fall-right");
+		
+	//Player::update(tilemap);
 	
-	MovingSprite::update(tilemap);
+	MovingSprite::update(sector, tilemap);
 		
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
@@ -92,6 +93,11 @@ RetroPlayer::update(Tilemap &tilemap)
 			{
 				if (obj == this)
 					continue;
+				
+				if (obj->is_tilelike())
+				{
+					//do_collision(*obj);
+				}
 				
 				RetroBrick *brick = dynamic_cast<RetroBrick*>(obj);
 				if (!brick)
@@ -138,7 +144,7 @@ void
 RetroPlayer::draw()
 {
 	//MovingObject::draw();
-	MovingSprite::draw();
+	Player::draw();
 	//TextureRef tex = g_texture_manager.load("images/creatures/tux/big/stand-0.png");
 	//g_video_system->get_painter()->draw(tex, std::nullopt, m_rect);
 }

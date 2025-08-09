@@ -30,7 +30,6 @@ public:
 	Sector(SexpElt root);
 	~Sector() = default;
 	
-	
 	Tilemap& get_tilemap(size_t idx) { return m_tilemaps[idx]; }
 	Tilemap* get_tilemap_by_zpos(long zpos);
 	const size_t num_tilemaps() const { return m_tilemaps.size(); }

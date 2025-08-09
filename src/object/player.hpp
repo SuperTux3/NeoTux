@@ -19,6 +19,7 @@
 
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
+#include "timer.hpp"
 
 class Player : public MovingSprite
 {
@@ -26,7 +27,7 @@ public:
 	Player();
 	virtual ~Player() = default;
 	
-	void update(Tilemap &tilemap) override;
+	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 	
 	void move_left();
@@ -35,11 +36,15 @@ public:
 	
 	void reset();
 	
-	void die();
-	bool is_dead() const { return m_dead; }
-private:
-	bool m_dead;
+	void grow(int amt = 1);
+	void damage();
+	bool is_dead() const { return m_powerup_state == -1; }
+protected:
+	std::string get_size_str();
+	int m_powerup_state;
+	bool m_just_grew;
 	bool m_moving;
+	Timer m_iframes;
 };
 
 #endif

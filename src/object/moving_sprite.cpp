@@ -168,9 +168,9 @@ MovingSprite::set_action(const std::string &action)
 }
 
 void
-MovingSprite::update(Tilemap &tilemap)
+MovingSprite::update(Sector &sector, Tilemap &tilemap)
 {
-	MovingObject::update(tilemap);
+	MovingObject::update(sector, tilemap);
 	if (m_action)
 		m_action_timer.tick();
 }

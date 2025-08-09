@@ -18,6 +18,7 @@
 #include "collision_system.hpp"
 #include "game.hpp"
 #include "moving_object.hpp"
+#include "sector.hpp"
 #include "tilemap.hpp"
 #include "video/video_system.hpp"
 #include <iostream>
@@ -28,7 +29,8 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	m_colbox(std::move(colbox)),
 	m_grounded(false),
 	m_y_vel(0),
-	m_collidable(true)
+	m_collidable(true),
+	m_tilelike(false)
 {
 	
 }
@@ -58,8 +60,6 @@ MovingObject::parse_sexp(SexpElt elt)
 	if (telt)
 		y = telt.next().get_number();
 		
-	std::cout << x << " " << y << std::endl;
-	
 	if (x != 0.0 && y != 0.0)
 	{
 		move_to(x, y);
@@ -117,7 +117,7 @@ MovingObject::colliding_with(const MovingObject &other) const
 }
 
 void
-MovingObject::update(Tilemap &tilemap)
+MovingObject::update(Sector &sector, Tilemap &tilemap)
 {
 	if (m_likes_falling)
 	{

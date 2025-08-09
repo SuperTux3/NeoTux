@@ -20,15 +20,17 @@
 #include "video/painter.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
+#include <cmath>
 
 Player::Player() :
 	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
 	m_moving(false),
-	m_dead(false)
+	m_powerup_state(0),
+	m_iframes(1000, 1)
 {
 	enable_gravity();
 	
-	set_action("small-stand-right");
+	set_action(get_size_str()+"stand-right");
 }
 
 void
@@ -38,7 +40,7 @@ Player::move_left()
 	move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
 	if (m_grounded)
-		set_action("small-walk-right");
+		set_action(get_size_str()+"walk-right");
 
 }
 
@@ -49,7 +51,7 @@ Player::move_right()
 	move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	if (m_grounded)
-		set_action("small-walk-right");
+		set_action(get_size_str()+"walk-right");
 }
 
 void
@@ -61,7 +63,7 @@ Player::jump()
 	m_y_vel = 0.75;
 	m_grounded = false;
 	g_mixer.play_sound("sounds/bigjump.wav");
-	set_action("small-jump-right");
+	set_action(get_size_str()+"jump-right");
 }
 
 void
@@ -76,35 +78,75 @@ Player::reset()
 			g_collision_system.remove(x, y, this);
 
 	move_to(0, 0);
-	m_dead = false;
+	m_powerup_state = 0;
+}
+
+std::string
+Player::get_size_str()
+{
+	if (m_powerup_state <= 0)
+		return "small-";
+	return "big-";
+}
+
+
+void
+Player::grow(int amount)
+{
+	g_mixer.play_sound("sounds/retro/upgrade.wav");
+	g_mixer.play_sound("sounds/retro/excellent.wav");
+	m_powerup_state += amount;
+	m_just_grew = true;
 }
 
 void
-Player::update(Tilemap &tilemap)
+Player::damage()
 {
+	if (m_iframes.tick())
+	{
+		g_mixer.play_sound("sounds/retro/hurt.wav");
+		if (m_powerup_state > 0)
+			m_powerup_state = 0;
+		else if (m_powerup_state >= 0)
+			--m_powerup_state;
+		
+		m_iframes.reset();
+	}
+}
 
+void
+Player::update(Sector &sector, Tilemap &tilemap)
+{
+	if (m_just_grew)
+	{
+		g_mixer.play_sound("sounds/retro/upgrade.wav");
+		g_mixer.play_sound("sounds/retro/excellent.wav");
+		m_just_grew = false;
+		set_action(get_size_str()+"stand-right");
+	}
+	
 	if (!m_moving && m_grounded)
 	{
-		set_action("small-stand-right");
+		set_action(get_size_str()+"stand-right");
 	}
 	else
 		m_moving = false;
 	
 	if (m_y_vel < -0.1)
-		set_action("small-fall-right");
+		set_action(get_size_str()+"fall-right");
 	
-	MovingSprite::update(tilemap);
-}
-
-void
-Player::die()
-{
-	m_dead = true;
+	MovingSprite::update(sector, tilemap);
 }
 
 void
 Player::draw()
 {
+	if (!m_iframes.tick())
+	{
+		m_alpha = 0.6 + (sin(m_iframes.get_percentage()/3) * 0.1);
+	}
+	else
+		m_alpha = 1.0;
 	MovingSprite::draw();
 }
 

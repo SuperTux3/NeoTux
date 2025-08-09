@@ -39,10 +39,10 @@ Snowball::construct(SexpElt elt)
 }
 
 void
-Snowball::update(Tilemap &tilemap)
+Snowball::update(Sector &sector, Tilemap &tilemap)
 {
 	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
-	MovingSprite::update(tilemap);
+	MovingSprite::update(sector, tilemap);
 	
 	for (auto &colinfo : m_colinfo)
 	{
@@ -85,7 +85,7 @@ Snowball::update(Tilemap &tilemap)
 					}
 					if (collide.left || collide.right)
 					{
-						player->die();
+						player->damage();
 					}
 				}
 			}

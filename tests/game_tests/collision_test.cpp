@@ -85,7 +85,7 @@ CollisionTest::run()
 		tilemap->draw(g_camera);
 		tilemap->try_object_collision(player);
 		
-		player.update(*tilemap);
+		player.update(sector, *tilemap);
 		player.draw();
 		
 

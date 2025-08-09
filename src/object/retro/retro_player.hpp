@@ -27,7 +27,7 @@ public:
 	RetroPlayer();
 	virtual ~RetroPlayer() = default;
 	
-	void update(Tilemap &tilemap) override;
+	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw();
 	
 	void move_left();

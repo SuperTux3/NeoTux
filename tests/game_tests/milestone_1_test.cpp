@@ -55,6 +55,7 @@ Milestone1Test::run()
 	painter->register_camera(&g_camera);
 	
 	RetroPlayer player{};
+	player.grow();
 	
 	BEGIN_GAME_LOOP
 		handle_events();
@@ -85,7 +86,7 @@ Milestone1Test::run()
 			}
 		}
 		level->update();
-		player.update(*tilemap);
+		player.update(sector, *tilemap);
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))

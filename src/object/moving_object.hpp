@@ -33,12 +33,14 @@ public:
 	static std::string_view class_id() { return "moving-object"; }
 	bool parse_sexp(SexpElt elt);
 	
-	virtual void update(Tilemap &tilemap);
+	virtual void update(Sector &sector, Tilemap &tilemap);
 	void draw();
 	
 	void move(double x, double y);
 	void move_to(float x, float y);
 	void set_y_vel(double y_vel);
+	void set_tilelike(bool state) { m_tilelike = state; }
+	bool is_tilelike() const { return m_tilelike; }
 	void set_collidable(bool state) { m_collidable = state; }
 	bool is_collidable() const { return m_collidable; };
 
@@ -61,7 +63,8 @@ public:
 	double m_y_vel;
 	bool m_likes_falling,
 		 m_grounded,
-		 m_collidable;
+		 m_collidable,
+		 m_tilelike;
 	Rectf m_rect;
 	Rectf m_colbox;
 	Rectf m_last_colbox;

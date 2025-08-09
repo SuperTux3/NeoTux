@@ -93,7 +93,7 @@ Sector::update()
 	for (auto it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
 		MovingObject *obj = it->get();
-		obj->update(*m_zero_tilemap);
+		obj->update(*this, *m_zero_tilemap);
 		if (obj->destroy_me())
 		{
 			m_objects.erase(it);

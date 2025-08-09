@@ -44,7 +44,7 @@ MrIceBlock::construct(SexpElt elt)
 }
 
 void
-MrIceBlock::update(Tilemap &tilemap)
+MrIceBlock::update(Sector &sector, Tilemap &tilemap)
 {
 	if (!m_flat || m_kicked)
 		move((m_dir ? 1.0 : -1.0) * (m_kicked ? 0.7 : 0.1) * g_dtime, 0);
@@ -58,7 +58,7 @@ MrIceBlock::update(Tilemap &tilemap)
 		}
 	}
 	
-	MovingSprite::update(tilemap);
+	MovingSprite::update(sector, tilemap);
 	
 	for (auto &colinfo : m_colinfo)
 	{
@@ -96,7 +96,7 @@ MrIceBlock::update(Tilemap &tilemap)
 						{
 							if (player)
 							{
-								player->die();
+								player->damage();
 							}
 						}
 						

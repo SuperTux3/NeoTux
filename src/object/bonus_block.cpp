@@ -24,8 +24,24 @@ BonusBlock::BonusBlock() :
 {
 	disable_gravity();
 	set_collidable(true);
+	set_tilelike(true);
 	
 	set_action("normal");
+}
+
+bool
+BonusBlock::parse_sexp(SexpElt elt)
+{
+	SexpElt telt;
+	std::string contents;
+	
+	telt = elt.find_car("contents");
+	if (telt)
+	{
+		contents = telt.next().get_value();
+	}
+	
+	return MovingSprite::parse_sexp(elt);
 }
 
 GameObject*
@@ -37,10 +53,10 @@ BonusBlock::construct(SexpElt elt)
 }
 
 void
-BonusBlock::update(Tilemap &tilemap)
+BonusBlock::update(Sector &sector, Tilemap &tilemap)
 {
 	
-	MovingSprite::update(tilemap);
+	MovingSprite::update(sector, tilemap);
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)
@@ -55,7 +71,7 @@ BonusBlock::update(Tilemap &tilemap)
 				if (obj == this) continue;
 				Player *player = dynamic_cast<Player*>(obj);
 				
-				auto collide = obj->do_collision(*this, true);
+				auto collide = obj->do_collision(*this, false);
 				if (collide.is_colliding())
 				{
 					if (!player)

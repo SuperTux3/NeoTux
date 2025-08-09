@@ -30,7 +30,7 @@ public:
 	static std::string_view class_id() { return "mriceblock"; }
 	static GameObject* construct(SexpElt elt);
 	
-	void update(Tilemap &tilemap) override;
+	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 private:
 	bool m_dir;

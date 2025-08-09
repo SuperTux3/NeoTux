@@ -29,7 +29,7 @@ public:
 	static std::string_view class_id() { return "retro-brick"; }
 	static GameObject* construct(SexpElt elt);
 	
-	void update(Tilemap &tilemap) override;
+	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 };
 

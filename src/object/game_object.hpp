@@ -25,6 +25,7 @@ struct GameObject;
 extern std::unordered_map<std::string_view, std::function<GameObject*(SexpElt)>> _registered_gobjects;
 
 class Tilemap;
+class Sector;
 
 class GameObject
 {
@@ -49,7 +50,7 @@ public:
 	void mark_for_destruction() { m_wants_destruction = true; }
 	bool destroy_me() const { return m_wants_destruction; }
 	
-	virtual void update(Tilemap &tilemap) = 0;
+	virtual void update(Sector &sector, Tilemap &tilemap) = 0;
 	virtual void draw() = 0;
 	virtual std::string_view get_name() const { return m_name; }
 private:

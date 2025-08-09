@@ -23,6 +23,7 @@ RetroBrick::RetroBrick() :
 	MovingSprite("images/objects/bonus_block/retro_brick.sprite", class_id())
 {
 	disable_gravity();
+	is_tilelike();
 	set_action("normal");
 }
 
@@ -35,9 +36,9 @@ RetroBrick::construct(SexpElt elt)
 }
 
 void
-RetroBrick::update(Tilemap &tilemap)
+RetroBrick::update(Sector &sector, Tilemap &tilemap)
 {
-	MovingSprite::update(tilemap);
+	MovingSprite::update(sector, tilemap);
 }
 
 void

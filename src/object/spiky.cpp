@@ -36,7 +36,7 @@ Spiky::construct(SexpElt elt)
 }
 
 void
-Spiky::update(Tilemap &tilemap)
+Spiky::update(Sector &sector, Tilemap &tilemap)
 {
 	//if (m_grounded)
 	//	m_y_vel = -15 * g_dtime;
@@ -45,7 +45,7 @@ Spiky::update(Tilemap &tilemap)
 		set_y_vel(1);
 	}
 	
-	MovingSprite::update(tilemap);
+	MovingSprite::update(sector, tilemap);
 	
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	for (int x = colbox.left; x <= colbox.right; ++x)
@@ -64,7 +64,7 @@ Spiky::update(Tilemap &tilemap)
 				
 				auto collide = do_collision(*obj, false);
 				if (collide.is_colliding())
-					player->die();
+					player->damage();
 			}
 		}
 	}

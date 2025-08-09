@@ -57,7 +57,7 @@ public:
 	
 	bool parse_sexp(SexpElt);
 	
-	virtual void update(Tilemap &tilemap) override;
+	virtual void update(Sector &sector, Tilemap &tilemap) override;
 	virtual void draw() override;
 	
 	void set_action(const std::string &action);

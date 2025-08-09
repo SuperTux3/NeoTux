@@ -26,10 +26,12 @@ public:
 	BonusBlock();
 	virtual ~BonusBlock() = default;
 	
+	bool parse_sexp(SexpElt);
+	
 	static std::string_view class_id() { return "bonusblock"; }
 	static GameObject* construct(SexpElt elt);
 	
-	void update(Tilemap &tilemap) override;
+	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 };
 
