@@ -118,6 +118,7 @@ void
 Sector::update()
 {
 	assert(m_zero_tilemap);
+reloop:
 	for (auto it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
 		MovingObject *obj = it->get();
@@ -126,8 +127,7 @@ Sector::update()
 			obj->m_rect.top > m_zero_tilemap->get_size().height * 32)
 		{
 			m_objects.erase(it);
-			--it;
-			continue;
+			goto reloop;
 		}
 		m_zero_tilemap->try_object_collision(*obj);
 	}
