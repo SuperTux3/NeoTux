@@ -52,6 +52,18 @@ Mixer::shutdown()
 	//m_soundcache.clear();
 }
 
+bool
+Mixer::is_playing_music()
+{
+	return Mix_PlayingMusic();
+}
+
+void
+Mixer::stop_playing_music()
+{
+	Mix_HaltMusic();
+}
+
 // TODO Cache sounds
 void
 Mixer::play_sound(const std::string &filename)
