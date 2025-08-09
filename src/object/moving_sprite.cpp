@@ -160,10 +160,14 @@ MovingSprite::set_action(const std::string &action)
 	}
 	m_action = s_action;
 	
-	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
-	
-	m_rect.right = m_rect.left + tex->get_size().width;
-	m_rect.bottom = m_rect.top + tex->get_size().height;
+	std::string img = m_action->get_image(m_action_timer);
+	if (!img.empty())
+	{
+		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
+			
+		m_rect.right = m_rect.left + tex->get_size().width;
+		m_rect.bottom = m_rect.top + tex->get_size().height;
+	}
 	m_colbox.left = m_action->hitboxes[0] != -1 ? m_action->hitboxes[0] : 0;
 	m_colbox.top = m_action->hitboxes[1] != -1 ? m_action->hitboxes[1] : 0;
 	m_colbox.right = m_action->hitboxes[2] != -1 ? m_action->hitboxes[2] : m_rect.get_width();
@@ -186,7 +190,10 @@ MovingSprite::draw()
 {
 	if (!m_action)
 		return;
-	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_action->get_image(m_action_timer));
+	std::string img = m_action->get_image(m_action_timer);
+	if (img.empty())
+		return;
+	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
 	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip, m_alpha);
 	MovingObject::draw();
 }

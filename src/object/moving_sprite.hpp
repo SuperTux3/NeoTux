@@ -37,9 +37,11 @@ struct SpriteAction
 		std::memcpy(hitboxes, _hitboxes, sizeof(decltype(*hitboxes))*4);
 	}
 	
-	const std::string&
+	std::string
 	get_image(Timer &timer)
 	{
+		if (images.size() == 0)
+			return "";
 		return images[timer.get_iterations() % (images.size())];
 	}
 	
