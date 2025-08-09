@@ -25,7 +25,8 @@ Mixer g_mixer;
 
 Mixer::Mixer() :
 	m_music(nullptr, Mix_FreeMusic),
-	m_cache()
+	m_cache(),
+	m_current_channel(0)
 {
 	SDL_AudioSpec spec;
 	spec.freq = MIX_DEFAULT_FREQUENCY;
@@ -68,7 +69,10 @@ Mixer::play_sound(const std::string &filename)
 	if (!chunk)
 		throw SDLException("Couldn't load chunk");
 	
-	Mix_PlayChannel(0, chunk, false);
+	++m_current_channel;
+	if (m_current_channel == 4)
+		m_current_channel = 0;
+	Mix_PlayChannel(channel, chunk, false);
 }
 
 void

@@ -35,6 +35,7 @@ public:
 private:
 	std::unordered_map<std::string, std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_cache;
 	std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> m_music;
+	int m_current_channel;
 	//std::vector<std::unique_ptr<Mix_Chunk, decltype(&Mix_FreeChunk)>> m_soundcache;
 };
 
