@@ -108,9 +108,17 @@ if(NEOTUX_BGFX)
 	target_link_libraries(NeoTux PUBLIC bgfx)
 endif()
 
+
+option(NEOTUX_ASAN "Use Address Santizer." OFF)
+
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-	target_compile_options(NeoTux PUBLIC -O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
-	target_link_options(NeoTux PUBLIC -O0 -g -ggdb -fsanitize=address -fno-omit-frame-pointer)
+	target_compile_options(NeoTux PUBLIC -O0 -g -ggdb -fno-omit-frame-pointer)
+	target_link_options(NeoTux PUBLIC -O0 -g -ggdb -fno-omit-frame-pointer)
+	
+	if (NEOTUX_ASAN)
+		target_compile_options(NeoTux PUBLIC -fsanitize=address)
+		target_link_options(NeoTux PUBLIC -fsanitize=address)
+	endif()
 endif()
 
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
