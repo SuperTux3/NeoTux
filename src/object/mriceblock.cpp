@@ -110,7 +110,7 @@ MrIceBlock::update(Sector &sector, Tilemap &tilemap)
 					if (!player)
 						return;
 					
-					if (collide.top)
+					if (collide.top && m_iframe.tick())
 					{
 						if (!m_flat)
 						{
