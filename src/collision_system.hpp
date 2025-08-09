@@ -30,7 +30,8 @@ public:
 	~CollisionSystem() = default;
 	
 	void add(int x, int y, MovingObject *object);
-	void remove(int x, int y, MovingObject *object);
+	void remove(int x, int y, MovingObject *object, bool dont_remove_bucket = false);
+	void lazy_remove(MovingObject *object);
 	
 	const object_list_t* get_objects(int x, int y);
 	

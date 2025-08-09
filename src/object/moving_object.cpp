@@ -146,6 +146,15 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 	// Update collision spatial hash
 	if (colbox != m_last_colbox)
 	{
+		g_collision_system.lazy_remove(this);
+		
+		for (long x = colbox.left; x <= colbox.right; ++x)
+			for (long y = colbox.top; y <= colbox.bottom; ++y)
+			{
+				g_collision_system.add(x, y, this);
+			}
+		
+#if 0
 		//std::cout << std::endl << "m_last_colbox: " << m_last_colbox.to_string() << std::endl;
 		//std::cout << "colbox: " << colbox.to_string() << std::endl;
 		for (long l = colbox.left; l <= colbox.right; ++l)
@@ -179,6 +188,7 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 						g_collision_system.remove(ot, ol, this);
 			}
 		}
+#endif
 	}
 	m_last_colbox = colbox;
 }

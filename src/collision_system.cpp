@@ -65,16 +65,41 @@ CollisionSystem::add(int x, int y, MovingObject *object)
 }
 
 void
-CollisionSystem::remove(int x, int y, MovingObject *object)
+CollisionSystem::remove(int x, int y, MovingObject *object, bool dont_remove_bucket)
 {
 	object_list_t &objs = m_object_shash.get_or_create(x, y, {});
 	auto it = std::find(objs.begin(), objs.end(), object);
 	
 	if (it != objs.end())
 		objs.erase(it);
-		
-	if (objs.size() == 0)
-		m_object_shash.m_hash.at(x).erase(y);
+	
+	if (!dont_remove_bucket)
+		if (objs.size() == 0)
+			m_object_shash.m_hash.at(x).erase(y);
+}
+
+void
+CollisionSystem::lazy_remove(MovingObject *object)
+{
+	for (auto &x : m_object_shash.m_hash)
+	{
+		for (auto &y : x.second)
+		{
+			long xx = x.first;
+			long yy = y.first;
+			
+			retry:
+			for (auto it = y.second.begin(); it != y.second.end(); ++it)
+			{
+				if (object == *it)
+				{
+					remove(xx, yy, *it, true);
+					//--it;
+					goto retry;
+				}
+			}
+		}
+	}
 }
 
 void
