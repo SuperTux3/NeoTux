@@ -100,12 +100,15 @@ Player::grow(int amount)
 }
 
 void
-Player::damage()
+Player::damage(bool kill)
 {
 	if (m_iframes.tick())
 	{
 		g_mixer.play_sound("sounds/retro/hurt.wav");
-		if (m_powerup_state > 0)
+		
+		if (kill)
+			m_powerup_state = -1;
+		else if (m_powerup_state > 0)
 			m_powerup_state = 0;
 		else if (m_powerup_state >= 0)
 			--m_powerup_state;

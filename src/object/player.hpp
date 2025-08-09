@@ -37,7 +37,7 @@ public:
 	void reset();
 	
 	void grow(int amt = 1);
-	void damage();
+	void damage(bool kill = false);
 	bool is_dead() const;
 protected:
 	std::string get_size_str();

@@ -78,6 +78,9 @@ Milestone1Test::run()
 		
 		if (tilemap && player.get_rect().left > (tilemap->get_size().width * 32) - 220)
 			completed = true;
+			
+		if (tilemap && player.get_rect().top > (tilemap->get_size().height * 32))
+			player.damage(true);
 		
 		if (completed)
 		{
