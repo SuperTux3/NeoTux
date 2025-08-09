@@ -122,18 +122,13 @@ reloop:
 	for (auto it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
 		MovingObject *obj = it->get();
-		// HACKS BELOW
-		if (!obj->destroy_me() &&
-			obj->m_rect.top <= m_zero_tilemap->get_size().height * 32)
-			obj->update(*this, *m_zero_tilemap);
-#if 0
+		obj->update(*this, *m_zero_tilemap);
 		if (obj->destroy_me() ||
 			obj->m_rect.top > m_zero_tilemap->get_size().height * 32)
 		{
 			m_objects.erase(it);
 			goto reloop;
 		}
-#endif
 		m_zero_tilemap->try_object_collision(*obj);
 	}
 }
@@ -148,8 +143,7 @@ Sector::draw()
 	
 	for (auto &object : m_objects)
 	{
-		if(!object->destroy_me())
-			object.get()->draw();
+		object.get()->draw();
 	}
 }
 
