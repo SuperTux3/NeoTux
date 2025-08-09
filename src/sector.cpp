@@ -122,7 +122,8 @@ Sector::update()
 	{
 		MovingObject *obj = it->get();
 		obj->update(*this, *m_zero_tilemap);
-		if (obj->destroy_me())
+		if (obj->destroy_me() ||
+			obj->m_rect.top > m_zero_tilemap->get_size().height * 32)
 		{
 			m_objects.erase(it);
 			--it;
