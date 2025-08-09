@@ -91,6 +91,7 @@ Milestone1Test::run()
 			tilemap = sector->get_tilemap_by_zpos(0);
 			
 			player.reset();
+			sector->move_to_spawn(player);
 			g_stats.reset(false, true);
 			levelscreen.set_level(level);
 			levelscreen.reset();

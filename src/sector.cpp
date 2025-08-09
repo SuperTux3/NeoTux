@@ -22,9 +22,11 @@
 
 Sector::Sector(SexpElt root) :
 	m_objects(),
-	m_zero_tilemap(nullptr)
+	m_zero_tilemap(nullptr),
+	m_spawnpoint_x(0),
+	m_spawnpoint_y(0)
 {
-	SexpElt elt;
+	SexpElt elt, telt;
 	size_t zero_tilemap_idx = 0;
 	
 	while (root)
@@ -70,6 +72,20 @@ Sector::Sector(SexpElt root) :
 					zero_tilemap_idx = i;
 				}
 			}
+			else if (elt.get_value() == "spawnpoint")
+			{
+				long x = 0;
+				long y = 0;
+				telt = elt.find_car("x");
+				if (telt)
+					x = telt.next().get_int();
+				telt = elt.find_car("y");
+				if (telt)
+					y = telt.next().get_int();
+				
+				m_spawnpoint_x = x;
+				m_spawnpoint_y = y;
+			}
 			else {
 				std::string obj_name = elt.get_value();
 				MovingObject *obj = static_cast<MovingObject*>(GameObject::create(elt));
@@ -83,6 +99,12 @@ Sector::Sector(SexpElt root) :
 	// Cache zero tilemap for update calls
 	m_zero_tilemap = &m_tilemaps[zero_tilemap_idx];
 	assert(m_zero_tilemap->get_zpos() == 0);
+}
+
+void
+Sector::move_to_spawn(MovingObject &obj)
+{
+	obj.move_to(m_spawnpoint_x, m_spawnpoint_y);
 }
 
 void
@@ -127,6 +149,9 @@ Sector::draw()
 Tilemap*
 Sector::get_tilemap_by_zpos(long zpos)
 {
+	if (zpos == 0)
+		return m_zero_tilemap;
+	
 	for (Tilemap &tilemap : m_tilemaps)
 	{
 		if (tilemap.get_zpos() == zpos)

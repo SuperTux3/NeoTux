@@ -35,6 +35,8 @@ public:
 	const size_t num_tilemaps() const { return m_tilemaps.size(); }
 	Tilemap& operator[](size_t idx) { return get_tilemap(idx); }
 	
+	void move_to_spawn(MovingObject &obj);
+	
 	void add_object(MovingObject *obj);
 	
 	void update();
@@ -44,6 +46,8 @@ private:
 	
 	std::vector<std::shared_ptr<MovingObject>> m_objects;
 	std::vector<Tilemap> m_tilemaps;
+	long m_spawnpoint_x;
+	long m_spawnpoint_y;
 	Tilemap *m_zero_tilemap;
 };
 
