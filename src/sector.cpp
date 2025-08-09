@@ -88,7 +88,6 @@ Sector::Sector(SexpElt root) :
 void
 Sector::add_object(MovingObject *obj)
 {
-	assert(obj);
 	m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
 }
 
