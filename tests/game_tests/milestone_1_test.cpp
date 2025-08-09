@@ -55,7 +55,6 @@ Milestone1Test::run()
 	painter->register_camera(&g_camera);
 	
 	RetroPlayer player{};
-	player.grow();
 	
 	BEGIN_GAME_LOOP
 		handle_events();

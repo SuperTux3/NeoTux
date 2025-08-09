@@ -75,7 +75,7 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 				if (obj == this) continue;
 				Player *player = dynamic_cast<Player*>(obj);
 				
-				auto collide = obj->do_collision(*this, false);
+				auto collide = obj->do_collision(*this, true);
 				if (collide.is_colliding())
 				{
 					if (!player)
@@ -87,7 +87,7 @@ BonusBlock::update(Sector &sector, Tilemap &tilemap)
 						if (m_type != Powerup::NONE)
 						{
 							Powerup *powerup = new Powerup(m_type);
-							powerup->move_to(m_rect.left, m_rect.top);
+							powerup->move_to(m_rect.left, m_rect.top - m_rect.get_height());
 							m_activated = true;
 							sector.add_object(powerup);
 						}

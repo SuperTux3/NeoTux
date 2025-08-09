@@ -19,6 +19,7 @@
 
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
+#include "timer.hpp"
 
 class Powerup : public MovingSprite
 {
@@ -41,6 +42,7 @@ public:
 	void draw() override;
 private:
 	bool m_dir;
+	Timer m_popout_timer;
 	enum PowerupType m_type;
 };
 
