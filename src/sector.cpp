@@ -88,7 +88,8 @@ Sector::Sector(SexpElt root) :
 void
 Sector::add_object(MovingObject *obj)
 {
-	m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
+	if (obj)
+		m_objects.emplace_back(std::shared_ptr<MovingObject>(obj));
 }
 
 void
