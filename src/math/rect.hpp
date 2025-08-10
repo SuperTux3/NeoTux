@@ -24,6 +24,15 @@
 #include <SDL3/SDL_rect.h>
 #include "size.hpp"
 
+enum RectSide
+{
+	RECT_LEFT,
+	RECT_RIGHT,
+	RECT_TOP,
+	RECT_BOTTOM
+};
+	
+
 template <typename T>
 class Rect_t
 {

@@ -18,8 +18,8 @@
 #define SUPERTUX_SRC_COLLISION_HPP
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
-#include <utility>
 #include <vector>
 #include "math/rect.hpp"
 #include "math/vector.hpp"
@@ -111,6 +111,33 @@ std::optional<Vec2_t<T>> line_line(Vec2_t<T> l1_beg, Vec2_t<T> l1_end,
 		return Vec2_t<T>{ intersect_x, intersect_y };
 	}
 	return std::nullopt;
+}
+
+template <typename T>
+using col_side_t = std::pair<RectSide, Vec2_t<T>>;
+
+template <typename T>
+size_t line_rect(col_side_t<T> col_list[], Vec2_t<T> l_beg, Vec2_t<T> l_end, Rect_t<T> rect)
+{
+	size_t cols = 0;
+	auto left = line_line(l_beg, l_end, { rect.left, rect.top }, { rect.left, rect.bottom });
+	auto right = line_line(l_beg, l_end, { rect.right, rect.top }, { rect.right, rect.bottom });
+	auto top = line_line(l_beg, l_end, { rect.left, rect.top }, { rect.right, rect.top });
+	auto bottom = line_line(l_beg, l_end, { rect.left, rect.bottom }, { rect.right, rect.bottom });
+	
+	if (left)
+		col_list[cols++] = {RECT_LEFT, *left};
+	if (right)
+		col_list[cols++] = {RECT_RIGHT, *right};
+	if (top)
+		col_list[cols++] = {RECT_TOP, *top};
+	if (bottom)
+		col_list[cols++] = {RECT_BOTTOM, *bottom};
+	
+	// A line can only go through 2 points at once
+	assert(cols <= 3);
+	
+	return cols;
 }
 
 }; // namespace Collision

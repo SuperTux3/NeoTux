@@ -120,6 +120,33 @@ CollisionTest::run()
 		
 		player.update(sector, *tilemap);
 		player.draw();
+		
+		Collision::col_side_t<float> cols[2];
+		auto rectcol = Collision::line_rect(&cols[0], tline_beg, tline_end, player.get_colbox());
+		if (rectcol)
+		{
+			auto colbox = player.get_colbox();
+			SDL_Color lcolor = {0, 255, 0, 255};
+			painter->draw_fill_rect(player.get_colbox(), {133, 20, 180, 150});
+			for (size_t i = 0; i < rectcol; ++i)
+			{
+				switch (cols[i].first)
+				{
+				case RECT_LEFT:
+					painter->draw_line({ colbox.left, colbox.top }, { colbox.left, colbox.bottom }, lcolor);
+					break;
+				case RECT_RIGHT:
+					painter->draw_line({ colbox.right, colbox.top }, { colbox.right, colbox.bottom }, lcolor);
+					break;
+				case RECT_TOP:
+					painter->draw_line({ colbox.left, colbox.top }, { colbox.right, colbox.top }, lcolor);
+					break;
+				case RECT_BOTTOM:
+					painter->draw_line({ colbox.left, colbox.bottom }, { colbox.right, colbox.bottom }, lcolor);
+					break;
+				}
+			}
+		}
 
 		painter->flip();
 	END_GAME_LOOP

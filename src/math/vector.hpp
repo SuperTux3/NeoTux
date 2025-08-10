@@ -94,8 +94,9 @@ public:
 	}
 };
 
-using Vec2 = Vec2_t<double>;
 using IVec2 = Vec2_t<long>;
 using FVec2 = Vec2_t<float>;
+using DVec2 = Vec2_t<double>;
+using Vec2 = FVec2;
 
 #endif
