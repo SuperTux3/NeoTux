@@ -30,6 +30,7 @@
 void
 CollisionTest::run()
 {
+	FontManager::load_builtin_fonts();
 	Size winsize = g_video_system->get_window_size();
 	g_camera.width = winsize.width;
 	g_camera.height = winsize.height;
@@ -57,16 +58,24 @@ CollisionTest::run()
 		if (g_input_manager.is_mouse_down() == true)
 		{
 			if (g_input_manager.get_mouse_button() == 1)
-				player.move((double)g_input_manager.get_mouse_dx()*.005*g_dtime,
-				            (double)g_input_manager.get_mouse_dy()*.005*g_dtime);
+			{
+				player.move((double)g_input_manager.get_mouse_dx()*1.0*g_dtime,
+				            (double)g_input_manager.get_mouse_dy()*1.0*g_dtime);
+				player.disable_gravity();
+			}
 			else if (g_input_manager.get_mouse_button() == 3) {
 				player.move_to((int)g_input_manager.get_mouse_x() + g_camera.x,
 				               (int)g_input_manager.get_mouse_y() + g_camera.y);
+				player.disable_gravity();
 			}
 			else if (g_input_manager.get_mouse_button() == 2) {
-				g_camera.x -= g_input_manager.get_mouse_dx()*.01*g_dtime;
-				g_camera.y -= g_input_manager.get_mouse_dy()*.01*g_dtime;
+				g_camera.x -= g_input_manager.get_mouse_dx()*1.0*g_dtime;
+				g_camera.y -= g_input_manager.get_mouse_dy()*1.0*g_dtime;
 			}
+		}
+		else if (player.m_likes_falling == false) {
+			player.m_y_vel = 0.0;
+			player.enable_gravity();
 		}
 		
 		TextureRef help_1 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
