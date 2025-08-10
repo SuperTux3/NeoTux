@@ -125,8 +125,8 @@ Milestone1Test::run()
 			if (g_input_manager.get_mouse_button() == 1)
 			{
 				player.disable_gravity();
-				player.move((double)g_input_manager.get_mouse_dx()*g_dtime,
-				            (double)g_input_manager.get_mouse_dy()*g_dtime);
+				player.move((double)g_input_manager.get_mouse_dx(),
+				            (double)g_input_manager.get_mouse_dy());
 			}
 		}
 		else

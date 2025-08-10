@@ -59,8 +59,8 @@ CollisionTest::run()
 		{
 			if (g_input_manager.get_mouse_button() == 1)
 			{
-				player.move((double)g_input_manager.get_mouse_dx()*1.0*g_dtime,
-				            (double)g_input_manager.get_mouse_dy()*1.0*g_dtime);
+				player.move((double)g_input_manager.get_mouse_dx()*1.0,
+				            (double)g_input_manager.get_mouse_dy()*1.0);
 				player.disable_gravity();
 			}
 			else if (g_input_manager.get_mouse_button() == 3) {
@@ -69,8 +69,8 @@ CollisionTest::run()
 				player.disable_gravity();
 			}
 			else if (g_input_manager.get_mouse_button() == 2) {
-				g_camera.x -= g_input_manager.get_mouse_dx()*1.0*g_dtime;
-				g_camera.y -= g_input_manager.get_mouse_dy()*1.0*g_dtime;
+				g_camera.x -= g_input_manager.get_mouse_dx()*3.0;
+				g_camera.y -= g_input_manager.get_mouse_dy()*3.0;
 			}
 		}
 		else if (player.m_likes_falling == false) {
