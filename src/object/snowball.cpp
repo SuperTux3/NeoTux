@@ -22,7 +22,7 @@
 #include "video/painter.hpp"
 
 Snowball::Snowball() :
-	MovingSprite("", "snowball"),
+	MovingSprite("images/creatures/snowball/snowball.sprite", "snowball"),
 	m_dir(false),
 	m_squished(false),
 	m_squish_timer(3000.0, 1)

@@ -20,7 +20,7 @@
 #include "video/painter.hpp"
 
 Spiky::Spiky() :
-	MovingSprite("", "spiky")
+	MovingSprite("images/creatures/spiky/spiky.sprite", "spiky")
 {
 	enable_gravity();
 	

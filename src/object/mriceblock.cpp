@@ -22,7 +22,7 @@
 #include "video/painter.hpp"
 
 MrIceBlock::MrIceBlock() :
-	MovingSprite("", "mriceblock"),
+	MovingSprite("images/creatures/iceblock/iceblock.sprite", "mriceblock"),
 	m_dir(false),
 	m_flat(false),
 	m_kicked(false),
