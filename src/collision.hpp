@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 #include "math/rect.hpp"
+#include "math/vector.hpp"
 
 namespace Collision
 {
@@ -88,6 +89,30 @@ CollideInfo<T> aabb(Rect_t<T> r1, Rect_t<T> r2)
 	return ret;
 }
 
-};
+template <typename T>
+std::optional<Vec2_t<T>> line_line(Vec2_t<T> l1_beg, Vec2_t<T> l1_end,
+                                   Vec2_t<T> l2_beg, Vec2_t<T> l2_end)
+{
+	const T dnom = ((l2_end.y - l2_beg.y) * (l1_end.x - l1_beg.x) - (l2_end.x - l2_beg.x) * (l1_end.y - l1_beg.y)); 
+	T dist1 = 
+		((l2_end.x - l2_beg.x) * (l1_beg.y - l2_beg.y) - (l2_end.y - l2_beg.y) * (l1_beg.x - l2_beg.x)) /
+		dnom;
+	T dist2 = 
+		((l1_end.x - l1_beg.x) * (l1_beg.y - l2_beg.y) - (l1_end.y - l1_beg.y) * (l1_beg.x - l2_beg.x)) /
+		dnom;
+	
+	// Lines are between 0 and 1
+	if (dist1 == std::clamp<T>(dist1, 0, 1) &&
+	    dist2 == std::clamp<T>(dist2, 0, 1))
+	{
+		T intersect_x = l1_beg.x + (dist1 * (l1_end.x - l1_beg.x));
+		T intersect_y = l1_beg.y + (dist1 * (l1_end.y - l1_beg.y));
+		
+		return Vec2_t<T>{ intersect_x, intersect_y };
+	}
+	return std::nullopt;
+}
+
+}; // namespace Collision
 
 #endif

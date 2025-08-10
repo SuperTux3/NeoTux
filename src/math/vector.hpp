@@ -52,6 +52,14 @@ public:
 		return true;
 	}
 	
+	Vec2_t<T> get_normal()
+	{
+		Vec2_t<T> tmp = *this;
+		tmp.normalize();
+		return tmp;
+	}
+	
+	
 	T distance(Vec2_t<T> other)
 	{
 		return std::sqrt(

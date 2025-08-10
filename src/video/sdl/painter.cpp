@@ -104,8 +104,25 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 }
 
 void
-SDLPainter::draw_line(Vec2 l_start, Vec2 l_end)
+SDLPainter::draw_line(Vec2 l_start, Vec2 l_end, SDL_Color color)
 {
+	if (m_camera)
+	{
+		l_start.x -= m_camera->x;
+		l_start.y -= m_camera->y;
+		
+		l_end.x -= m_camera->x;
+		l_end.y -= m_camera->y;
+	}
+	if (m_do_clip)
+	{
+		l_start.x -= m_clip.left;
+		l_start.y -= m_clip.top;
+		
+		l_end.x -= m_clip.left;
+		l_end.y -= m_clip.top;
+	}
+	SDL_SetRenderDrawColor(m_sdl_renderer.get(), color.r, color.g, color.b, color.a);
 	SDL_RenderLine(m_sdl_renderer.get(),
 		l_start.x, l_start.y,
 		l_end.x, l_end.y);

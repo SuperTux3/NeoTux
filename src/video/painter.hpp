@@ -47,7 +47,7 @@ public:
 					  float alpha = 1.0) = 0;
 	virtual void draw_fill_rect(Rectf dest, SDL_Color color) = 0;
 	/// Do not rely on this function for your line drawing needs!
-	virtual void draw_line(Vec2 l_start, Vec2 l_end) = 0;
+	virtual void draw_line(Vec2 l_start, Vec2 l_end, SDL_Color color) = 0;
 	virtual void flip() = 0;
 	virtual void clear() = 0;
 	

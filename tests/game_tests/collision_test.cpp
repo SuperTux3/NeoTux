@@ -49,6 +49,12 @@ CollisionTest::run()
 	
 	Player player;
 	
+	Vec2 mline_beg{0, 0}, mline_end;
+	
+	
+	Vec2 tline_beg{430, 434};
+	Vec2 tline_end{598, 380};
+	
 	BEGIN_GAME_LOOP
 		handle_events();
 		painter->clear();
@@ -78,6 +84,13 @@ CollisionTest::run()
 			player.enable_gravity();
 		}
 		
+		mline_beg.x = player.get_rect().left;
+		mline_beg.y = player.get_rect().top;
+		mline_end.x = player.get_rect().left - g_camera.x - (double)g_input_manager.get_mouse_x();
+		mline_end.y = player.get_rect().top - g_camera.y - (double)g_input_manager.get_mouse_y();
+		
+		mline_end = mline_beg - (mline_end.get_normal() * 200);
+		
 		TextureRef help_1 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
 			"Left click to move relative", {255, 255, 255, 155});
 		painter->draw(help_1, std::nullopt,
@@ -90,13 +103,23 @@ CollisionTest::run()
 			"Right click to move Tux to cursor", {255, 255, 255, 155});
 		painter->draw(help_3, std::nullopt,
 			Rectf{0, (float)help_1->get_size().height*4, {(float)help_3->get_size().width, (float)help_3->get_size().height}});
+			
+		// Draw lines
+		auto linecol = Collision::line_line(mline_beg, mline_end, tline_beg, tline_end);
+		SDL_Color mline_col{255, 255, 255, 255};
+		if (linecol)
+		{
+			mline_col.r = 0;
+			mline_col.b = 0;
+		}
+		painter->draw_line(mline_beg, mline_end, mline_col);
+		painter->draw_line(tline_beg, tline_end, {0, 255, 0, 255});
 		
 		tilemap->draw(g_camera);
 		tilemap->try_object_collision(player);
 		
 		player.update(sector, *tilemap);
 		player.draw();
-		
 
 		painter->flip();
 	END_GAME_LOOP
