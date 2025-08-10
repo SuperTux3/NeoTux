@@ -93,6 +93,7 @@ MrIceBlock::on_collision(Sector &sector, MovingObject &obj, Collision::CollideIn
 			m_kicked = true;
 			g_mixer.play_sound("sounds/retro/kick.wav");
 			m_dir = player->m_direction;
+			m_flip = m_dir ? FLIP_HORIZONTAL : 0;
 		}
 	}
 }
@@ -112,7 +113,9 @@ MrIceBlock::update(Sector &sector, Tilemap &tilemap)
 		}
 	}
 	
-	MovingSprite::update(sector, tilemap);
+	//move(0, 1);
+	MovingSprite::update(sector, tilemap);	
+	//move(0, -1);
 	
 	for (auto &colinfo : m_colinfo)
 	{

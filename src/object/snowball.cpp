@@ -23,7 +23,9 @@
 
 Snowball::Snowball() :
 	MovingSprite("", "snowball"),
-	m_dir(false)
+	m_dir(false),
+	m_squished(false),
+	m_squish_timer(3000.0, 1)
 {
 	enable_gravity();
 	set_collidable(true);
@@ -43,12 +45,14 @@ void
 Snowball::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide)
 {
 	Player *player = dynamic_cast<Player*>(&obj);
-	if (!player)
+	if (!player || m_squished)
 		return;
 	if (collide.top)
 	{
 		g_mixer.play_sound("sounds/retro/squish.wav");
-		mark_for_destruction();
+		m_squish_timer.reset();
+		m_squished = true;
+		set_action("squished-left");
 		RetroPlayer *retroplayer = dynamic_cast<RetroPlayer*>(&obj);
 		if (retroplayer)
 			retroplayer->m_jumped = false;
@@ -64,8 +68,17 @@ Snowball::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo
 void
 Snowball::update(Sector &sector, Tilemap &tilemap)
 {
-	move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
+	if (!m_squished)
+		move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
 	MovingSprite::update(sector, tilemap);
+	if (m_squished)
+	{
+		m_alpha = 1.0 - (m_squish_timer.get_percentage() / 100.0);
+		if (m_squish_timer.tick())
+			mark_for_destruction();
+		return;
+	}
+	
 	
 	for (auto &colinfo : m_colinfo)
 	{

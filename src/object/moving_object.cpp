@@ -129,7 +129,6 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 			move(0, -m_y_vel * g_dtime);
 		}
 
-		move(0, -1);
 		auto col = tilemap.try_object_collision(*this);
 		if (!col && m_grounded)
 		{
@@ -138,7 +137,6 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 		}
 		if (col)
 			m_colinfo = std::move(*col);
-		move(0, 1);
 	}
 	
 	for (int x = colbox.left; x <= colbox.right; ++x)

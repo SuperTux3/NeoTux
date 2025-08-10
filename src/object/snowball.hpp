@@ -19,6 +19,7 @@
 
 #include "object/moving_object.hpp"
 #include "object/moving_sprite.hpp"
+#include "timer.hpp"
 
 class Snowball : public MovingSprite
 {
@@ -35,6 +36,8 @@ public:
 	void draw() override;
 private:
 	bool m_dir;
+	bool m_squished;
+	Timer m_squish_timer;
 };
 
 #endif
