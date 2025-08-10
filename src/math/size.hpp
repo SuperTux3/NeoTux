@@ -53,6 +53,7 @@ public:
 	operatorX(-=, const Size_t<T>&, rhs, rhs.width, rhs.height)
 	operatorX(*=, const Size_t<T>&, rhs, rhs.width, rhs.height)
 	operatorX(/=, const Size_t<T>&, rhs, rhs.width, rhs.height)
+#undef operatorX
 	
 	bool is_valid() const
 	{

@@ -23,19 +23,15 @@ function(make_unit_test test_name)
     COMMAND ${test_name})
 endfunction(make_unit_test)
 
-# make_unit_test(MD5Test SOURCE md5_test.cpp
-#   EXTERNAL addon/md5.cpp)
-
-# make_unit_test(CollisionTest SOURCE collision_test.cpp
-#   EXTERNAL math/rectf.cpp
-#   LIBRARIES SDL2 DEFINITIONS GLM_ENABLE_EXPERIMENTAL)
-
 make_unit_test(SexpTest SOURCE sexp_test.cpp
 	LIBRARIES SFSEXP
 	EXTERNAL util/sexp.cpp)
 
 make_unit_test(FilesystemTest SOURCE filesystem_test.cpp
 	EXTERNAL util/filesystem.cpp)
+	
+make_unit_test(VectorTest SOURCE vector_test.cpp
+	EXTERNAL math/vector.hpp)
 
 #message("ALL TESTS: ${all_test_targets}")
 
