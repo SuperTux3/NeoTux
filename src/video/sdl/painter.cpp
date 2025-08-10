@@ -104,6 +104,15 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 }
 
 void
+SDLPainter::draw_line(Vec2 l_start, Vec2 l_end)
+{
+	SDL_RenderLine(m_sdl_renderer.get(),
+		l_start.x, l_start.y,
+		l_end.x, l_end.y);
+	bump_draw_count();
+}
+
+void
 SDLPainter::begin_clip(Rect clip)
 {
 	Painter::begin_clip(std::move(clip));

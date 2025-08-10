@@ -35,6 +35,7 @@ public:
 	          Flip flip = FLIP_NONE,
 			  float alpha = 1.0);
 	void draw_fill_rect(Rectf dest, SDL_Color color);
+	void draw_line(Vec2 l_start, Vec2 l_end);
 	void flip();
 	void clear();
 	

@@ -21,6 +21,7 @@
 #include <optional>
 //#include "camera.hpp"
 #include "math/rect.hpp"
+#include "math/vector.hpp"
 #include "texture.hpp"
 
 enum
@@ -45,6 +46,8 @@ public:
 	                  Flip flip = FLIP_NONE,
 					  float alpha = 1.0) = 0;
 	virtual void draw_fill_rect(Rectf dest, SDL_Color color) = 0;
+	/// Do not rely on this function for your line drawing needs!
+	virtual void draw_line(Vec2 l_start, Vec2 l_end);
 	virtual void flip() = 0;
 	virtual void clear() = 0;
 	
