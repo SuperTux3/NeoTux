@@ -28,15 +28,16 @@ get_normal_from_slope_metas(uint16_t meta)
 	switch (deform)
 	{
 	case 0:
-		line = { 0.f, -1.f };
+		//line = { 0.f, -1.f };
+		line = { 1, 1 };
 		break;
-	case 1:
+	case 1:	
 	case 2:
-		line = { 0.5f, -.5f };
+		line = { 1, .5 };
 		break;
 	case 3:
 	case 4:
-		line = { 0.5f, -1.f };
+		line = { 0.5, 1 };
 		break;
 	default:
 		Logger::warn("Invalid slope deformation!");
@@ -47,7 +48,6 @@ get_normal_from_slope_metas(uint16_t meta)
 	if (dir_mask > 1)
 		line.y = -line.y;
 	
-	line.normalize();
 	return line;
 }
 

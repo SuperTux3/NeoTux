@@ -118,11 +118,6 @@ CollisionTest::run()
 		painter->draw_line(tline_beg, tline_end, {0, 255, 0, 255});
 		
 		
-		player.update(sector, *tilemap);
-		tilemap->draw(g_camera);
-		tilemap->try_object_collision(player);
-		player.draw();
-		
 		
 		if (g_input_manager.is_key_down('a'))
 			player.move_left();
@@ -130,6 +125,11 @@ CollisionTest::run()
 			player.move_right();
 		if (g_input_manager.is_key_down('w'))
 			player.jump();
+		player.update(sector, *tilemap);
+		tilemap->draw(g_camera);
+		tilemap->try_object_collision(player);
+		player.draw();
+		
 		
 		Collision::col_side_t<float> cols[Collision::COL_SIZE_MAX];
 		auto rectcol = Collision::line_rect(cols, tline_beg, tline_end, player.get_colbox());

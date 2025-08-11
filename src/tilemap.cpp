@@ -120,7 +120,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 				Vec2 lines[2];
 				bool success = Collision::get_line_from_slope_metas(meta.datas, lines);
 				Vec2 normal = Collision::get_normal_from_slope_metas(meta.datas);
-				std::cout << normal.to_string() << std::endl;
+				obj.m_slope_normal = normal;
 				
 				lines[0] *= 32.f;
 				lines[1] *= 32.f;

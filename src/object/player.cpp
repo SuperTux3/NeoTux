@@ -21,6 +21,7 @@
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include <cmath>
+#include <numbers>
 
 Player::Player() :
 	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
@@ -36,8 +37,12 @@ Player::Player() :
 void
 Player::move_left()
 {
+	auto angle = 90 - ((-std::atan2(-m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
 	m_moving = true;
-	move(-0.5 * g_dtime, 0);
+	if (m_on_slope)
+		move(-0.5 * (angle*0.012) * g_dtime, 0);
+	else
+		move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
 	m_direction = false;
 	if (m_grounded)
@@ -48,8 +53,12 @@ Player::move_left()
 void
 Player::move_right()
 {
+	auto angle = 90 - ((-std::atan2(m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
 	m_moving = true;
-	move(0.5 * g_dtime, 0);
+	if (m_on_slope)
+		move(0.5 * (angle*0.012) * g_dtime, 0);
+	else
+		move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	m_direction = true;
 	if (m_grounded)
@@ -122,6 +131,13 @@ Player::damage(bool kill)
 void
 Player::update(Sector &sector, Tilemap &tilemap)
 {
+	double angle = 0.0;
+	double pos_angle = m_slope_normal.y > 0;
+	double flipped_x_normal = pos_angle ? m_slope_normal.x : -m_slope_normal.x;
+	double fixed_y_normal = pos_angle ? -m_slope_normal.y : m_slope_normal.y;
+	angle = 90 - ((-std::atan2(fixed_y_normal, m_slope_normal.x) * (180/std::numbers::pi)));
+	std::cout << angle << std::endl;
+		
 	if (m_just_grew)
 	{
 		g_mixer.play_sound("sounds/retro/upgrade.wav");
@@ -140,9 +156,20 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	if (m_y_vel < -0.1)
 		set_action(get_size_str()+"fall-right");
 	
-	std::cout << m_slope_normal.to_string() << std::endl;
 	
 	MovingSprite::update(sector, tilemap);
+	
+	if (m_on_slope)
+	{
+		if (angle < 30)
+		{
+			move(flipped_x_normal * 0.05, -fixed_y_normal * 0.05);
+		}
+		else if (angle <= 45)
+		{
+			move(flipped_x_normal * 0.03, -fixed_y_normal * 0.03);
+		}
+	}
 }
 
 bool
@@ -160,6 +187,8 @@ Player::draw()
 	}
 	else
 		m_alpha = 1.0;
+	Vec2 colbox = {get_colbox().left, get_colbox().top};
+	g_video_system->get_painter()->draw_line(colbox, colbox + m_slope_normal * 60, {0, 255, 0, 255});
 	MovingSprite::draw();
 }
 
