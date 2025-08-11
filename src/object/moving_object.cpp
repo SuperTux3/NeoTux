@@ -33,7 +33,7 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	m_collidable(true),
 	m_tilelike(false)
 {
-	
+	m_slope_normals.reserve(4);
 }
 
 MovingObject::~MovingObject()

@@ -86,6 +86,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 	Rectf obj_rect = obj.get_colbox();
 	
 	obj.m_on_slope = false;
+	obj.m_slope_normals.clear();
 	auto cols = Collision::get_chunk_collisions(obj_rect, 32.f);
 	for (long x = cols.left; x <= cols.right; ++x)
 	{
@@ -105,22 +106,12 @@ Tilemap::try_object_collision(MovingObject& obj)
 			
 			if ((meta.attrs & TileMeta::SLOPE) == TileMeta::SLOPE)
 			{
-				bool is_slope_roof = (meta.datas & Collision::SLOPE_NORTHEAST) == Collision::SLOPE_NORTHEAST ||
-				(meta.datas & Collision::SLOPE_NORTHWEST) == Collision::SLOPE_NORTHWEST;
-				bool is_slope_roof_above_tile = tile_below.get_id() != 0 && is_slope_roof;
-				/* Handle edge case (pun not intended) where object is on edge of slope from below
-				 *  Where O == object && \ or / == slope (NE/NW)
-				 *          _________
-				 * stuck    |  , . '|
-				 *  \--->  O|' , ___|
-				 *          \___/
-				 */
-					
 				// Slope collision
 				Vec2 lines[2];
 				bool success = Collision::get_line_from_slope_metas(meta.datas, lines);
 				Vec2 normal = Collision::get_normal_from_slope_metas(meta.datas);
 				obj.m_slope_normal = normal;
+				obj.m_slope_normals.push_back(normal);
 				
 				lines[0] *= 32.f;
 				lines[1] *= 32.f;

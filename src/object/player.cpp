@@ -157,7 +157,14 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		set_action(get_size_str()+"fall-right");
 	
 	
+	
 	MovingSprite::update(sector, tilemap);
+	if (m_slope_normals.size() > 1 &&
+		m_slope_normals[1].average(m_slope_normals[0]).y == 0.0)
+	{
+		// Return early so we don't slide Tux
+		return;
+	}
 	
 	if (m_on_slope)
 	{

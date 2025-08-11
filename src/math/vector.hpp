@@ -43,6 +43,11 @@ public:
 		return std::sqrt(std::pow<T>(x, 2) + std::pow<T>(y, 2));
 	}
 	
+	Vec2_t<T> average(const Vec2_t<T>& other)
+	{
+		return { (x + other.x) / (T)2, (y + other.y) / (T)2 };
+	}
+	
 	bool normalize()
 	{
 		T mag = magnitude();
