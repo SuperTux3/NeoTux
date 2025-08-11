@@ -155,8 +155,10 @@ MovingObject::do_slope_collision(uint16_t sl_t,
 					m_y_vel = 0.0;
 			}
 		}
+		m_on_slope = true;
 	}
-	
+	else
+		m_on_slope = false;
 }
 
 

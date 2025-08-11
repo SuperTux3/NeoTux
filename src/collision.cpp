@@ -20,6 +20,37 @@
 namespace Collision
 {
 
+Vec2
+get_normal_from_slope_metas(uint16_t meta)
+{
+	uint16_t deform = (uint16_t)((float)meta / 16.f);
+	Vec2 line;
+	switch (deform)
+	{
+	case 0:
+		line = { 0.f, -1.f };
+		break;
+	case 1:
+	case 2:
+		line = { 0.5f, -.5f };
+		break;
+	case 3:
+	case 4:
+		line = { 0.5f, -1.f };
+		break;
+	default:
+		Logger::warn("Invalid slope deformation!");
+		break;
+	}
+	
+	uint8_t dir_mask = meta & DIRECTION_MASK;
+	if (dir_mask > 1)
+		line.y = -line.y;
+	
+	line.normalize();
+	return line;
+}
+
 bool
 get_line_from_slope_metas(uint16_t meta, Vec2 *lines)
 {

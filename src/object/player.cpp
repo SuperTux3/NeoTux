@@ -140,6 +140,8 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	if (m_y_vel < -0.1)
 		set_action(get_size_str()+"fall-right");
 	
+	std::cout << m_slope_normal.to_string() << std::endl;
+	
 	MovingSprite::update(sector, tilemap);
 }
 

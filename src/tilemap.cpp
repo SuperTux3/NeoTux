@@ -85,6 +85,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 	std::vector<Collision::CollideInfo<float>> colvec;
 	Rectf obj_rect = obj.get_colbox();
 	
+	obj.m_on_slope = false;
 	auto cols = Collision::get_chunk_collisions(obj_rect, 32.f);
 	for (long x = cols.left; x <= cols.right; ++x)
 	{
@@ -118,12 +119,15 @@ Tilemap::try_object_collision(MovingObject& obj)
 				// Slope collision
 				Vec2 lines[2];
 				bool success = Collision::get_line_from_slope_metas(meta.datas, lines);
+				Vec2 normal = Collision::get_normal_from_slope_metas(meta.datas);
+				std::cout << normal.to_string() << std::endl;
+				
 				lines[0] *= 32.f;
 				lines[1] *= 32.f;
-				lines[0].x += (float)(x*32);
-				lines[0].y += (float)(y*32);
-				lines[1].x += (float)(x*32);
-				lines[1].y += (float)(y*32);
+				lines[0].x += x*32;
+				lines[0].y += y*32;
+				lines[1].x += x*32;
+				lines[1].y += y*32;
 				// TODO: Move this to draw
 				if (g_settings->show_hitboxes)
 					g_video_system->get_painter()->draw_line(lines[0], lines[1], {255, 0, 0, 255});

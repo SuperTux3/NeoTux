@@ -42,6 +42,9 @@ enum SlopeInfo
 bool
 get_line_from_slope_metas(uint16_t meta, Vec2 *lines);
 
+Vec2
+get_normal_from_slope_metas(uint16_t meta);
+
 static Rectf
 get_chunk_collisions(Rectf box, long chunk_size)
 {

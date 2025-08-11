@@ -77,8 +77,10 @@ public:
 	double m_y_vel;
 	bool m_likes_falling,
 		 m_grounded,
+		 m_on_slope,
 		 m_collidable,
 		 m_tilelike;
+	Vec2 m_slope_normal;
 	Rectf m_rect;
 	Rectf m_colbox;
 	Rectf m_last_colbox;
