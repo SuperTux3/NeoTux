@@ -18,7 +18,6 @@
 #include "collision_system.hpp"
 #include "object/moving_object.hpp"
 #include "video/painter.hpp"
-#include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include <cmath>
 #include <numbers>
@@ -34,14 +33,19 @@ Player::Player() :
 	set_action(get_size_str()+"stand-right");
 }
 
+// TODO Merge these functions
 void
 Player::move_left()
 {
+	bool already_moved = false;
 	for (auto &slope_normal : m_slope_normals)
 	{
 		auto angle = 90 - ((-std::atan2(-slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
-		if (m_on_slope)
+		if (m_on_slope && !already_moved)
+		{
 			move(-0.5 * (angle*0.012) * g_dtime, 0);
+			already_moved = true;
+		}
 	}
 	m_moving = true;
 	if (!m_on_slope)
@@ -56,12 +60,15 @@ Player::move_left()
 void
 Player::move_right()
 {
-
+	bool already_moved = false;
 	for (auto &slope_normal : m_slope_normals)
 	{
 		auto angle = 90 - ((-std::atan2(m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
-		if (m_on_slope)
+		if (m_on_slope && !already_moved)
+		{
 			move(0.5 * (angle*0.012) * g_dtime, 0);
+			already_moved = true;
+		}
 	}
 	m_moving = true;
 	if (!m_on_slope)
@@ -143,7 +150,6 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	double flipped_x_normal = pos_angle ? m_slope_normal.x : -m_slope_normal.x;
 	double fixed_y_normal = pos_angle ? -m_slope_normal.y : m_slope_normal.y;
 	angle = 90 - ((-std::atan2(fixed_y_normal, m_slope_normal.x) * (180/std::numbers::pi)));
-	std::cout << angle << std::endl;
 		
 	if (m_just_grew)
 	{
@@ -170,7 +176,6 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		m_slope_normals[1].average(m_slope_normals[0]).y == 0.0)
 	{
 		// Return early so we don't slide Tux
-		std::cout << "no!" << std::endl;
 		return;
 	}
 	
