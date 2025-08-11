@@ -165,8 +165,6 @@ Milestone1Test::run()
 		g_collision_system.debug_draw();
 		
 		stats.draw();
-
-		painter->flip();
 	END_GAME_LOOP
 	
 	delete level;

@@ -166,7 +166,6 @@ CollisionTest::run()
 			}
 		}
 
-		painter->flip();
 	END_GAME_LOOP
 	
 	delete level;

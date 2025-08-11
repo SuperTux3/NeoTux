@@ -94,8 +94,6 @@ PlatformingTest::run()
 		tilemap->draw(g_camera);
 		player.draw();
 		sprite.draw();
-
-		painter->flip();
 	END_GAME_LOOP
 	
 	delete level;
