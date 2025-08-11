@@ -37,11 +37,14 @@ Player::Player() :
 void
 Player::move_left()
 {
-	auto angle = 90 - ((-std::atan2(-m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
+	for (auto &slope_normal : m_slope_normals)
+	{
+		auto angle = 90 - ((-std::atan2(-slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
+		if (m_on_slope)
+			move(-0.5 * (angle*0.012) * g_dtime, 0);
+	}
 	m_moving = true;
-	if (m_on_slope)
-		move(-0.5 * (angle*0.012) * g_dtime, 0);
-	else
+	if (!m_on_slope)
 		move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
 	m_direction = false;
@@ -53,11 +56,15 @@ Player::move_left()
 void
 Player::move_right()
 {
-	auto angle = 90 - ((-std::atan2(m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
+
+	for (auto &slope_normal : m_slope_normals)
+	{
+		auto angle = 90 - ((-std::atan2(m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
+		if (m_on_slope)
+			move(0.5 * (angle*0.012) * g_dtime, 0);
+	}
 	m_moving = true;
-	if (m_on_slope)
-		move(0.5 * (angle*0.012) * g_dtime, 0);
-	else
+	if (!m_on_slope)
 		move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	m_direction = true;
@@ -163,6 +170,7 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		m_slope_normals[1].average(m_slope_normals[0]).y == 0.0)
 	{
 		// Return early so we don't slide Tux
+		std::cout << "no!" << std::endl;
 		return;
 	}
 	
