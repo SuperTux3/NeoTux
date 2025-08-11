@@ -40,9 +40,11 @@ CollisionTest::run()
 	g_tiles_reader.open();	
 	
 	LevelReader reader;
-	Level *level = reader.open("levels/via_nostalgica.stl");
+	Level *level = reader.open("levels/fork_in_the_road.stl");
 	Sector &sector = level->get_sector(0);
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
+	if (!tilemap)
+		return;
 	
 	Painter* painter = g_video_system->get_painter();
 	painter->register_camera(&g_camera);

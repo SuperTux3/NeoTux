@@ -62,6 +62,7 @@ public:
 			return SexpElt(m_elt->list);
 		return std::monostate{};
 	}
+	SexpElt copy();
 	SexpElt next();
 	bool next_inplace();
 private:

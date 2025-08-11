@@ -30,7 +30,7 @@ public:
 	~Level() = default;
 	
 	const std::string& get_name() const { return m_name; }
-	Sector &get_sector(size_t idx) { return m_sectors[idx]; }
+	Sector &get_sector(size_t idx) { return m_sectors.at(idx); }
 	const size_t num_sectors() const { return m_sectors.size(); }
 	Sector &operator[](size_t idx) { return get_sector(idx); }
 	

@@ -42,10 +42,10 @@ Level::Level(SexpElt root) :
 					Logger::debug("Name: " + m_name);
 				}
 			}
-			if (elt.get_value() == "sector")
+			if (elt.get_value() == "sector" && m_sectors.size() == 0)
 			{
 				Logger::debug("Parsing sector");
-				m_sectors.emplace_back(elt);
+				m_sectors.emplace_back(elt.copy());
 			}
 		}
 

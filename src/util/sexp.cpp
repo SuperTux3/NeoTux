@@ -33,6 +33,13 @@ SexpElt::SexpElt(sexp_t *me) :
 {}
 
 SexpElt
+SexpElt::copy()
+{
+	return SexpElt(m_elt);
+}
+
+
+SexpElt
 SexpElt::next()
 {
 	if (m_elt && m_elt->next)
