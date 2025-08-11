@@ -54,12 +54,14 @@ CollisionTest::run()
 	Vec2 mline_beg{0, 0}, mline_end;
 	
 	
+	double tick;
 	Vec2 tline_beg{430, 434};
 	Vec2 tline_end{598, 380};
 	
 	BEGIN_GAME_LOOP
 		handle_events();
 		painter->clear();
+		tick += g_dtime;
 		
 		Rectf mouse_rect(g_input_manager.get_mouse_x(), g_input_manager.get_mouse_y(), {0, 0});
 		
@@ -91,7 +93,6 @@ CollisionTest::run()
 		mline_end.x = player.get_rect().left - g_camera.x - (double)g_input_manager.get_mouse_x();
 		mline_end.y = player.get_rect().top - g_camera.y - (double)g_input_manager.get_mouse_y();
 		
-		mline_end = mline_beg - (mline_end.get_normal() * 200);
 		
 		TextureRef help_1 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
 			"Left click to move relative", {255, 255, 255, 155});
@@ -114,6 +115,13 @@ CollisionTest::run()
 			mline_col.r = 0;
 			mline_col.b = 0;
 		}
+		//mline_beg.rotate90();
+		
+		mline_end = mline_beg - (mline_end.get_normal() * 200);
+		//mline_end.rotate90();
+		
+		//mline_end.rotate(90 * (3.14159/180));
+
 		painter->draw_line(mline_beg, mline_end, mline_col);
 		painter->draw_line(tline_beg, tline_end, {0, 255, 0, 255});
 		

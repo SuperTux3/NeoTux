@@ -81,6 +81,7 @@ public:
 		 m_collidable,
 		 m_tilelike;
 	std::vector<Vec2> m_slope_normals;
+	uint8_t m_slope_data;
 	Vec2 m_slope_normal;
 	Rectf m_rect;
 	Rectf m_colbox;

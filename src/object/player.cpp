@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "player.hpp"
+#include "collision.hpp"
 #include "collision_system.hpp"
 #include "object/moving_object.hpp"
 #include "video/painter.hpp"
@@ -41,16 +42,14 @@ Player::move_left()
 	bool already_moved = false;
 	bool cant_slope_move = false;
 	if (!(m_slope_normals.size() > 1 &&
-		  m_slope_normals[1].average(m_slope_normals[0]).y == 0.0))
+	      m_slope_normals[1].x + m_slope_normals[0].x == 0.0))
 	{
 		for (auto &slope_normal : m_slope_normals)
 		{
-			double pos_angle = slope_normal.y > 0;
-			auto angle = 90 - ((-std::atan2(slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
+			Vec2 slope_rotated = slope_normal.rotate90();
 			if (m_on_slope && !already_moved)
 			{
-				//move(-0.5 * (angle*0.012) * g_dtime, -0.5 * (angle*0.012) * g_dtime);
-				move(-slope_normal.x * 0.3, -slope_normal.y * 0.3);
+				move(slope_rotated.x * 0.6, slope_rotated.y * 0.6);
 				already_moved = true;
 			}
 		}
@@ -73,16 +72,14 @@ Player::move_right()
 	bool already_moved = false;
 	bool cant_slope_move = false;
 	if (!(m_slope_normals.size() > 1 &&
-		  m_slope_normals[1].average(m_slope_normals[0]).y == 0.0))
+	      m_slope_normals[1].x + m_slope_normals[0].x == 0.0))
 	{
 		for (auto &slope_normal : m_slope_normals)
 		{
-			double pos_angle = slope_normal.y > 0;
-			auto angle = 90 - ((-std::atan2(-slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
+			Vec2 slope_rotated = slope_normal.rotate90();
 			if (m_on_slope && !already_moved)
 			{
-				//move(-0.5 * (angle*0.012) * g_dtime, -0.5 * (angle*0.012) * g_dtime);
-				move(slope_normal.x * 0.3, slope_normal.y * 0.3);
+				move(-slope_rotated.x * 0.6, -slope_rotated.y * 0.6);
 				already_moved = true;
 			}
 		}
@@ -90,7 +87,7 @@ Player::move_right()
 	else
 		cant_slope_move = true;
 	m_moving = true;
-	if (!m_on_slope || m_y_vel < -0.05 || cant_slope_move)
+	if (!m_on_slope || cant_slope_move)
 		move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	m_direction = true;
@@ -164,12 +161,8 @@ Player::damage(bool kill)
 void
 Player::update(Sector &sector, Tilemap &tilemap)
 {
-	double angle = 0.0;
-	double pos_angle = m_slope_normal.y > 0;
-	double flipped_x_normal = pos_angle ? m_slope_normal.x : -m_slope_normal.x;
-	double fixed_y_normal = pos_angle ? -m_slope_normal.y : m_slope_normal.y;
-	angle = 90 - ((-std::atan2(fixed_y_normal, m_slope_normal.x) * (180/std::numbers::pi)));
-		
+	//std::cout << angle << std::endl;
+	
 	if (m_just_grew)
 	{
 		g_mixer.play_sound("sounds/retro/upgrade.wav");
@@ -190,8 +183,10 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	if (!m_on_slope && m_y_vel < -0.1)
 		set_action(get_size_str()+"fall-right");
 	
+	std::cout << m_slope_normals[0].to_string() << " " << m_slope_normals[1].to_string() << std::endl;
+	std::cout << m_slope_normals[1].y + m_slope_normals[0].y << std::endl;
 	if (m_slope_normals.size() > 1 &&
-		m_slope_normals[1].average(m_slope_normals[0]).y == 0.0)
+		m_slope_normals[1].x + m_slope_normals[0].x == 0.0)
 	{
 		// Return early so we don't slide Tux
 		return;
@@ -199,14 +194,10 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	
 	if (m_on_slope)
 	{
-		if (angle < 30)
-		{
-			move(flipped_x_normal * 0.05, -fixed_y_normal * 0.05);
-		}
-		else if (angle <= 45)
-		{
-			move(flipped_x_normal * 0.03, -fixed_y_normal * 0.03);
-		}
+		using namespace Collision;
+		uint16_t deform_mask = (m_slope_data & Collision::SlopeInfo::DEFORM_MASK);
+		if (deform_mask == DEFORM_LEFT || deform_mask == DEFORM_RIGHT)
+			move(m_slope_normal.x * 0.03, -m_slope_normal.y * 0.03);
 	}
 }
 

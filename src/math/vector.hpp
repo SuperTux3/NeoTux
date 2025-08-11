@@ -48,6 +48,21 @@ public:
 		return { (x + other.x) / (T)2, (y + other.y) / (T)2 };
 	}
 	
+	void rotate(T theta)
+	{
+		x = (x * std::cosf(theta) - y * std::sinf(theta));
+		y = (x * std::sinf(theta) + y * std::cosf(theta));
+	}
+	
+	Vec2_t<T> rotate90()
+	{
+		Vec2_t<T> res{};
+		T tmp = x;
+		res.x = y;
+		res.y = -tmp;
+		return res;
+	}
+	
 	bool normalize()
 	{
 		T mag = magnitude();

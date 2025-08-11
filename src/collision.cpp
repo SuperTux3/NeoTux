@@ -44,10 +44,17 @@ get_normal_from_slope_metas(uint16_t meta)
 		break;
 	}
 	
+
+	line.normalize();
+	Vec2::type tmp = line.y;
+	line.y = -line.x;
+	line.x = tmp;	
+	
 	uint8_t dir_mask = meta & DIRECTION_MASK;
 	if (dir_mask > 1)
-		line.y = -line.y;
-	
+	{
+		line.x = -line.x;
+	}
 	return line;
 }
 

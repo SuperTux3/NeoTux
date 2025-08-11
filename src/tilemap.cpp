@@ -111,6 +111,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 				bool success = Collision::get_line_from_slope_metas(meta.datas, lines);
 				Vec2 normal = Collision::get_normal_from_slope_metas(meta.datas);
 				obj.m_slope_normal = normal;
+				obj.m_slope_data = meta.datas;
 				obj.m_slope_normals.push_back(normal);
 				
 				lines[0] *= 32.f;
