@@ -52,7 +52,7 @@ Player::move_left()
 		move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
 	m_direction = false;
-	if (m_grounded)
+	if (m_grounded || m_on_slope)
 		set_action(get_size_str()+"walk-right");
 
 }
@@ -75,7 +75,7 @@ Player::move_right()
 		move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	m_direction = true;
-	if (m_grounded)
+	if (m_grounded || m_on_slope)
 		set_action(get_size_str()+"walk-right");
 }
 
@@ -159,19 +159,18 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		set_action(get_size_str()+"stand-right");
 	}
 	
-	if (!m_moving && m_grounded)
+	if (!m_moving && (m_grounded || m_on_slope))
 	{
 		set_action(get_size_str()+"stand-right");
 	}
 	else
 		m_moving = false;
 	
-	if (m_y_vel < -0.1)
+	MovingSprite::update(sector, tilemap);
+	
+	if (!m_on_slope && m_y_vel < -0.1)
 		set_action(get_size_str()+"fall-right");
 	
-	
-	
-	MovingSprite::update(sector, tilemap);
 	if (m_slope_normals.size() > 1 &&
 		m_slope_normals[1].average(m_slope_normals[0]).y == 0.0)
 	{
