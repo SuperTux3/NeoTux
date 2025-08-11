@@ -78,6 +78,7 @@ struct TileMeta
 	unsigned y;
 	TileInfo *info;
 	uint16_t attrs;
+	uint16_t datas;
 };
 
 #endif
