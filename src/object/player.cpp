@@ -20,6 +20,7 @@
 #include "video/painter.hpp"
 #include "video/video_system.hpp"
 #include <cmath>
+#include <iostream>
 #include <numbers>
 
 Player::Player() :
@@ -38,17 +39,26 @@ void
 Player::move_left()
 {
 	bool already_moved = false;
-	for (auto &slope_normal : m_slope_normals)
+	bool cant_slope_move = false;
+	if (!(m_slope_normals.size() > 1 &&
+		  m_slope_normals[1].average(m_slope_normals[0]).y == 0.0))
 	{
-		auto angle = 90 - ((-std::atan2(-slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
-		if (m_on_slope && !already_moved)
+		for (auto &slope_normal : m_slope_normals)
 		{
-			move(-0.5 * (angle*0.012) * g_dtime, 0);
-			already_moved = true;
+			double pos_angle = slope_normal.y > 0;
+			auto angle = 90 - ((-std::atan2(slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
+			if (m_on_slope && !already_moved)
+			{
+				//move(-0.5 * (angle*0.012) * g_dtime, -0.5 * (angle*0.012) * g_dtime);
+				move(-slope_normal.x * 0.3, -slope_normal.y * 0.3);
+				already_moved = true;
+			}
 		}
 	}
+	else
+		cant_slope_move = true;
 	m_moving = true;
-	if (!m_on_slope)
+	if (!m_on_slope || m_y_vel < -0.03 || cant_slope_move)
 		move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
 	m_direction = false;
@@ -61,17 +71,26 @@ void
 Player::move_right()
 {
 	bool already_moved = false;
-	for (auto &slope_normal : m_slope_normals)
+	bool cant_slope_move = false;
+	if (!(m_slope_normals.size() > 1 &&
+		  m_slope_normals[1].average(m_slope_normals[0]).y == 0.0))
 	{
-		auto angle = 90 - ((-std::atan2(m_slope_normal.y, m_slope_normal.x) * (180/std::numbers::pi)));
-		if (m_on_slope && !already_moved)
+		for (auto &slope_normal : m_slope_normals)
 		{
-			move(0.5 * (angle*0.012) * g_dtime, 0);
-			already_moved = true;
+			double pos_angle = slope_normal.y > 0;
+			auto angle = 90 - ((-std::atan2(-slope_normal.y, slope_normal.x) * (180/std::numbers::pi)));
+			if (m_on_slope && !already_moved)
+			{
+				//move(-0.5 * (angle*0.012) * g_dtime, -0.5 * (angle*0.012) * g_dtime);
+				move(slope_normal.x * 0.3, slope_normal.y * 0.3);
+				already_moved = true;
+			}
 		}
 	}
+	else
+		cant_slope_move = true;
 	m_moving = true;
-	if (!m_on_slope)
+	if (!m_on_slope || m_y_vel < -0.05 || cant_slope_move)
 		move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
 	m_direction = true;
