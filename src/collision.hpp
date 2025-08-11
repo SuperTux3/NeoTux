@@ -19,13 +19,28 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
-#include <vector>
 #include "math/rect.hpp"
 #include "math/vector.hpp"
 
 namespace Collision
 {
+
+enum SlopeInfo
+{
+	SLOPE_SOUTHWEST = 0,
+	SLOPE_NORTHEAST,
+	SLOPE_SOUTHEAST,
+	SLOPE_NORTHWEST,
+	DIRECTION_MASK = 0x0003,
+	DEFORM_BOTTOM = 0x0010,
+	DEFORM_TOP = 0x0020,
+	DEFORM_LEFT = 0x0030,
+	DEFORM_RIGHT = 0x0040,
+	DEFORM_MASK = 0x0070
+};
+
+bool
+get_line_from_slope_metas(uint16_t meta, Vec2 *lines);
 
 static Rectf
 get_chunk_collisions(Rectf box, long chunk_size)
@@ -108,13 +123,17 @@ std::optional<Vec2_t<T>> line_line(Vec2_t<T> l1_beg, Vec2_t<T> l1_end,
 		T intersect_x = l1_beg.x + (dist1 * (l1_end.x - l1_beg.x));
 		T intersect_y = l1_beg.y + (dist1 * (l1_end.y - l1_beg.y));
 		
-		return Vec2_t<T>{ intersect_x, intersect_y };
+		return Vec2_t<T>( intersect_x, intersect_y );
 	}
 	return std::nullopt;
 }
 
 template <typename T>
 using col_side_t = std::pair<RectSide, Vec2_t<T>>;
+
+// Sometimes there are reports of 3 collisions between a line. To be safe, I set this to 4 (all sides), though
+//  I don't believe it is possible...
+constexpr size_t COL_SIZE_MAX = 4;
 
 template <typename T>
 size_t line_rect(col_side_t<T> col_list[], Vec2_t<T> l_beg, Vec2_t<T> l_end, Rect_t<T> rect)
@@ -134,8 +153,7 @@ size_t line_rect(col_side_t<T> col_list[], Vec2_t<T> l_beg, Vec2_t<T> l_end, Rec
 	if (bottom)
 		col_list[cols++] = {RECT_BOTTOM, *bottom};
 	
-	// A line can only go through 2 points at once
-	assert(cols <= 3);
+	assert(cols < COL_SIZE_MAX+1);
 	
 	return cols;
 }

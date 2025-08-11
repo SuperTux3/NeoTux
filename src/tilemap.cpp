@@ -100,10 +100,42 @@ Tilemap::try_object_collision(MovingObject& obj)
 				(meta.attrs & TileMeta::BRICK) == 0)
 				continue;
 			
-			Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
-			auto col = obj.do_collision(rrect);
-			if (col)
-				colvec.emplace_back(col);
+			Tile &tile_below = get_tile(x, y+1);
+			
+			if ((meta.attrs & TileMeta::SLOPE) == TileMeta::SLOPE)
+			{
+				bool is_slope_roof = (meta.datas & Collision::SLOPE_NORTHEAST) == Collision::SLOPE_NORTHEAST ||
+				(meta.datas & Collision::SLOPE_NORTHWEST) == Collision::SLOPE_NORTHWEST;
+				bool is_slope_roof_above_tile = tile_below.get_id() != 0 && is_slope_roof;
+				/* Handle edge case (pun not intended) where object is on edge of slope from below
+				 *  Where O == object && \ or / == slope (NE/NW)
+				 *          _________
+				 * stuck    |  , . '|
+				 *  \--->  O|' , ___|
+				 *          \___/
+				 */
+					
+				// Slope collision
+				Vec2 lines[2];
+				bool success = Collision::get_line_from_slope_metas(meta.datas, lines);
+				lines[0] *= 32.f;
+				lines[1] *= 32.f;
+				lines[0].x += (float)(x*32);
+				lines[0].y += (float)(y*32);
+				lines[1].x += (float)(x*32);
+				lines[1].y += (float)(y*32);
+				// TODO: Move this to draw
+				if (g_settings->show_hitboxes)
+					g_video_system->get_painter()->draw_line(lines[0], lines[1], {255, 0, 0, 255});
+				obj.do_slope_collision(meta.datas, lines[0], lines[1]);
+			}
+			else {
+				// Tile collision
+				Rectf rrect{(float)(x*32), (float)(y*32), {32.f, 32.f}};
+				auto col = obj.do_collision(rrect);
+				if (col)
+					colvec.emplace_back(col);
+			}
 			}
 			catch (...)
 			{

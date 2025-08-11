@@ -109,6 +109,57 @@ MovingObject::do_collision(Rectf rect, bool do_real_collision_stuff, std::option
 	return collide;
 }
 
+void
+MovingObject::do_slope_collision(uint16_t sl_t,
+                                 Vec2 line_beg, Vec2 line_end,
+                                 bool do_real_collision_stuff,
+                                 std::optional<Rectf> custom_colbox)
+{
+	Collision::col_side_t<float> cols[Collision::COL_SIZE_MAX];
+	Rectf colbox = (custom_colbox ? *custom_colbox : get_colbox());
+	int collide = Collision::line_rect(cols, line_beg, line_end, colbox);
+	bool is_slope_roof = (sl_t & Collision::SLOPE_NORTHEAST) == Collision::SLOPE_NORTHEAST ||
+		(sl_t & Collision::SLOPE_NORTHWEST) == Collision::SLOPE_NORTHWEST;
+	if (collide)
+	{
+		bool top = false;
+		for (int i = 0; i < collide; ++i)
+		{
+			if (cols[i].first == RECT_TOP)
+			{
+				top = true;
+				break;
+			}
+		}
+		for (int i = 0; i < collide; ++i)
+		{
+			if (!top)
+			{
+				if (!is_slope_roof)
+				{
+					if (cols[i].first == RECT_RIGHT)
+						move(0, -(colbox.bottom - cols[i].second.y - 0.2));
+					if (cols[i].first == RECT_LEFT)
+						move(0, -(colbox.bottom - cols[i].second.y - 0.2));
+
+					m_grounded = true;
+				}
+			}
+			else {
+				if (cols[i].first == RECT_RIGHT)
+					move(0, -(colbox.top - cols[i].second.y - 0.3));
+				if (cols[i].first == RECT_LEFT)
+					move(0, -(colbox.top - cols[i].second.y - 0.3));
+				// Only when jumping
+				if (m_y_vel > 0.1)
+					m_y_vel = 0.0;
+			}
+		}
+	}
+	
+}
+
+
 Collision::CollideInfo<float>
 MovingObject::colliding_with(const MovingObject &other) const
 {

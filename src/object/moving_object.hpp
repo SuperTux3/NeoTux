@@ -21,6 +21,7 @@
 #include "math/rect.hpp"
 #include "math/size.hpp"
 #include "game_object.hpp"
+#include "math/vector.hpp"
 
 class Tilemap;
 
@@ -46,6 +47,13 @@ public:
 	
 	virtual void on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<float> collide) {}
 
+	void
+	do_slope_collision(uint16_t sl_t,
+					   Vec2 line_beg,
+					   Vec2 line_end,
+	                   bool do_real_collision_stuff = true,
+	                   std::optional<Rectf> custom_colbox = std::nullopt);
+	
 	Collision::CollideInfo<float> do_collision(Rectf rect,
 	                                           bool do_real_collision_stuff = true,
 											   std::optional<Rectf> custom_colbox = std::nullopt);

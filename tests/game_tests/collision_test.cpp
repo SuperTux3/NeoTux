@@ -40,7 +40,7 @@ CollisionTest::run()
 	g_tiles_reader.open();	
 	
 	LevelReader reader;
-	Level *level = reader.open("levels/fork_in_the_road.stl");
+	Level *level = reader.open("levels/collision_test.stl");
 	Sector &sector = level->get_sector(0);
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	if (!tilemap)
@@ -117,11 +117,11 @@ CollisionTest::run()
 		painter->draw_line(mline_beg, mline_end, mline_col);
 		painter->draw_line(tline_beg, tline_end, {0, 255, 0, 255});
 		
-		tilemap->draw(g_camera);
 		
 		player.update(sector, *tilemap);
-		player.draw();
+		tilemap->draw(g_camera);
 		tilemap->try_object_collision(player);
+		player.draw();
 		
 		
 		if (g_input_manager.is_key_down('a'))
@@ -131,8 +131,8 @@ CollisionTest::run()
 		if (g_input_manager.is_key_down('w'))
 			player.jump();
 		
-		Collision::col_side_t<float> cols[2];
-		auto rectcol = Collision::line_rect(&cols[0], tline_beg, tline_end, player.get_colbox());
+		Collision::col_side_t<float> cols[Collision::COL_SIZE_MAX];
+		auto rectcol = Collision::line_rect(cols, tline_beg, tline_end, player.get_colbox());
 		if (rectcol)
 		{
 			auto colbox = player.get_colbox();

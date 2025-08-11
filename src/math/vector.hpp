@@ -18,13 +18,13 @@
 #define SUPERTUX_SRC_MATH_VECTOR_HPP
 
 #include <cmath>
-#include <tgmath.h>
 #include <string>
 
 template <typename T>
 class Vec2_t
 {
 public:
+	using type = T;
 	T x;
 	T y;
 	
