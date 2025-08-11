@@ -46,7 +46,7 @@ void
 SDLVideoSystem::flip()
 {
 	//SDL_RenderPresent(m_sdl_renderer.get());
-	m_painter->flip();
+	//m_painter->flip();
 }
 
 void
