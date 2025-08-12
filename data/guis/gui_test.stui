@@ -1,5 +1,6 @@
 (supertux-gui
  (container (rectf sdl 240 120 420 420)
- 			horizontal
 	(box)
-	(text (font-size 28) (color #ccaabbff) "Hello")))
+	(button
+		(text (font-size 32) (color #ffffff) "hi"))
+	(text (font-size 32) (color 255 255 255 155) "Hello")))

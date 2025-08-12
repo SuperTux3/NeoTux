@@ -89,9 +89,13 @@ ContainerWidget::construct(SexpElt elt)
 	do
 	{
 		BoxWidget *box_widget = dynamic_cast<BoxWidget*>(Widget::create(elt));
+		if (!box_widget)
+		{
+			Logger::warn("ContainerWidget: Ignoring an unknown widget. Is it loaded?");
+			continue;
+		}
 		Logger::debug(std::format("Pushing {} widget: {}", box_widget->obj_name(), static_cast<void*>(box_widget)));
-		if (box_widget)
-			widget->add(box_widget);
+		widget->add(box_widget);
 	} while (elt.next_inplace());
 	return widget;
 }

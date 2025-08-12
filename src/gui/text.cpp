@@ -41,11 +41,6 @@ TextWidget::update()
 {
 }
 
-void
-TextWidget::add(BoxWidget* box)
-{
-}
-
 Widget*
 TextWidget::construct(SexpElt elt)
 {

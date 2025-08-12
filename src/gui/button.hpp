@@ -14,22 +14,22 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_GUI_TEXT_HPP
-#define SUPERTUX_SRC_GUI_TEXT_HPP
+#ifndef SUPERTUX_SRC_GUI_BUTTON_HPP
+#define SUPERTUX_SRC_GUI_BUTTON_HPP
 
 #include <SDL3/SDL_pixels.h>
 #include <vector>
 #include <memory>
 #include "gui/box.hpp"
 
-class TextWidget : public BoxWidget
+class ButtonWidget : public BoxWidget
 {
 public:
-	TextWidget(const Rectf &props, std::string message, unsigned font_size, SDL_Color color);
-	~TextWidget() = default;
+	ButtonWidget(const Rectf &props, BoxWidget *widget);
+	~ButtonWidget() = default;
 
-	static std::string_view class_id() { return "text"; }
-	std::string_view obj_name() override { return "Text"; }
+	static std::string_view class_id() { return "button"; }
+	std::string_view obj_name() override { return "Button"; }
 	
 	static Widget* construct(SexpElt elt);
 	
@@ -37,9 +37,8 @@ public:
 	virtual void update() override;
 	
 private:
-	std::string m_message;
-	unsigned m_font_size;
 	SDL_Color m_color;
+	std::unique_ptr<BoxWidget> m_widget;
 };
 
 #endif

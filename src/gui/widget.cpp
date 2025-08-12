@@ -18,9 +18,11 @@
 #include <cstdint>
 #include <iostream>
 #include <functional>
+#include <stdexcept>
 #include <unordered_map>
 #include "widget.hpp"
 #include "gui/box.hpp"
+#include "gui/button.hpp"
 #include "gui/container.hpp"
 #include "gui/text.hpp"
 #include "util/logger.hpp"
@@ -31,6 +33,7 @@ std::unordered_map<std::string_view, Widget::factory_functor> _registered_widget
 Widget::register_all_widgets()
 {
 	Widget::register_widget<BoxWidget>();
+	Widget::register_widget<ButtonWidget>();
 	Widget::register_widget<ContainerWidget>();
 	Widget::register_widget<TextWidget>();
 }
@@ -79,7 +82,7 @@ Widget::get_widget_cstor(const std::string &name)
 
 /*static*/ Widget*
 Widget::create(SexpElt elt)
-{
+try {
 	//elt.next_inplace();
 	if (!elt.is_list())
 		return nullptr;
@@ -89,4 +92,8 @@ Widget::create(SexpElt elt)
 	
 	std::string widget_type = elt.get_value();
 	return _registered_widgets.at(widget_type)(elt.next());
+}
+catch (const std::out_of_range&)
+{
+	return nullptr;
 }
