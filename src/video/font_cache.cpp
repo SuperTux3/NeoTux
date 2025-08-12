@@ -61,6 +61,9 @@ gc_loop:
 TextureRef
 FontCache::load(const std::string &msg, SDL_Color color)
 {
+	// Empty strings return empty surfaces. Ignore it.
+	if (msg.empty())
+		return nullptr;
 	if (m_strings.contains(msg))
 	{
 		TextureRef tex = m_strings[msg].get();
