@@ -16,6 +16,8 @@
 
 #include "font_manager.hpp"
 #include "util/filesystem.hpp"
+#include "util/logger.hpp"
+#include <algorithm>
 #include <utility>
 
 FontManager g_font_manager{};
@@ -38,6 +40,10 @@ FontManager::load_font(std::string name)
 void
 FontManager::try_create(int font_id, int font_size)
 {
+#ifndef NDEBUG
+	if (font_id <= m_fonts.size())
+		return;
+#endif
 	auto &fonts = m_fonts[font_id];
 	if (!fonts.second.contains(font_size))
 		fonts.second.emplace(font_size, std::make_unique<FontCache>(fonts.first, font_size));
@@ -46,6 +52,12 @@ FontManager::try_create(int font_id, int font_size)
 TextureRef
 FontManager::load(int font_id, int font_size, const std::string &message, SDL_Color color)
 {
+#ifndef NDEBUG
+	if (font_id <= m_fonts.size())
+	{
+		Logger::warn(std::format("Font id {} invalid! Did you call FontManager::load_builtin_fonts?", font_id)); 		return nullptr;
+	}
+#endif
 	try_create(std::move(font_id), std::move(font_size));
 	
 	return m_fonts[font_id].second[font_size]->load(message, std::move(color));

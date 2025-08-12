@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "texture.hpp"
+#include "util/logger.hpp"
 #include "video/video_system.hpp"
 #include "sdl_video_system.hpp"
 #include "video/sdl/painter.hpp"
@@ -26,6 +27,13 @@ SDLTexture::SDLTexture(std::string filename) :
 SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = false */) :
 	m_sdl_texture{nullptr, SDL_DestroyTexture}
 {
+#ifndef NDEBUG
+	if (!surface)
+	{
+		Logger::warn("Surface is invalid!");
+		return;
+	}
+#endif
 	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
 	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->get_painter());
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface);
