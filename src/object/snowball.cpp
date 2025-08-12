@@ -69,7 +69,7 @@ void
 Snowball::update(Sector &sector, Tilemap &tilemap)
 {
 	if (!m_squished)
-		move((m_dir ? 1.0 : -1.0) * 0.1 * g_dtime, 0);
+		move((m_dir ? 1.0 : -1.0) * 80 * g_dtime, 0);
 	MovingSprite::update(sector, tilemap);
 	if (m_squished)
 	{

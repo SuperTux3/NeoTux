@@ -57,8 +57,6 @@ Coin::on_collision(Sector &sector, MovingObject &obj, Collision::CollideInfo<flo
 void
 Coin::update(Sector &sector, Tilemap &tilemap)
 {
-	//if (m_grounded)
-	//	m_y_vel = -15 * g_dtime;
 	MovingSprite::update(sector, tilemap);
 	
 	if (m_just_collected)

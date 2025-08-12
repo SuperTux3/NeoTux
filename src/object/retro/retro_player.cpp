@@ -60,8 +60,7 @@ RetroPlayer::jump()
 		return;
 	
 	m_jumped = true;
-	m_y_vel = 0.8;
-	m_grounded = false;
+	set_y_vel(0.8);
 	g_mixer.play_sound("sounds/bigjump.wav");
 	set_action(get_size_str()+"jump-right");
 }
@@ -76,15 +75,15 @@ RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 	else
 		m_moving = false;
 	
-	if (!m_performed_jump && m_jumped == true && m_y_vel > 0.1)
+	if (!m_performed_jump && m_jumped == true && m_physics.get_y_vel() > 0.1)
 	{
-		m_y_vel = 0;
+		m_physics.set_y_vel(0);
 		m_jumped = false;
 	}
 	if (m_performed_jump)
 		m_performed_jump = false;
 	
-	if (m_y_vel < -0.1)
+	if (m_physics.get_y_vel() < -0.1)
 		set_action(get_size_str()+"fall-right");
 		
 	//Player::update(tilemap);

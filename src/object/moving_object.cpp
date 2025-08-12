@@ -29,7 +29,7 @@ MovingObject::MovingObject(Rectf rect, Rectf colbox, std::string_view name) :
 	m_rect(std::move(rect)),
 	m_colbox(std::move(colbox)),
 	m_grounded(false),
-	m_y_vel(0),
+	m_physics(),
 	m_collidable(true),
 	m_tilelike(false)
 {
@@ -87,16 +87,17 @@ MovingObject::do_collision(Rectf rect, bool do_real_collision_stuff, std::option
 	{
 		if (collide.top)
 		{
-			if (m_y_vel > 0)
+			if (m_physics.get_y_vel() > 0)
 			{
-				m_y_vel = 0;
+				m_physics.set_y_vel(0);
 				move(0, collide.top_constraint);
 			}
 		}
 		else if (collide.bottom)
 		{
-			if (m_y_vel < 0)
+			if (m_physics.get_y_vel() < 0)
 			{	
+				m_physics.set_y_vel(0);
 				m_grounded = true;
 				move(0, -collide.bottom_constraint);
 			}
@@ -151,8 +152,8 @@ MovingObject::do_slope_collision(uint16_t sl_t,
 				if (cols[i].first == RECT_LEFT)
 					move(0, -(colbox.top - cols[i].second.y - 0.3));
 				// Only when jumping
-				if (m_y_vel > 0.1)
-					m_y_vel = 0.0;
+				if (m_physics.get_y_vel() > 0.1)
+					m_physics.set_y_vel(0.0);
 			}
 		}
 		m_on_slope = true;
@@ -176,16 +177,17 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 	
 	if (m_likes_falling)
 	{
-		m_y_vel -= .0020581 * g_dtime;
+		m_physics.set_y_accel(-100 * 10 * m_physics.get_gravity_modifier());
 		if (!m_grounded)
 		{
-			move(0, -m_y_vel * g_dtime);
+			move(0, -m_physics.get_movement().y);
 		}
 
 		auto col = tilemap.try_object_collision(*this);
 		if (!col && m_grounded)
 		{
-			m_y_vel = 0;
+			//m_physics.set_y_accel(0);
+			m_physics.set_y_vel(0);
 			m_grounded = false;
 		}
 		if (col)
@@ -261,6 +263,6 @@ MovingObject::move_to(float x, float y)
 void
 MovingObject::set_y_vel(double y_vel)
 {
-	m_y_vel = y_vel;
+	m_physics.set_y_vel(y_vel);
 	m_grounded = false;
 }

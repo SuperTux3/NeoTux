@@ -22,6 +22,7 @@
 #include "math/size.hpp"
 #include "game_object.hpp"
 #include "math/vector.hpp"
+#include "physics.hpp"
 
 class Tilemap;
 
@@ -74,7 +75,7 @@ public:
 	void disable_gravity() { m_likes_falling = false; }
 protected:
 public:
-	double m_y_vel;
+	Physics m_physics;
 	bool m_likes_falling,
 		 m_grounded,
 		 m_on_slope,
