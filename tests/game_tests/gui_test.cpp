@@ -14,33 +14,38 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ALL_GAME_TESTS_HEADER
-#define ALL_GAME_TESTS_HEADER
-
-#include "game_test.hpp"
-#include "everything_test.hpp"
-#include "collision_test.hpp"
 #include "gui_test.hpp"
-#include "milestone_1_test.hpp"
-#include "platforming_test.hpp"
+#include "gui/gui_reader.hpp"
+#include "input_manager.hpp"
+#include "math/size.hpp"
+#include "camera.hpp"
+#include "video/font_manager.hpp"
+#include "video/video_system.hpp"
 
-namespace GameTest {
-
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * |||   PUT YOUR GAME TESTS HERE   |||
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-static void init_all_tests()
+void
+GuiTest::run()
 {
-	register_game_test<EverythingTest>();
-	register_game_test<CollisionTest>();
-	register_game_test<PlatformingTest>();
-	register_game_test<Milestone1Test>();
-	register_game_test<GuiTest>();
-}
+	FontManager::load_builtin_fonts();
+	Widget::register_all_widgets();
+	Size winsize = g_video_system->get_window_size();
+	g_camera.width = winsize.width;
+	g_camera.height = winsize.height;
 	
-} // namespace GameTest
-
-
-#endif
+	g_mixer.play_music("music/antarctic/chipdisko.ogg");
+	
+	Painter* painter = g_video_system->get_painter();
+	painter->register_camera(&g_camera);
+	
+	GuiReader gui_reader;
+	Widget *box = gui_reader.open("guis/gui_test.stui");
+	
+	BEGIN_GAME_LOOP
+		handle_events();
+		painter->clear();
+		
+		box->update();
+		box->draw();
+	END_GAME_LOOP
+	
+	delete box;
+}

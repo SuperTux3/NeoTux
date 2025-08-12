@@ -34,6 +34,8 @@ public:
 	static std::string_view class_id() { return "widget"; }
 	virtual std::string_view obj_name() { return "Widget"; }
 
+	static void register_all_widgets();
+	
 	// factory stuff
 	template <typename T>
 	static void register_widget()

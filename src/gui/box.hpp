@@ -26,6 +26,7 @@ public:
 	BoxWidget(const Rectf& box_props, float padding = 0.0f);
 	BoxWidget(const Rectf& box_props, float padding_w, float padding_h);
 	BoxWidget(BoxWidget&&) = default;
+	virtual ~BoxWidget() = default;
 	
 	static std::string_view class_id() { return "box"; }
 	std::string_view obj_name() override { return "Box"; }

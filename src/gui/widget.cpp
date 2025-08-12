@@ -18,9 +18,18 @@
 #include <functional>
 #include <unordered_map>
 #include "widget.hpp"
+#include "gui/box.hpp"
+#include "gui/container.hpp"
 #include "util/logger.hpp"
 
 std::unordered_map<std::string_view, Widget::factory_functor> _registered_widgets{};
+
+void
+Widget::register_all_widgets()
+{
+	Widget::register_widget<BoxWidget>();
+	Widget::register_widget<ContainerWidget>();
+}
 
 Widget::factory_functor
 Widget::get_widget_cstor(const std::string &name)

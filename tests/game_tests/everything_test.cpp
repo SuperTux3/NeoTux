@@ -21,8 +21,6 @@
 #include "video/font_cache.hpp"
 #include "config.h"
 #include "camera.hpp"
-#include "gui/box.hpp"
-#include "gui/container.hpp"
 #include "input_manager.hpp"
 #include "level_reader.hpp"
 #include "tiles_reader.hpp"
@@ -62,6 +60,7 @@ void
 EverythingTest::run()
 {
 	Size winsize = g_video_system->get_window_size();
+	Widget::register_all_widgets();
 	g_camera.width = winsize.width;
 	g_camera.height = winsize.height;
 	
@@ -77,10 +76,6 @@ EverythingTest::run()
 	Sector &sector = level->get_sector(0);
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	
-	// Setup guis
-	Widget::register_widget<BoxWidget>();
-	Widget::register_widget<ContainerWidget>();
-	//Widget::register_widget("box", BoxWidget::construct);
 	GuiReader gui_reader;
 	Widget *box = gui_reader.open("guis/main.stui");
 	//BoxWidget box(SDL_FRect{20, 20, 120, 40});

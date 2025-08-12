@@ -1,0 +1,8 @@
+(supertux-gui
+ (container (rectf sdl 240 120 420 420)
+	(box)
+	(box)
+	(box)
+	(box)
+	(box)
+	(box)))
