@@ -27,6 +27,9 @@ enum PlayerState : uint8_t
 {
 	PLAYER_MOVING,
 	PLAYER_JUST_GREW,
+	PLAYER_JUMPING,
+	PLAYER_JUMP_EARLY_APEX,
+	
 	PLAYER_STATE_SIZE,
 };
 
@@ -39,9 +42,13 @@ public:
 	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw() override;
 	
+	void handle_input();
 	void move_left();
 	void move_right();
-	void jump();
+	void controls_move(bool right);
+	void controls_jump();
+	
+	void try_jump_apex();
 	
 	void reset();
 	
@@ -53,6 +60,7 @@ public:
 	int m_powerup_state;
 	ObjectState m_state;
 	bool m_direction;
+	double m_x_vel;
 	Timer m_iframes;
 };
 

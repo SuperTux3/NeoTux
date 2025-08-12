@@ -64,7 +64,7 @@ Milestone1Test::run()
 	StatsOverlay stats;
 	LevelScreen levelscreen{nullptr};
 	
-	RetroPlayer player{};
+	Player player{};
 	
 	BEGIN_GAME_LOOP
 		handle_events();
@@ -133,7 +133,7 @@ Milestone1Test::run()
 		{
 			if (player.m_likes_falling == false)
 			{
-				player.m_y_vel = 0.0;
+				player.set_y_vel(0.0);
 				player.enable_gravity();
 			}
 		}
@@ -142,11 +142,11 @@ Milestone1Test::run()
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))
-			player.move_left();
+			player.controls_move(false);
 		else if (g_input_manager.is_key_down('d'))
-			player.move_right();
+			player.controls_move(true);
 		if (g_input_manager.is_key_down('w'))
-			player.jump();
+			player.controls_jump();
 		
 		g_camera.x = 
 			std::max(0.f,

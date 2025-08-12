@@ -84,7 +84,7 @@ CollisionTest::run()
 			}
 		}
 		else if (player.m_likes_falling == false) {
-			player.m_y_vel = 0.0;
+			player.set_y_vel(0.0);
 			player.enable_gravity();
 		}
 		
@@ -128,11 +128,13 @@ CollisionTest::run()
 		
 		
 		if (g_input_manager.is_key_down('a'))
-			player.move_left();
+			player.controls_move(false);
 		else if (g_input_manager.is_key_down('d'))
-			player.move_right();
+			player.controls_move(true);
 		if (g_input_manager.is_key_down('w'))
-			player.jump();
+			player.controls_jump();
+		//else if (g_input_manager.is_key_down('s'))
+		//	player.down();
 		player.update(sector, *tilemap);
 		tilemap->draw(g_camera);
 		tilemap->try_object_collision(player);

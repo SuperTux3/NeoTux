@@ -70,7 +70,7 @@ PlatformingTest::run()
 		{
 			if (player.m_likes_falling == false)
 			{
-				player.m_y_vel = 0.0;
+				player.set_y_vel(0.0);
 				player.enable_gravity();
 			}
 		}
@@ -78,16 +78,16 @@ PlatformingTest::run()
 		tilemap->try_object_collision(player);
 		
 		if (g_input_manager.is_key_down('a'))
-			player.move_left();
+			player.controls_move(false);
 		else if (g_input_manager.is_key_down('d'))
-			player.move_right();
+			player.controls_move(true);
 		
-		if (g_input_manager.is_key_down('w'))
-			player.jump();
+		//if (g_input_manager.is_key_down('w'))
+		player.handle_input();
 		
 		if (timer.tick())
 			std::cout << "Timer ticked!" << std::endl;
-		
+			
 		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
 		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
 		

@@ -17,12 +17,18 @@
 #include "player.hpp"
 #include "collision.hpp"
 #include "collision_system.hpp"
+#include "input_manager.hpp"
 #include "object/moving_object.hpp"
 #include "video/painter.hpp"
 #include "video/video_system.hpp"
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <numbers>
+
+constexpr double JUMP_EARLY_APEX_FACTOR = 3.0;
+constexpr double JUMP_GRACE_TIME = 0.25;
+constexpr double MAX_WALK_XM = 230;
 
 Player::Player() :
 	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
@@ -31,16 +37,25 @@ Player::Player() :
 	m_iframes(1000, 1)
 {
 	enable_gravity();
-	
+	m_physics.set_gravity_modifier(1.0);
 	set_action(get_size_str()+"stand-right");
 }
 
-// TODO Merge these functions
 void
-Player::move_left()
+Player::try_jump_apex()
+{
+	bool early_apex = m_state.get(PLAYER_JUMP_EARLY_APEX);
+	m_state.set(PLAYER_JUMP_EARLY_APEX, !early_apex);
+	m_physics.set_gravity_modifier(early_apex ? 1.0 : JUMP_EARLY_APEX_FACTOR);
+}
+
+
+void
+Player::controls_move(bool right)
 {
 	bool already_moved = false;
 	bool cant_slope_move = false;
+	double dir = right ? 1.0 : -1.0;
 	if (!(m_slope_normals.size() > 1 &&
 	      m_slope_normals[1].x + m_slope_normals[0].x == 0.0))
 	{
@@ -49,7 +64,7 @@ Player::move_left()
 			Vec2 slope_rotated = slope_normal.rotate90();
 			if (m_on_slope && !already_moved)
 			{
-				move(slope_rotated.x * 0.6, slope_rotated.y * 0.6);
+				move(slope_rotated.x * -dir * 0.5 * g_dtime, slope_rotated.y * -dir * 0.5 * g_dtime);
 				already_moved = true;
 			}
 		}
@@ -57,54 +72,44 @@ Player::move_left()
 	else
 		cant_slope_move = true;
 	m_state.set(PLAYER_MOVING, true);
-	if (!m_on_slope || m_y_vel < -0.03 || cant_slope_move)
-		move(-0.5 * g_dtime, 0);
-	m_flip = (int)FLIP_HORIZONTAL;
-	m_direction = false;
-	if (m_grounded || m_on_slope)
-		set_action(get_size_str()+"walk-right");
-
-}
-
-void
-Player::move_right()
-{
-	bool already_moved = false;
-	bool cant_slope_move = false;
-	if (!(m_slope_normals.size() > 1 &&
-	      m_slope_normals[1].x + m_slope_normals[0].x == 0.0))
-	{
-		for (auto &slope_normal : m_slope_normals)
-		{
-			Vec2 slope_rotated = slope_normal.rotate90();
-			if (m_on_slope && !already_moved)
-			{
-				move(-slope_rotated.x * 0.6, -slope_rotated.y * 0.6);
-				already_moved = true;
-			}
-		}
-	}
-	else
-		cant_slope_move = true;
-	m_state.set(PLAYER_MOVING, true);
-	if (!m_on_slope || cant_slope_move)
-		move(0.5 * g_dtime, 0);
-	m_flip = FLIP_NONE;
-	m_direction = true;
+	if (!m_on_slope || m_physics.get_y_vel() < -0.03 || cant_slope_move)
+		m_physics.set_x_vel(m_physics.get_x_vel() + 100 * dir);;
+	m_flip = right ? FLIP_NONE : FLIP_HORIZONTAL;
+	m_direction = right;
 	if (m_grounded || m_on_slope)
 		set_action(get_size_str()+"walk-right");
 }
 
 void
-Player::jump()
+Player::controls_jump()
 {
 	if (!m_grounded)
 		return;
 	
-	m_y_vel = 0.75;
+	m_physics.set_y_vel(std::abs(m_physics.get_x_vel()) > MAX_WALK_XM ? 580.0 : 520.0);
+	m_state.set(PLAYER_JUMPING, true);
 	m_grounded = false;
 	g_mixer.play_sound("sounds/bigjump.wav");
 	set_action(get_size_str()+"jump-right");
+}
+
+void
+Player::handle_input()
+{
+	if (g_input_manager.is_key_down('w'))
+	{
+		controls_jump();
+	}
+	else if (!g_input_manager.is_key_down('w')) {
+		if (m_state.get(PLAYER_JUMPING))
+		{
+			m_state.set(PLAYER_JUMPING, false);
+			try_jump_apex();
+		}
+	}
+	
+	if (m_state.get(PLAYER_JUMP_EARLY_APEX) && m_physics.get_y_vel() <= 0)
+		try_jump_apex();
 }
 
 void
@@ -161,8 +166,6 @@ Player::damage(bool kill)
 void
 Player::update(Sector &sector, Tilemap &tilemap)
 {
-	//std::cout << angle << std::endl;
-	
 	if (m_state.get(PLAYER_JUST_GREW))
 	{
 		g_mixer.play_sound("sounds/retro/upgrade.wav");
@@ -171,20 +174,28 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		set_action(get_size_str()+"stand-right");
 	}
 	
+	m_physics.set_x_vel(m_physics.get_x_vel() * 0.85);
+	//m_physics.set_x_vel(std::clamp(m_physics.get_x_vel(), -1000.0, 1000.0));
+	if (!m_state.get(PLAYER_MOVING) && m_physics.get_x_vel() == std::clamp(m_physics.get_x_vel(), -0.25, 0.25))
+	{
+		m_physics.set_x_vel(0);
+		if (m_grounded || m_on_slope)
+			set_action(get_size_str()+"stand-right");
+	}
+	
 	if (!m_state.get(PLAYER_MOVING) && (m_grounded || m_on_slope))
 	{
-		set_action(get_size_str()+"stand-right");
+		//set_action(get_size_str()+"stand-right");
 	}
 	else
 		m_state.set(PLAYER_MOVING, false);
 	
+	move(0.5 * (m_physics.get_x_vel() * g_dtime), 0);
 	MovingSprite::update(sector, tilemap);
 	
-	if (!m_on_slope && m_y_vel < -0.1)
+	if (!m_on_slope && m_physics.get_y_vel() < -0.1)
 		set_action(get_size_str()+"fall-right");
 	
-	std::cout << m_slope_normals[0].to_string() << " " << m_slope_normals[1].to_string() << std::endl;
-	std::cout << m_slope_normals[1].y + m_slope_normals[0].y << std::endl;
 	if (m_slope_normals.size() > 1 &&
 		m_slope_normals[1].x + m_slope_normals[0].x == 0.0)
 	{
