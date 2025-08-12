@@ -32,6 +32,7 @@ FontManager::load_builtin_fonts()
 int
 FontManager::load_font(std::string name)
 {
+	std::cout << "loaded!!" << std::endl;
 	m_fonts.push_back({
 		FS::path(name), std::unordered_map<int, std::unique_ptr<FontCache>>{}});
 	return m_fonts.size()-1;
@@ -41,7 +42,7 @@ void
 FontManager::try_create(int font_id, int font_size)
 {
 #ifndef NDEBUG
-	if (font_id <= m_fonts.size())
+	if (font_id >= m_fonts.size())
 		return;
 #endif
 	auto &fonts = m_fonts[font_id];
@@ -53,7 +54,7 @@ TextureRef
 FontManager::load(int font_id, int font_size, const std::string &message, SDL_Color color)
 {
 #ifndef NDEBUG
-	if (font_id <= m_fonts.size())
+	if (font_id >= m_fonts.size())
 	{
 		Logger::warn(std::format("Font id {} invalid! Did you call FontManager::load_builtin_fonts?", font_id)); 		return nullptr;
 	}
