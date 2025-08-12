@@ -14,46 +14,38 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SUPERTUX_SRC_OBJECT_PLAYER_HPP
-#define SUPERTUX_SRC_OBJECT_PLAYER_HPP
+#ifndef SUPERTUX_SRC_OBJECT_OBJECT_STATE_HPP
+#define SUPERTUX_SRC_OBJECT_OBJECT_STATE_HPP
+#include <simplesquirrel/vm.hpp>
 
-#include "object/moving_object.hpp"
-#include "object/moving_sprite.hpp"
-#include "object/object_state.hpp"
-#include "timer.hpp"
 #include <cstdint>
+#include <vector>
 
-enum PlayerState : uint8_t
-{
-	PLAYER_MOVING,
-	PLAYER_JUST_GREW,
-	PLAYER_STATE_SIZE,
-};
-
-class Player : public MovingSprite
+class ObjectState
 {
 public:
-	Player();
-	virtual ~Player() = default;
+	static void expose(ssq::VM& vm);
 	
-	void update(Sector &sector, Tilemap &tilemap) override;
-	void draw() override;
-	
-	void move_left();
-	void move_right();
-	void jump();
-	
-	void reset();
-	
-	void grow(int amt = 1);
-	void damage(bool kill = false);
-	bool is_dead() const;
 public:
-	std::string get_size_str();
-	int m_powerup_state;
-	ObjectState m_state;
-	bool m_direction;
-	Timer m_iframes;
+	ObjectState();
+	ObjectState(const std::size_t size);
+	~ObjectState() = default;
+	
+	inline bool get(std::size_t idx) const {
+		return m_state[idx];
+	}
+	inline void set(std::size_t idx, bool state) {
+		m_state[idx] = state;
+	}
+	// Convenience utility for common scenario, also useful for grepping
+	inline constexpr void set_if(bool cond, std::size_t idx, bool state) {
+		if (cond)
+			set(idx, state);
+	}
+	
+	// Note: Operator[] is not overloaded because aesthetically it doesn't fit this case
+private:
+	std::vector<bool> m_state;
 };
 
 #endif

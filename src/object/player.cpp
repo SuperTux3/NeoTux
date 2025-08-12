@@ -26,7 +26,7 @@
 
 Player::Player() :
 	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
-	m_moving(false),
+	m_state(PLAYER_STATE_SIZE),
 	m_powerup_state(0),
 	m_iframes(1000, 1)
 {
@@ -56,7 +56,7 @@ Player::move_left()
 	}
 	else
 		cant_slope_move = true;
-	m_moving = true;
+	m_state.set(PLAYER_MOVING, true);
 	if (!m_on_slope || m_y_vel < -0.03 || cant_slope_move)
 		move(-0.5 * g_dtime, 0);
 	m_flip = (int)FLIP_HORIZONTAL;
@@ -86,7 +86,7 @@ Player::move_right()
 	}
 	else
 		cant_slope_move = true;
-	m_moving = true;
+	m_state.set(PLAYER_MOVING, true);
 	if (!m_on_slope || cant_slope_move)
 		move(0.5 * g_dtime, 0);
 	m_flip = FLIP_NONE;
@@ -137,7 +137,7 @@ Player::grow(int amount)
 {
 	g_mixer.play_sound("sounds/retro/excellent.wav");
 	m_powerup_state += amount;
-	m_just_grew = true;
+	m_state.set(PLAYER_JUST_GREW, true);
 }
 
 void
@@ -163,20 +163,20 @@ Player::update(Sector &sector, Tilemap &tilemap)
 {
 	//std::cout << angle << std::endl;
 	
-	if (m_just_grew)
+	if (m_state.get(PLAYER_JUST_GREW))
 	{
 		g_mixer.play_sound("sounds/retro/upgrade.wav");
 		g_mixer.play_sound("sounds/retro/excellent.wav");
-		m_just_grew = false;
+		m_state.set(PLAYER_JUST_GREW, false);
 		set_action(get_size_str()+"stand-right");
 	}
 	
-	if (!m_moving && (m_grounded || m_on_slope))
+	if (!m_state.get(PLAYER_MOVING) && (m_grounded || m_on_slope))
 	{
 		set_action(get_size_str()+"stand-right");
 	}
 	else
-		m_moving = false;
+		m_state.set(PLAYER_MOVING, false);
 	
 	MovingSprite::update(sector, tilemap);
 	
