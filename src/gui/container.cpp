@@ -18,12 +18,12 @@
 #include "util/logger.hpp"
 #include <format>
 
-ContainerWidget::ContainerWidget(const Rectf& props) :
+ContainerWidget::ContainerWidget(const Rectf& props, bool is_horizontal) :
   BoxWidget{props},
   m_widgets(),
   m_spacing(),
-  m_is_horizontal(false)
-{ }
+  m_is_horizontal(is_horizontal)
+{}
 
 void
 ContainerWidget::draw()
@@ -39,19 +39,30 @@ ContainerWidget::draw()
 void
 ContainerWidget::update()
 {
-	m_spacing = static_cast<float>(m_widgets.size());
+	//m_spacing = static_cast<float>(m_widgets.size());
 	const Rectf& that = box();
+	float width = that.get_width() / m_widgets.size();
 	float height = that.get_height() / m_widgets.size();
-	float y = 0;
+	float i = m_is_horizontal ? that.left : that.top;
 	for (auto&& widget : m_widgets)
 	{
 		const Rectf& other = widget->box();
-		widget->top = y;
-		widget->bottom = y + height;
-		widget->left = that.left;
-		widget->right = that.right;
-		// TODO: other->set_{width,height}(m_spacing)
-		y += height;
+		if (m_is_horizontal)
+		{
+			widget->left = i;
+			widget->right = i + width;
+			widget->top = that.top;
+			widget->bottom = that.bottom;
+			i += width;
+		}
+		else {
+			widget->top = i;
+			widget->bottom = i + height;
+			widget->left = that.left;
+			widget->right = that.right;
+			// TODO: other->set_{width,height}(m_spacing)
+			i += height;
+		}
 	}
 }
 
@@ -64,8 +75,18 @@ ContainerWidget::add(BoxWidget* box)
 Widget*
 ContainerWidget::construct(SexpElt elt)
 {
+	SexpElt telt;
+	bool is_horizontal = false;
 	Rectf props = BoxWidget::parse_sexp(elt);
-	ContainerWidget *widget = new ContainerWidget(props);
+	if (elt.is_list() && elt.get_list().get_value() == "horizontal")
+	{
+		telt = elt.get_list().next();
+		if (telt.is_value() && telt.get_value() == "#t")
+			is_horizontal = true;
+		elt.next_inplace();
+	}
+		
+	ContainerWidget *widget = new ContainerWidget(props, is_horizontal);
 	do
 	{
 		BoxWidget *box_widget = dynamic_cast<BoxWidget*>(Widget::create(elt));

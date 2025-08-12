@@ -24,7 +24,7 @@
 class ContainerWidget : public BoxWidget
 {
 public:
-	ContainerWidget(const Rectf &props);
+	ContainerWidget(const Rectf &props, bool is_horizontal = false);
 	~ContainerWidget() = default;
 
 	static std::string_view class_id() { return "container"; }
