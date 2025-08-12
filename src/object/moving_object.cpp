@@ -175,12 +175,14 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 	Rectf colbox_tmp = get_colbox();
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
+	Vec2 movement = m_physics.get_movement();
+	move(movement.x, 0);
 	if (m_likes_falling)
 	{
 		m_physics.set_y_accel(-100 * 10 * m_physics.get_gravity_modifier());
 		if (!m_grounded)
 		{
-			move(0, -m_physics.get_movement().y);
+			move(0, -movement.y);
 		}
 
 		auto col = tilemap.try_object_collision(*this);

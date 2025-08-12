@@ -77,12 +77,6 @@ PlatformingTest::run()
 		player.update(sector, *tilemap);
 		tilemap->try_object_collision(player);
 		
-		if (g_input_manager.is_key_down('a'))
-			player.controls_move(false);
-		else if (g_input_manager.is_key_down('d'))
-			player.controls_move(true);
-		
-		//if (g_input_manager.is_key_down('w'))
 		player.handle_input();
 		
 		if (timer.tick())

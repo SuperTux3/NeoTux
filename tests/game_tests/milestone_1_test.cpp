@@ -148,6 +148,8 @@ Milestone1Test::run()
 		if (g_input_manager.is_key_down('w'))
 			player.controls_jump();
 		
+		player.handle_input();
+		
 		g_camera.x = 
 			std::max(0.f,
 				std::min<float>(tilemap->get_size().width * 32 - g_camera.width,

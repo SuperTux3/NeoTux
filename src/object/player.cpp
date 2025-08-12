@@ -26,9 +26,17 @@
 #include <iostream>
 #include <numbers>
 
+namespace {
+
+constexpr double WALK_ACCELERATION_X = 300;
+constexpr double RUN_ACCELERATION_X = 400;
+constexpr double WALK_SPEED = 300;
 constexpr double JUMP_EARLY_APEX_FACTOR = 3.0;
 constexpr double JUMP_GRACE_TIME = 0.25;
 constexpr double MAX_WALK_XM = 230;
+constexpr double MAX_RUN_XM  = 320;
+
+} // namespace
 
 Player::Player() :
 	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
@@ -56,6 +64,11 @@ Player::controls_move(bool right)
 	bool already_moved = false;
 	bool cant_slope_move = false;
 	double dir = right ? 1.0 : -1.0;
+	if (std::abs(m_physics.get_x_vel()) > MAX_RUN_XM)
+	{
+		m_physics.set_x_vel(std::clamp(m_physics.get_x_vel(), -MAX_RUN_XM, MAX_RUN_XM));
+	}
+	
 	if (!(m_slope_normals.size() > 1 &&
 	      m_slope_normals[1].x + m_slope_normals[0].x == 0.0))
 	{
@@ -71,9 +84,16 @@ Player::controls_move(bool right)
 	}
 	else
 		cant_slope_move = true;
-	m_state.set(PLAYER_MOVING, true);
+	
 	if (!m_on_slope || m_physics.get_y_vel() < -0.03 || cant_slope_move)
-		m_physics.set_x_vel(m_physics.get_x_vel() + 100 * dir);;
+	{
+		m_physics.set_x_accel((RUN_ACCELERATION_X + (100)) * dir);
+		if (!m_state.get(PLAYER_MOVING))
+			m_physics.set_x_vel(100 * dir);
+	}
+	
+	m_state.set(PLAYER_JUST_MOVED, true);
+	m_state.set(PLAYER_MOVING, true);
 	m_flip = right ? FLIP_NONE : FLIP_HORIZONTAL;
 	m_direction = right;
 	if (m_grounded || m_on_slope)
@@ -110,6 +130,13 @@ Player::handle_input()
 	
 	if (m_state.get(PLAYER_JUMP_EARLY_APEX) && m_physics.get_y_vel() <= 0)
 		try_jump_apex();
+	
+	if (g_input_manager.is_key_down('a'))
+		controls_move(false);
+	else if (g_input_manager.is_key_down('d'))
+		controls_move(true);
+	else
+		m_state.set(PLAYER_MOVING, false);
 }
 
 void
@@ -117,10 +144,8 @@ Player::reset()
 {
 	Rectf colbox = Collision::get_chunk_collisions(get_colbox(), CollisionSystem::COL_HASH_SIZE);
 	
-	// DISGUSTING HACK: Remove any adjacent cells, since the collision system can be off sometimes
-	// Remove object from collision system
-	for (int x = colbox.left - 1; x <= colbox.right + 1; ++x)
-		for (int y = colbox.top - 1; y <= colbox.bottom + 1; ++y)
+	for (int x = colbox.left; x <= colbox.right; ++x)
+		for (int y = colbox.top; y <= colbox.bottom; ++y)
 			g_collision_system.remove(x, y, this);
 
 	move_to(0, 0);
@@ -174,27 +199,29 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		set_action(get_size_str()+"stand-right");
 	}
 	
-	m_physics.set_x_vel(m_physics.get_x_vel() * 0.85);
-	//m_physics.set_x_vel(std::clamp(m_physics.get_x_vel(), -1000.0, 1000.0));
-	if (!m_state.get(PLAYER_MOVING) && m_physics.get_x_vel() == std::clamp(m_physics.get_x_vel(), -0.25, 0.25))
+	if (!m_state.get(PLAYER_JUST_MOVED))
+		m_physics.set_x_vel(m_physics.get_x_vel() * 0.99);
+	if (!m_state.get(PLAYER_JUST_MOVED) && m_physics.get_x_vel() == std::clamp<double>(m_physics.get_x_vel(), -35, 35))
 	{
 		m_physics.set_x_vel(0);
 		if (m_grounded || m_on_slope)
 			set_action(get_size_str()+"stand-right");
 	}
 	
-	if (!m_state.get(PLAYER_MOVING) && (m_grounded || m_on_slope))
+	// Ensure play is walking even when they just landed after jumping
+	if ((m_grounded || m_on_slope) && m_physics.get_x_vel() != std::clamp<double>(m_physics.get_x_vel(), -35, 35))
+		set_action(get_size_str()+"walk-right");
+	
+	if (!m_state.get(PLAYER_JUST_MOVED) && (m_grounded || m_on_slope))
 	{
-		//set_action(get_size_str()+"stand-right");
 	}
 	else
-		m_state.set(PLAYER_MOVING, false);
+		m_state.set(PLAYER_JUST_MOVED, false);
 	
-	move(0.5 * (m_physics.get_x_vel() * g_dtime), 0);
 	MovingSprite::update(sector, tilemap);
-	
 	if (!m_on_slope && m_physics.get_y_vel() < -0.1)
 		set_action(get_size_str()+"fall-right");
+	
 	
 	if (m_slope_normals.size() > 1 &&
 		m_slope_normals[1].x + m_slope_normals[0].x == 0.0)
@@ -210,6 +237,7 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		if (deform_mask == DEFORM_LEFT || deform_mask == DEFORM_RIGHT)
 			move(m_slope_normal.x * 0.03, -m_slope_normal.y * 0.03);
 	}
+	m_physics.set_x_accel(0);
 }
 
 bool

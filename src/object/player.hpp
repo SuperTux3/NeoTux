@@ -25,6 +25,7 @@
 
 enum PlayerState : uint8_t
 {
+	PLAYER_JUST_MOVED,
 	PLAYER_MOVING,
 	PLAYER_JUST_GREW,
 	PLAYER_JUMPING,
