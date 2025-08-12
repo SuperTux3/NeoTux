@@ -14,30 +14,70 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <SDL3/SDL_pixels.h>
+#include <cstdint>
 #include <iostream>
 #include <functional>
 #include <unordered_map>
 #include "widget.hpp"
 #include "gui/box.hpp"
 #include "gui/container.hpp"
+#include "gui/text.hpp"
 #include "util/logger.hpp"
 
 std::unordered_map<std::string_view, Widget::factory_functor> _registered_widgets{};
 
-void
+/*static*/ void
 Widget::register_all_widgets()
 {
 	Widget::register_widget<BoxWidget>();
 	Widget::register_widget<ContainerWidget>();
+	Widget::register_widget<TextWidget>();
 }
 
-Widget::factory_functor
+/*static*/ void
+Widget::parse_color(SDL_Color &color, SexpElt elt)
+try {
+	color.r = elt.get_int();
+	elt.next_inplace();
+	color.g = elt.get_int();
+	elt.next_inplace();
+	color.b = elt.get_int();
+	elt.next_inplace();
+	color.a = elt.get_int_or(255);
+}
+catch (...) {
+	if (!elt.is_value())
+		return;
+	std::string val = elt.get_value();
+	if (val.length() < 7)
+		return;
+	if (val[0] != '#')
+		return;
+	
+	std::string bits = val.substr(1, 2);
+	color.r = std::stoi(bits, nullptr, 16);
+	bits = val.substr(3, 2);
+	color.g = std::stoi(bits, nullptr, 16);
+	bits = val.substr(5, 2);
+	color.b = std::stoi(bits, nullptr, 16);
+	if (val.length() < 9)
+	{
+		color.a = 255;
+		return;
+	}
+	bits = val.substr(7, 2);
+	color.a = std::stoi(bits, nullptr, 16);
+}
+
+
+/*static*/ Widget::factory_functor
 Widget::get_widget_cstor(const std::string &name)
 {
 	return _registered_widgets.at(name);
 }
 
-Widget*
+/*static*/ Widget*
 Widget::create(SexpElt elt)
 {
 	//elt.next_inplace();

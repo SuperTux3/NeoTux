@@ -21,6 +21,7 @@
 #include "util/sexp.hpp"
 
 struct Widget;
+struct SDL_Color;
 extern std::unordered_map<std::string_view, std::function<Widget*(SexpElt)>> _registered_widgets;
 
 class Widget
@@ -35,6 +36,7 @@ public:
 	virtual std::string_view obj_name() { return "Widget"; }
 
 	static void register_all_widgets();
+	static void parse_color(SDL_Color &color, SexpElt elt);
 	
 	// factory stuff
 	template <typename T>
