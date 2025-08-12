@@ -53,6 +53,7 @@ public:
 	
 	double get_number();
 	long get_int();
+	long get_int_or(long that);
 	
 	value_t get()
 	{

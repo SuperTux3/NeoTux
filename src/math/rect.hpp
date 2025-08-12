@@ -51,16 +51,41 @@ public:
 		};
 	}
 	
+	Rect_t<T>
+	from_alignment(double center_x, double center_y, T width, T height) const
+	{
+		// TODO make pt_x, pt_y account for width and height
+		T pt_x = get_width() * center_x;
+		T pt_y = get_height() * center_y;
+		
+		
+		return {
+			left + pt_x - width / 2,
+			top + pt_y - height / 2,
+			left + pt_x + width / 2,
+			top + pt_y + height / 2
+		};
+	}
+	
 	Rect_t(T left, T top, T right, T bottom) :
 		left(left), top(top), right(right), bottom(bottom)
 	{}
 	
-	Rect_t(T left, T top, const Size_t<T>& size) :
+	Rect_t(T left, T top, const Size_t<T> &size) :
 		left(left),
 		top(top),
 		right(left + size.width),
 		bottom(top + size.height)
 	{}
+	
+	template <typename U>
+	Rect_t(const Size_t<U> &size) :
+		left(0),
+		top(0),
+		right(size.width),
+		bottom(size.height)
+	{
+	}
 		
 	Rect_t(SDL_Rect rect) :
 		left(rect.x),

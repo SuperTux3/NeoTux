@@ -67,6 +67,17 @@ SexpElt::get_int()
 	return std::stol(get_value());
 }
 
+long
+SexpElt::get_int_or(long that)
+try {
+	return get_int();
+}
+catch (const std::out_of_range&)
+{
+	return that;
+}
+
+
 double
 SexpElt::get_number()
 {
