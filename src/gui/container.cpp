@@ -63,6 +63,7 @@ ContainerWidget::update()
 			// TODO: other->set_{width,height}(m_spacing)
 			i += height;
 		}
+		widget->update();
 	}
 }
 
@@ -78,11 +79,9 @@ ContainerWidget::construct(SexpElt elt)
 	SexpElt telt;
 	bool is_horizontal = false;
 	Rectf props = BoxWidget::parse_sexp(elt);
-	if (elt.is_list() && elt.get_list().get_value() == "horizontal")
+	if (elt.get_value() == "horizontal")
 	{
-		telt = elt.get_list().next();
-		if (telt.is_value() && telt.get_value() == "#t")
-			is_horizontal = true;
+		is_horizontal = true;
 		elt.next_inplace();
 	}
 		
