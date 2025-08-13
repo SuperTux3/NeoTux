@@ -21,14 +21,18 @@
 #include <string>
 #include <vector>
 
-constexpr uint32_t BINDING_GAMEPAD_MASK = (2<<14);
-constexpr uint32_t BINDING_CTRL_MASK    = (2<<13);
-constexpr uint32_t BINDING_ALT_MASK     = (2<<12);
-constexpr uint32_t BINDING_DATA_MASK    = (BINDING_ALT_MASK-1);
+constexpr uint32_t BINDING_KEYBOARD_MASK = (2<<14);
+constexpr uint32_t BINDING_GAMEPAD_MASK  = (2<<13);
+constexpr uint32_t BINDING_CTRL_MASK     = (2<<12);
+constexpr uint32_t BINDING_ALT_MASK      = (2<<11);
+constexpr uint32_t BINDING_BTN_MASK      = ((2<<10) | (2<<9) | (2<<8));
+#define            BINDING_BTN_SHIFT(n)    ((n)>>7)
+
+constexpr uint32_t BINDING_KEY_MASK      = (2<<8)-1;
 	
 struct Binding
 {
-	static uint32_t Key(uint32_t val) { return val; }
+	static uint32_t Key(uint32_t val) { return val | BINDING_KEYBOARD_MASK; }
 	static uint32_t Gamepad(uint32_t val) { return val | BINDING_GAMEPAD_MASK; }
 	
 	enum BindingMod {
@@ -42,11 +46,12 @@ struct Binding
 	{}
 	~Binding() = default;
 	
-	bool is_keyboard() const { return (data & BINDING_GAMEPAD_MASK) == 0; }
+	bool is_keyboard() const { return (data & BINDING_KEYBOARD_MASK) == BINDING_KEYBOARD_MASK; }
 	bool is_gamepad() const { return (data & BINDING_GAMEPAD_MASK) == BINDING_GAMEPAD_MASK; }
 	bool ctrl() const { return (data & BINDING_CTRL_MASK) == BINDING_CTRL_MASK; }
 	bool alt() const { return (data & BINDING_ALT_MASK) == BINDING_ALT_MASK; }
-	uint32_t get_data() const { return data & BINDING_DATA_MASK; }
+	uint32_t get_gamepad_button() const { return BINDING_BTN_SHIFT(data & BINDING_BTN_MASK); }
+	uint32_t get_key() const { return data & BINDING_KEY_MASK; }
 
 	std::string name;
 	bool pressed;

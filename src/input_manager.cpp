@@ -101,7 +101,7 @@ InputManager::handle_event(const SDL_Event &ev)
 				auto &binding = pair.second;
 				if (binding.is_keyboard())
 				{
-					if ((key == binding.get_data()) &&
+					if ((key == binding.get_key()) &&
 					    (binding.ctrl() == ((ev.key.mod & SDL_KMOD_CTRL) != 0)) &&
 						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0)))
 					{
@@ -122,7 +122,7 @@ InputManager::handle_event(const SDL_Event &ev)
 				auto &binding = pair.second;
 				if (binding.is_keyboard())
 				{
-					if ((key == binding.get_data()) &&
+					if ((key == binding.get_key()) &&
 					    (binding.ctrl() == ((ev.key.mod & SDL_KMOD_CTRL) != 0)) &&
 						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0)))
 					{
