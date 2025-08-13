@@ -30,6 +30,12 @@ struct FontManagerItem
 		font_name{font_name},
 		fonts{}
 	{}
+
+	FontManagerItem(FontManagerItem&& other) noexcept :
+		font_name(std::move(other.font_name)),
+		fonts(std::move(other.fonts))
+	{}
+
 	std::string font_name;
 	std::unordered_map<int, std::unique_ptr<FontCache>> fonts;
 };
