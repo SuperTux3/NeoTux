@@ -20,13 +20,18 @@
 #include "video/font_cache.hpp"
 #include "video/texture.hpp"
 #include <unordered_map>
+#include <algorithm>
 #include <string>
 #include <vector>
 
 struct FontManagerItem
 {
+	FontManagerItem(std::string font_name) :
+		font_name{font_name},
+		fonts{}
+	{}
 	std::string font_name;
-	std::unordered_map<int, FontCache> fonts;
+	std::unordered_map<int, std::unique_ptr<FontCache>> fonts;
 };
 
 class FontManager
@@ -42,7 +47,7 @@ public:
 	bool try_gc_all();
 private:
 	void try_create(int font_id, int font_size);
-	std::vector<std::pair<std::string, std::unordered_map<int, std::unique_ptr<FontCache>>>> m_fonts;
+	std::vector<FontManagerItem> m_fonts;
 };
 
 extern FontManager g_font_manager;

@@ -32,8 +32,7 @@ FontManager::load_builtin_fonts()
 int
 FontManager::load_font(std::string name)
 {
-	m_fonts.emplace_back(
-		FS::path(name), std::unordered_map<int, std::unique_ptr<FontCache>>{});
+	m_fonts.emplace_back(FS::path(name));
 	return m_fonts.size()-1;
 }
 
@@ -45,8 +44,8 @@ FontManager::try_create(int font_id, int font_size)
 		return;
 #endif
 	auto &fonts = m_fonts[font_id];
-	if (!fonts.second.contains(font_size))
-		fonts.second.emplace(font_size, std::make_unique<FontCache>(fonts.first, font_size));
+	if (!fonts.fonts.contains(font_size))
+		fonts.fonts.emplace(font_size, std::make_unique<FontCache>(fonts.font_name, font_size));
 }
 
 TextureRef
@@ -60,5 +59,5 @@ FontManager::load(int font_id, int font_size, const std::string &message, SDL_Co
 #endif
 	try_create(std::move(font_id), std::move(font_size));
 	
-	return m_fonts[font_id].second[font_size]->load(message, std::move(color));
+	return m_fonts[font_id].fonts[font_size]->load(message, std::move(color));
 }
