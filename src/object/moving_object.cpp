@@ -179,21 +179,20 @@ MovingObject::update(Sector &sector, Tilemap &tilemap)
 	move(movement.x, 0);
 	if (m_likes_falling)
 	{
+		auto col = tilemap.try_object_collision(*this);
+		if (!col && m_grounded)
+		{
+			m_grounded = false;
+		}
+		if (col)
+			m_colinfo = std::move(*col);
+		
 		m_physics.set_y_accel(-100 * 10 * m_physics.get_gravity_modifier());
 		if (!m_grounded)
 		{
 			move(0, -movement.y);
 		}
-
-		auto col = tilemap.try_object_collision(*this);
-		if (!col && m_grounded)
-		{
-			//m_physics.set_y_accel(0);
-			m_physics.set_y_vel(0);
-			m_grounded = false;
-		}
-		if (col)
-			m_colinfo = std::move(*col);
+		
 	}
 	
 	for (int x = colbox.left; x <= colbox.right; ++x)
