@@ -125,7 +125,7 @@ CollisionTest::run()
 		painter->draw_line(mline_beg, mline_end, mline_col);
 		painter->draw_line(tline_beg, tline_end, {0, 255, 0, 255});
 		
-		player.handle_input();
+		//player.handle_input();
 		//else if (g_input_manager.is_key_down('s'))
 		//	player.down();
 		player.update(sector, *tilemap);

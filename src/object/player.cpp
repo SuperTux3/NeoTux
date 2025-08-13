@@ -231,8 +231,11 @@ Player::damage(bool kill)
 void
 Player::update(Sector &sector, Tilemap &tilemap)
 {
-	std::cout << "Veloc: " << m_physics.get_x_vel() << std::endl;
-	std::cout << "Accel: " << m_physics.get_x_accel() << std::endl;
+	if (g_settings->verbose)
+	{
+		std::cout << "Veloc: " << m_physics.get_x_vel() << std::endl;
+		std::cout << "Accel: " << m_physics.get_x_accel() << std::endl;
+	}
 	if (m_state.get(PLAYER_JUST_GREW))
 	{
 		g_mixer.play_sound("sounds/retro/upgrade.wav");

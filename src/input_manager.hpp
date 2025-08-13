@@ -21,6 +21,38 @@
 #include <string>
 #include <vector>
 
+constexpr uint32_t BINDING_GAMEPAD_MASK = (2<<14);
+constexpr uint32_t BINDING_CTRL_MASK    = (2<<13);
+constexpr uint32_t BINDING_ALT_MASK     = (2<<12);
+constexpr uint32_t BINDING_DATA_MASK    = (BINDING_ALT_MASK-1);
+	
+struct Binding
+{
+	static uint32_t Key(uint32_t val) { return val; }
+	static uint32_t Gamepad(uint32_t val) { return val | BINDING_GAMEPAD_MASK; }
+	
+	enum BindingMod {
+		CTRL = BINDING_CTRL_MASK,
+		ALT  = BINDING_ALT_MASK,
+	};
+	
+	Binding(uint32_t prop) :
+		data(prop)
+	{}
+	~Binding() = default;
+	
+	bool is_keyboard() { return (data & BINDING_GAMEPAD_MASK) == 0; }
+	bool is_gamepad() { return (data & BINDING_GAMEPAD_MASK) == BINDING_GAMEPAD_MASK; }
+	bool ctrl() { return (data & BINDING_CTRL_MASK) == BINDING_CTRL_MASK; }
+	bool alt() { return (data & BINDING_ALT_MASK) == BINDING_ALT_MASK; }
+	uint32_t get_data() { return data & BINDING_DATA_MASK; }
+
+	std::string name;
+	bool pressed;
+private:
+	uint32_t data;
+};
+
 class InputManager
 {
 public:
@@ -28,6 +60,8 @@ public:
 	~InputManager() = default;
 	
 	void handle_event(const SDL_Event &ev);
+	
+	size_t define_mapping(std::string name, Binding binding);
 	
 	unsigned get_mouse_x() const { return m_mouse_x; }
 	unsigned get_mouse_y() const { return m_mouse_y; }
@@ -45,6 +79,8 @@ public:
 	
 	std::string to_string() const;
 private:
+	std::vector<std::pair<std::string, Binding>> m_bindings;
+
 	std::vector<char> m_keys;
 	unsigned m_mouse_x, m_mouse_y;
 	int m_mouse_dx, m_mouse_dy;

@@ -37,6 +37,13 @@ InputManager::InputManager() :
 		throw SDLException("SDL_Init(SDL_INIT_GAMEPAD)");
 }
 
+size_t
+InputManager::define_mapping(std::string name, Binding binding)
+{
+	m_bindings.emplace_back(std::move(name), std::move(binding));
+	return m_bindings.size()-1;
+}
+
 void
 InputManager::handle_event(const SDL_Event &ev)
 {
