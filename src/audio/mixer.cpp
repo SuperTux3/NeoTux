@@ -14,7 +14,9 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifdef NEOTUX_USE_MIXER
 #include <SDL3_mixer/SDL_mixer.h>
+#endif
 #include <format>
 #include "sdl_exception.hpp"
 #include "util/filesystem.hpp"

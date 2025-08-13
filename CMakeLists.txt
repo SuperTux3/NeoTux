@@ -27,6 +27,10 @@ FetchContent_MakeAvailable(sfsexp)
 include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
 
 option(NEOTUX_USE_MIXER "Build with SDL3 Mixer support." ON)
+if (PSP)
+	message(STATUS "Building PSP version...")
+	set(NEOTUX_USE_MIXER OFF)
+endif()
 if (NEOTUX_USE_MIXER)
 	message(STATUS "Using SDL3 Mixer...")
 	FetchContent_Declare(
@@ -40,16 +44,19 @@ endif (NEOTUX_USE_MIXER)
 
 set(SSQ_BUILD_STATIC_ONLY Off)
 
-if(EXISTS "${PROJECT_SOURCE_DIR}/external/simplesquirrel")
-	message(STATUS "Using external/simplesquirrel")
-	add_subdirectory("${PROJECT_SOURCE_DIR}/external/simplesquirrel")
-else()
-	FetchContent_Declare(
-		simplesquirrel
-		GIT_REPOSITORY "https://github.com/swagtoy/simplesquirrel"
-		GIT_BRANCH "master"
-	)
-	FetchContent_MakeAvailable(simplesquirrel)
+#TODO broken
+if (NOT PSP)
+	if(EXISTS "${PROJECT_SOURCE_DIR}/external/simplesquirrel")
+		message(STATUS "Using external/simplesquirrel")
+		add_subdirectory("${PROJECT_SOURCE_DIR}/external/simplesquirrel")
+	else()
+		FetchContent_Declare(
+			simplesquirrel
+			GIT_REPOSITORY "https://github.com/swagtoy/simplesquirrel"
+			GIT_BRANCH "master"
+		)
+		FetchContent_MakeAvailable(simplesquirrel)
+	endif()
 endif()
 
 option(NEOTUX_BGFX "Use BGFX library for NeoTux." OFF)
