@@ -175,7 +175,6 @@ InputManager::handle_event(const SDL_Event &ev)
 					if (btn == binding.get_gamepad_button())
 					{
 						binding.pressed = true;
-						break;
 					}
 				}
 			}
@@ -191,7 +190,6 @@ InputManager::handle_event(const SDL_Event &ev)
 					if (btn == binding.get_gamepad_button())
 					{
 						binding.pressed = false;
-						break;
 					}
 				}
 			}
@@ -210,7 +208,6 @@ InputManager::handle_event(const SDL_Event &ev)
 						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0)))
 					{
 						binding.pressed = true;
-						break;
 					}
 				}
 			}
@@ -229,7 +226,6 @@ InputManager::handle_event(const SDL_Event &ev)
 						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0)))
 					{
 						binding.pressed = false;
-						break;
 					}
 				}
 			}
