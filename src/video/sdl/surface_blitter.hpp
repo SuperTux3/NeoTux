@@ -37,6 +37,7 @@ public:
 	void draw_circle(int x, int y, unsigned r, SDL_Color color);
 	void fill(SDL_Color color);
 	
+	SDL_Surface *release() { return m_sdl_surface.release(); }
 	Texture* to_texture();
 	void destroy();
 private:

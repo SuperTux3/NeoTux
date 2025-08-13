@@ -37,7 +37,7 @@ PlatformingTest::run()
 	g_tiles_reader.open();	
 	
 	LevelReader reader;
-	Level *level = reader.open("levels/via_nostalgica.stl");
+	Level *level = reader.open("levels/small.stl");
 	Sector &sector = level->get_sector(0);
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	

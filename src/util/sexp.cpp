@@ -141,6 +141,12 @@ SexpParser::read_data(const std::vector<char> &data)
 	return SexpElt(sexp);
 }
 
+void
+SexpParser::destroy()
+{
+	m_sexp.reset();
+}
+
 SexpElt
 SexpParser::read_file(const std::string &filename)
 {

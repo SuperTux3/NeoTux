@@ -44,3 +44,9 @@ LevelReader::open(const std::string &filename)
 	
 	return level;
 }
+
+void
+LevelReader::close()
+{
+	m_parser.destroy();
+}

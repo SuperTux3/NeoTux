@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <iostream>
 #include <functional>
+#include <unistd.h>
 #include <variant>
 #include "config.h"
 #include "util/logger.hpp"
@@ -30,6 +31,38 @@
 #include "settings.hpp"
 #include "game.hpp"
 #include "all_tests.hpp"
+
+#ifdef NEOTUX_PSP
+#include <pspkernel.h>
+#include <pspdebug.h>
+
+PSP_MODULE_INFO("NEOTUX", 0, 1, 0);
+PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
+
+int exit_callback(int arg1, int arg2, void *common)
+{
+	return 0;
+}
+
+int callback_thread(SceSize args, void *argp) {
+    int cbid = sceKernelCreateCallback("Exit Callbacks", exit_callback, NULL);
+	GameTest::init_all_tests();
+	g_settings = std::make_unique<Settings>();
+	g_game = std::unique_ptr<Game>(GameTest::get_game_test("retro"));
+	g_game->run();
+    sceKernelRegisterExitCallback(cbid);
+    sceKernelSleepThreadCB();
+    return 0;
+}
+
+int setup_callbacks(void) {
+    int thid = sceKernelCreateThread("update_thread", callback_thread, 0x11, 0xFA0, 0, 0);
+    if(thid >= 0)
+        sceKernelStartThread(thid, 0, 0);
+    return thid;
+}
+
+#endif
 
 using namespace std::string_literals;
 
@@ -270,14 +303,21 @@ void print_help(std::ostream& cout, int argc, char** argv, Argument args[], int 
 	cout << std::resetiosflags(std::ios_base::left);
 }
 
-	
+#ifdef NEOTUX_PSP
+extern "C"
+#endif
 int main(int argc, char** argv)
 {
+#ifdef NEOTUX_PSP
+	setup_callbacks();
+	//return 0;
+#endif
 	g_settings = std::make_unique<Settings>();
 	
 	GameTest::init_all_tests();
 
 	int result = parse_arguments(argc, argv, st_args);
+#ifndef NEOTUX_PSP
 	if (result != 0)
 		return result;
 
@@ -289,10 +329,15 @@ int main(int argc, char** argv)
 	
 	if (!plz_continue)
 		return 0;
+#endif
 
 	// g_game will be set if a game test was selected
+#ifdef NEOTUX_PSP
+	g_game = std::unique_ptr<Game>(GameTest::get_game_test("retro"));
+#else
 	if (g_game == nullptr)
 		g_game = std::make_unique<Game>();
+#endif
 	
 	g_game->run();
 	

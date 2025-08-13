@@ -18,6 +18,7 @@
 #include <SDL3/SDL_timer.h>
 #include <SDL3_image/SDL_image.h>
 #include "sdl_exception.hpp"
+#include "video/sdl/surface_blitter.hpp"
 #include "video/sdl/texture.hpp"
 #include "video/video_system.hpp"
 
@@ -60,6 +61,10 @@ SDL_Surface*
 Texture::create_surface(const std::string& filename)
 {
 	SDL_Surface* image = IMG_Load(filename.c_str());
+	if (image->w >= 256)
+		image->w = 256;
+	if (image->h >= 256)
+		image->h = 256;
 	if (!image)
 		throw SDLException("IMG_Load");
 	return image;

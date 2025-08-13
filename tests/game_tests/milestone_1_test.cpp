@@ -86,6 +86,7 @@ Milestone1Test::run()
 			level = reader.open("levels/revenge_in_redmond/" + _levels[_levels_idx]);
 			sector = &level->get_sector(0);
 			tilemap = sector->get_tilemap_by_zpos(0);
+			reader.close();
 			
 			player.reset();
 			sector->move_to_spawn(player);
@@ -154,7 +155,7 @@ Milestone1Test::run()
 				         (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f));
 		
 		
-		//tilemap->draw(g_camera);
+		tilemap->draw(g_camera);
 		level->draw();
 		player.draw();
 		

@@ -27,6 +27,7 @@ public:
 	~LevelReader() = default;
 	
 	Level* open(const std::string &filename);
+	void close();
 private:
 	SexpParser m_parser;
 };

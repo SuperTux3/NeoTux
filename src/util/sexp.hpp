@@ -85,6 +85,7 @@ public:
 	
 	SexpElt read_data(const std::vector<char> &data);
 	SexpElt read_file(const std::string &filename);
+	void destroy();
 private:
 	std::unique_ptr<sexp_t, decltype(&destroy_sexp)> m_sexp;
 };

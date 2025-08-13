@@ -19,8 +19,8 @@
 Timer::Timer(duration_t ms, int loops /*= 1*/) :
 	m_loops(loops),
 	m_iterations(0),
-	m_duration(ms / g_settings->speed),
-	m_last_time(SDL_GetTicks())
+	m_duration(ms / (g_settings ? g_settings->speed : 1)),
+	m_last_time(0)
 {}
 
 void

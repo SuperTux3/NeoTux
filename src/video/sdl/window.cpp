@@ -18,6 +18,7 @@
 #include "window.hpp"
 #include "sdl_exception.hpp"
 #include <SDL3_image/SDL_image.h>
+#include "config.h"
 #include "util/filesystem.hpp"
 #include "util/logger.hpp"
 
@@ -44,6 +45,7 @@ SDLWindow::create_window(u32 flags, const std::string& title)
 void
 SDLWindow::set_icon(const std::string& filename)
 {
+#ifndef NEOTUX_PSP
 	SDL_Surface* icon;
 	try
 	{
@@ -61,6 +63,6 @@ SDLWindow::set_icon(const std::string& filename)
 			return;
 		throw err;
 	}
-	
+#endif
 	//SDL_DestroySurface(icon);
 }

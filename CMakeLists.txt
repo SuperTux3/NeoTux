@@ -7,6 +7,8 @@ set(DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Location of the data direc
 
 # TODO: my module function
 find_package(SDL3 REQUIRED)
+find_package(SDL3_ttf)
+find_package(SDL3_image)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL3_image REQUIRED IMPORTED_TARGET sdl3-image)
 pkg_check_modules(SDL3_ttf REQUIRED IMPORTED_TARGET sdl3-ttf)
@@ -26,11 +28,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(sfsexp)
 include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
 
+set(NEOTUX_DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
 option(NEOTUX_USE_MIXER "Build with SDL3 Mixer support." ON)
 if (PSP)
 	message(STATUS "Building PSP version...")
 	set(NEOTUX_USE_MIXER OFF)
+	set(NEOTUX_PSP ON)
+	set(NEOTUX_DATA_DIR "data")
 endif()
+
 if (NEOTUX_USE_MIXER)
 	message(STATUS "Using SDL3 Mixer...")
 	FetchContent_Declare(
@@ -95,8 +101,6 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
-set(NEOTUX_DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
-
 file(GLOB_RECURSE NEOTUX_SRC CONFIGURE_DEPENDS
 	src/*.cpp src/*.hpp src/*/*.cpp src/*/*.hpp
 	tests/game_tests/*.cpp tests/game_tests/*.hpp)
@@ -110,9 +114,10 @@ target_include_directories(NeoTux PRIVATE src tests/game_tests)
 target_link_libraries(NeoTux PUBLIC
 	SFSEXP
 	SDL3::SDL3
-	PkgConfig::SDL3_image
-	PkgConfig::SDL3_ttf
-	simplesquirrel
+	SDL3_ttf::SDL3_ttf
+	SDL3_image::SDL3_image
+#	PkgConfig::SDL3_image
+#	PkgConfig::SDL3_ttf
 )
 if(NEOTUX_USE_MIXER)
 	target_link_libraries(NeoTux PUBLIC SDL3_mixer::SDL3_mixer)
@@ -122,8 +127,6 @@ if(NEOTUX_BGFX)
 	target_sources(NeoTux PRIVATE "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
 	target_link_libraries(NeoTux PUBLIC bgfx)
 endif()
-
-
 option(NEOTUX_ASAN "Use Address Santizer." OFF)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -134,6 +137,25 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 		target_compile_options(NeoTux PUBLIC -fsanitize=address)
 		target_link_options(NeoTux PUBLIC -fsanitize=address)
 	endif()
+endif()
+
+
+if (PSP)
+	get_target_property(compile_defs NeoTux COMPILE_DEFINITIONS)
+	message(status "Its ${compile_defs}")
+	#string(REPLACE "-pthread" "" NEW_OPTS "${CURRENT_OPTS}")
+	set_target_properties(NeoTux PROPERTIES LINK_OPTIONS "")
+	
+	target_link_libraries(NeoTux PUBLIC stdc++ pspirkeyb psppower)
+	
+	create_pbp_file(
+		TARGET NeoTux
+		ICON_PATH NULL
+		BACKGROUND_PATH NULL
+		PREVIEW_PATH NULL
+		TITLE NeoTux
+		VERSION 01.00
+	)
 endif()
 
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
