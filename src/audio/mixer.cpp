@@ -14,7 +14,9 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifdef NEOTUX_USE_MIXER
 #include <SDL3_mixer/SDL_mixer.h>
+#endif
 #include <format>
 #include "sdl_exception.hpp"
 #include "util/filesystem.hpp"
@@ -23,6 +25,7 @@
 
 Mixer g_mixer;
 
+#ifdef NEOTUX_USE_MIXER
 Mixer::Mixer() :
 	m_music(nullptr, Mix_FreeMusic),
 	m_cache(),
@@ -43,31 +46,45 @@ Mixer::Mixer() :
 		SDL_AUDIO_ISFLOAT(spec.format) ? " (float)" : "",
 		(spec.channels > 2) ? "surround" : (spec.channels > 1) ? "stereo" : "mono")); 
 }
+#else
+Mixer::Mixer() {
+	Logger::info("Built without SDL3 Mixer support. Hope you enjoy crickets.");
+}
+#endif
 
 void
 Mixer::shutdown()
 {
+#ifdef NEOTUX_USE_MIXER
 	m_music.reset();
 	m_cache.clear();
 	//m_soundcache.clear();
+#endif
 }
 
 bool
 Mixer::is_playing_music()
 {
+#ifdef NEOTUX_USE_MIXER
 	return Mix_PlayingMusic();
+#else
+	return true;
+#endif
 }
 
 void
 Mixer::stop_playing_music()
 {
+#ifdef NEOTUX_USE_MIXER
 	Mix_HaltMusic();
+#endif
 }
 
 // TODO Cache sounds
 void
 Mixer::play_sound(const std::string &filename)
 {
+#ifdef NEOTUX_USE_MIXER
 	Mix_Chunk *chunk;
 	if (m_cache.contains(filename))
 	{
@@ -85,11 +102,13 @@ Mixer::play_sound(const std::string &filename)
 	if (m_current_channel == 4)
 		m_current_channel = 0;
 	Mix_PlayChannel(m_current_channel, chunk, false);
+#endif
 }
 
 void
 Mixer::play_music(const std::string &filename)
 {
+#ifdef NEOTUX_USE_MIXER
 	Mix_Music *music;
 	music = Mix_LoadMUS(FS::path(filename).c_str());
 	
@@ -101,5 +120,6 @@ Mixer::play_music(const std::string &filename)
 	Mix_FadeInMusic(music, true, 2000);
 	
 	m_music.reset(music);
+#endif
 }
 

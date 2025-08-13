@@ -25,7 +25,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <fmt/format.h>
+#include <format>
 
 class Logger;
 extern Logger g_logger;
