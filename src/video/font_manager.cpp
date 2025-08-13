@@ -32,9 +32,8 @@ FontManager::load_builtin_fonts()
 int
 FontManager::load_font(std::string name)
 {
-	std::cout << "loaded!!" << std::endl;
-	m_fonts.push_back({
-		FS::path(name), std::unordered_map<int, std::unique_ptr<FontCache>>{}});
+	m_fonts.emplace_back(
+		FS::path(name), std::unordered_map<int, std::unique_ptr<FontCache>>{});
 	return m_fonts.size()-1;
 }
 
