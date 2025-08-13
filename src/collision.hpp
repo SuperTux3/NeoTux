@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <optional>
 #include "math/rect.hpp"
 #include "math/vector.hpp"
 
