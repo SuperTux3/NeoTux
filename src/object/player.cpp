@@ -18,6 +18,7 @@
 #include "collision.hpp"
 #include "collision_system.hpp"
 #include "input_manager.hpp"
+#include "math/general.hpp"
 #include "object/moving_object.hpp"
 #include "video/painter.hpp"
 #include "video/video_system.hpp"
@@ -35,6 +36,8 @@ constexpr double JUMP_EARLY_APEX_FACTOR = 3.0;
 constexpr double JUMP_GRACE_TIME = 0.25;
 constexpr double MAX_WALK_XM = 230;
 constexpr double MAX_RUN_XM  = 320;
+constexpr double SKID_MIN_XVEL = 200;
+constexpr double SKID_XM     = 200;
 
 } // namespace
 
@@ -63,10 +66,43 @@ Player::controls_move(bool right)
 {
 	bool already_moved = false;
 	bool cant_slope_move = false;
+	double initial_speed = !m_state.get(PLAYER_MOVING) ? 0.0 : 100.0;
 	double dir = right ? 1.0 : -1.0;
-	if (std::abs(m_physics.get_x_vel()) > MAX_RUN_XM)
+	bool just_turned = false;
+	bool mostly_still = m_physics.get_x_vel() == std::clamp(m_physics.get_x_vel(), -1.2, 1.2);
+	
+	// Turnaround
+	if ((m_physics.get_x_vel() > SKID_MIN_XVEL && !right) ||
+		(m_physics.get_x_vel() < -SKID_MIN_XVEL && right))
 	{
-		m_physics.set_x_vel(std::clamp(m_physics.get_x_vel(), -MAX_RUN_XM, MAX_RUN_XM));
+		m_turning_dir = right;
+		m_state.set(PLAYER_TURNING, true);
+		if (!m_state.get(PLAYER_STARTED_TURNING))
+		{
+			m_state.set(PLAYER_STARTED_TURNING, true);
+			just_turned = true;
+			if ((m_grounded || m_on_slope) &&
+			    !Math::between<double>(std::abs(m_physics.get_x_vel()), 0, 300))
+			{
+				g_mixer.play_sound("sounds/skid.wav");
+				set_action(get_size_str()+"skid-right");
+			}
+		}
+	}
+	// Just finished turning...
+	else if (m_state.get(PLAYER_TURNING)) {
+		m_physics.set_x_vel(100 * dir);
+		m_state.set(PLAYER_TURNING, false);
+		m_state.set(PLAYER_STARTED_TURNING, false);
+	}
+	
+	if (m_state.get(PLAYER_TURNING)) {
+		initial_speed += SKID_XM;
+	}
+	
+	if (std::abs(m_physics.get_x_vel()) > MAX_RUN_XM + initial_speed)
+	{
+		m_physics.set_x_vel(std::clamp(m_physics.get_x_vel(), -MAX_RUN_XM - initial_speed, MAX_RUN_XM + initial_speed));
 	}
 	
 	if (!(m_slope_normals.size() > 1 &&
@@ -84,19 +120,18 @@ Player::controls_move(bool right)
 	}
 	else
 		cant_slope_move = true;
-	
 	if (!m_on_slope || m_physics.get_y_vel() < -0.03 || cant_slope_move)
 	{
-		m_physics.set_x_accel((RUN_ACCELERATION_X + (100)) * dir);
-		if (!m_state.get(PLAYER_MOVING))
+		m_physics.set_x_accel((RUN_ACCELERATION_X + initial_speed) * dir);
+		// Give a little oomph if the player hasn't moved yet
+		if (!m_state.get(PLAYER_MOVING) && mostly_still)
 			m_physics.set_x_vel(100 * dir);
 	}
 	
-	m_state.set(PLAYER_JUST_MOVED, true);
 	m_state.set(PLAYER_MOVING, true);
 	m_flip = right ? FLIP_NONE : FLIP_HORIZONTAL;
 	m_direction = right;
-	if (m_grounded || m_on_slope)
+	if ((m_grounded || m_on_slope) && !m_state.get(PLAYER_TURNING))
 		set_action(get_size_str()+"walk-right");
 }
 
@@ -191,6 +226,8 @@ Player::damage(bool kill)
 void
 Player::update(Sector &sector, Tilemap &tilemap)
 {
+	std::cout << "Veloc: " << m_physics.get_x_vel() << std::endl;
+	std::cout << "Accel: " << m_physics.get_x_accel() << std::endl;
 	if (m_state.get(PLAYER_JUST_GREW))
 	{
 		g_mixer.play_sound("sounds/retro/upgrade.wav");
@@ -199,9 +236,10 @@ Player::update(Sector &sector, Tilemap &tilemap)
 		set_action(get_size_str()+"stand-right");
 	}
 	
-	if (!m_state.get(PLAYER_JUST_MOVED))
+	if (!m_state.get(PLAYER_MOVING))
 		m_physics.set_x_vel(m_physics.get_x_vel() * 0.99);
-	if (!m_state.get(PLAYER_JUST_MOVED) && m_physics.get_x_vel() == std::clamp<double>(m_physics.get_x_vel(), -35, 35))
+	
+	if (!m_state.get(PLAYER_MOVING) && m_physics.get_x_vel() == std::clamp<double>(m_physics.get_x_vel(), -35, 35))
 	{
 		m_physics.set_x_vel(0);
 		if (m_grounded || m_on_slope)
@@ -209,19 +247,15 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	}
 	
 	// Ensure play is walking even when they just landed after jumping
-	if ((m_grounded || m_on_slope) && m_physics.get_x_vel() != std::clamp<double>(m_physics.get_x_vel(), -35, 35))
+	if ((m_grounded || m_on_slope) && !m_state.get(PLAYER_TURNING) && m_physics.get_x_vel() != std::clamp<double>(m_physics.get_x_vel(), -35, 35))
 		set_action(get_size_str()+"walk-right");
 	
-	if (!m_state.get(PLAYER_JUST_MOVED) && (m_grounded || m_on_slope))
-	{
-	}
-	else
-		m_state.set(PLAYER_JUST_MOVED, false);
-	
-	MovingSprite::update(sector, tilemap);
 	if (!m_on_slope && m_physics.get_y_vel() < -0.1)
 		set_action(get_size_str()+"fall-right");
+	handle_input();
+	MovingSprite::update(sector, tilemap);
 	
+	//if (m_state.get(PLAYER_STARTED_TURNING))
 	
 	if (m_slope_normals.size() > 1 &&
 		m_slope_normals[1].x + m_slope_normals[0].x == 0.0)

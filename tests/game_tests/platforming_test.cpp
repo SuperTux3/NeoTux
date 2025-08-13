@@ -74,10 +74,9 @@ PlatformingTest::run()
 				player.enable_gravity();
 			}
 		}
+		
 		player.update(sector, *tilemap);
 		tilemap->try_object_collision(player);
-		
-		player.handle_input();
 		
 		if (timer.tick())
 			std::cout << "Timer ticked!" << std::endl;

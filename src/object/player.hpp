@@ -25,11 +25,12 @@
 
 enum PlayerState : uint8_t
 {
-	PLAYER_JUST_MOVED,
 	PLAYER_MOVING,
 	PLAYER_JUST_GREW,
 	PLAYER_JUMPING,
 	PLAYER_JUMP_EARLY_APEX,
+	PLAYER_TURNING,
+	PLAYER_STARTED_TURNING,
 	
 	PLAYER_STATE_SIZE,
 };
@@ -60,6 +61,7 @@ public:
 	std::string get_size_str();
 	int m_powerup_state;
 	ObjectState m_state;
+	bool m_turning_dir;
 	bool m_direction;
 	double m_x_vel;
 	Timer m_iframes;
