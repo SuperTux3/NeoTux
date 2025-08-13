@@ -67,11 +67,43 @@ InputManager::handle_event(const SDL_Event &ev)
 			m_mouse_scroll_x += ev.wheel.integer_y;
 			m_mouse_scroll_y += ev.wheel.integer_y;
 			break;
-		case SDL_EVENT_KEY_DOWN:
-			m_keys.push_back(SDL_SCANCODE_TO_KEYCODE(ev.key.key));
+		case SDL_EVENT_KEY_DOWN: {
+			char key = SDL_SCANCODE_TO_KEYCODE(ev.key.key);
+			m_keys.push_back(key);
+			for (auto &pair : m_bindings)
+			{
+				auto &binding = pair.second;
+				if (binding.is_keyboard())
+				{
+					binding.pressed = (
+						(key == binding.get_data()) &&
+					    (binding.ctrl() == ((ev.key.mod & SDL_KMOD_CTRL) != 0)) &&
+						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0))
+					);
+				}
+				else {
+				}
+			}
+		}
 			break;
 		case SDL_EVENT_KEY_UP: {
-			auto it = m_keys.erase(std::remove(m_keys.begin(), m_keys.end(), (char)SDL_SCANCODE_TO_KEYCODE(ev.key.key)), m_keys.end());
+			char key = SDL_SCANCODE_TO_KEYCODE(ev.key.key);
+			auto it = m_keys.erase(std::remove(m_keys.begin(), m_keys.end(), key), m_keys.end());
+			for (auto &pair : m_bindings)
+			{
+				auto &binding = pair.second;
+				if (binding.is_keyboard())
+				{
+					if (
+						(key == binding.get_data()) &&
+					    (binding.ctrl() == ((ev.key.mod & SDL_KMOD_CTRL) != 0)) &&
+						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0))
+					)
+						binding.pressed = false;
+				}
+				else {
+				}
+			}
 		}
 			break;
 		default:

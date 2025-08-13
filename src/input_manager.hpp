@@ -37,15 +37,16 @@ struct Binding
 	};
 	
 	Binding(uint32_t prop) :
-		data(prop)
+		data(prop),
+		pressed(false)
 	{}
 	~Binding() = default;
 	
-	bool is_keyboard() { return (data & BINDING_GAMEPAD_MASK) == 0; }
-	bool is_gamepad() { return (data & BINDING_GAMEPAD_MASK) == BINDING_GAMEPAD_MASK; }
-	bool ctrl() { return (data & BINDING_CTRL_MASK) == BINDING_CTRL_MASK; }
-	bool alt() { return (data & BINDING_ALT_MASK) == BINDING_ALT_MASK; }
-	uint32_t get_data() { return data & BINDING_DATA_MASK; }
+	bool is_keyboard() const { return (data & BINDING_GAMEPAD_MASK) == 0; }
+	bool is_gamepad() const { return (data & BINDING_GAMEPAD_MASK) == BINDING_GAMEPAD_MASK; }
+	bool ctrl() const { return (data & BINDING_CTRL_MASK) == BINDING_CTRL_MASK; }
+	bool alt() const { return (data & BINDING_ALT_MASK) == BINDING_ALT_MASK; }
+	uint32_t get_data() const { return data & BINDING_DATA_MASK; }
 
 	std::string name;
 	bool pressed;
@@ -62,6 +63,10 @@ public:
 	void handle_event(const SDL_Event &ev);
 	
 	size_t define_mapping(std::string name, Binding binding);
+	
+	bool mapping_pressed(size_t id) const { return m_bindings[id].second.pressed; }
+	Binding& mapping_at(size_t id) { return m_bindings[id].second; }
+	size_t total_mappings() const { return m_bindings.size(); }
 	
 	unsigned get_mouse_x() const { return m_mouse_x; }
 	unsigned get_mouse_y() const { return m_mouse_y; }

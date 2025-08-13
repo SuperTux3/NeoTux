@@ -47,8 +47,8 @@ PlatformingTest::run()
 	MovingSprite sprite("images/creatures/tux/tux.sprite", "super the tux");
 	sprite.set_action("small-stand-right");
 	
-	g_input_manager.define_mapping("Jump", Binding{
-		Binding::Gamepad(Binding::CTRL | Binding::ALT | 'w')
+	size_t JUMP_BINDING = g_input_manager.define_mapping("Jump", Binding{
+		Binding::Key(Binding::CTRL | 'w')
 	});
 	
 	Player player{};
