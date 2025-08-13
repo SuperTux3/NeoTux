@@ -20,7 +20,9 @@
 #include "audio/mixer.hpp"
 #include "input_manager.hpp"
 #include "settings.hpp"
+#include "util/logger.hpp"
 #include <memory>
+#include <format>
 
 #define BEGIN_GAME_LOOP double __last_time; \
 	g_dtime = 0; \
@@ -33,6 +35,10 @@
 	if (g_settings->forced_delay != 0) \
 		SDL_Delay(g_settings->forced_delay); \
 	g_dtime = (((double)SDL_GetTicksNS() * 0.000000001) - __last_time) * g_settings->speed; \
+	if (g_dtime > .17) { \
+		Logger::warn(std::format("Frame took too long! ({:.0f} ms). Skipping", g_dtime * 1000)); \
+		g_dtime = 0; \
+	} \
 }
 
 class Game
