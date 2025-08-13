@@ -18,46 +18,50 @@
 #define SUPERTUX_SRC_INPUT_MANAGER_HPP
 
 #include <SDL3/SDL_events.h>
+#include <memory>
 #include <string>
 #include <vector>
 
 constexpr uint32_t BINDING_KEYBOARD_MASK = (2<<14);
-constexpr uint32_t BINDING_GAMEPAD_MASK  = (2<<13);
-constexpr uint32_t BINDING_CTRL_MASK     = (2<<12);
-constexpr uint32_t BINDING_ALT_MASK      = (2<<11);
-constexpr uint32_t BINDING_BTN_MASK      = ((2<<10) | (2<<9) | (2<<8));
-#define            BINDING_BTN_RSHIFT(n)   ((n)>>7)
-#define            BINDING_BTN_LSHIFT(n)   ((uint32_t)(n)<<7)
+constexpr uint32_t BINDING_GAMEPAD_MASK  = (2<<14);
+constexpr uint32_t BINDING_CTRL_MASK     = (2<<13);
+constexpr uint32_t BINDING_ALT_MASK      = (2<<12);
+constexpr uint32_t BINDING_BTN_MASK      =  0x7FFF;
+//#define            BINDING_BTN_RSHIFT(n)   ((n)>>8)
+//#define            BINDING_BTN_LSHIFT(n)   ((uint32_t)(n)<<8)
 
-constexpr uint32_t BINDING_KEY_MASK      = (2<<8)-1;
+constexpr uint32_t BINDING_KEY_MASK      = BINDING_ALT_MASK-1;
 	
 struct Binding
 {
 	static uint32_t Key(uint32_t val) { return val | BINDING_KEYBOARD_MASK; }
-	static uint32_t Gamepad(uint32_t val) { return BINDING_BTN_LSHIFT(val) | BINDING_GAMEPAD_MASK; }
+	static uint32_t Gamepad(uint32_t val) { return val | BINDING_GAMEPAD_MASK; }
 	
 	enum BindingMod {
 		CTRL = BINDING_CTRL_MASK,
 		ALT  = BINDING_ALT_MASK,
 	};
 	
-	Binding(uint32_t prop) :
+	Binding(uint32_t prop = 0, uint32_t gprop = 0) :
 		data(prop),
+		data2(gprop),
 		pressed(false)
 	{}
 	~Binding() = default;
 	
 	bool is_keyboard() const { return (data & BINDING_KEYBOARD_MASK) == BINDING_KEYBOARD_MASK; }
-	bool is_gamepad() const { return (data & BINDING_GAMEPAD_MASK) == BINDING_GAMEPAD_MASK; }
+	bool is_gamepad() const { return (data2 & BINDING_GAMEPAD_MASK) == BINDING_GAMEPAD_MASK; }
 	bool ctrl() const { return (data & BINDING_CTRL_MASK) == BINDING_CTRL_MASK; }
 	bool alt() const { return (data & BINDING_ALT_MASK) == BINDING_ALT_MASK; }
-	uint32_t get_gamepad_button() const { return BINDING_BTN_RSHIFT(data & BINDING_BTN_MASK); }
+	uint32_t get_gamepad_button() const { return data2 & BINDING_BTN_MASK; }
 	uint32_t get_key() const { return data & BINDING_KEY_MASK; }
 
 	std::string name;
 	bool pressed;
 private:
+	// TODO: 64 bit variant with ifdef
 	uint32_t data;
+	uint32_t data2;
 };
 
 class InputManager
@@ -65,6 +69,10 @@ class InputManager
 public:
 	InputManager();
 	~InputManager() = default;
+	
+	void load_gamepads();
+	bool register_gamepad_by_id(int id);
+	void unregister_gamepad(int id);
 	
 	static void define_game_default_mappings();
 	
@@ -86,12 +94,15 @@ public:
 	int get_scroll_y() const { return m_mouse_scroll_y; }
 	unsigned get_mouse_button() const { return m_mouse_btn; }
 	
+	SDL_Gamepad *get_gamepad(size_t idx) { return m_gamepads.at(idx).get(); }
+	
 	bool is_key_down(char key) const;
 	
 	void reset();
 	
 	std::string to_string() const;
 private:
+	std::vector<std::unique_ptr<SDL_Gamepad, decltype(&SDL_CloseGamepad)>> m_gamepads;
 	std::vector<std::pair<std::string, Binding>> m_bindings;
 
 	std::vector<char> m_keys;

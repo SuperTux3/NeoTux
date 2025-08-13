@@ -16,20 +16,22 @@
 
 #include "input_manager.hpp"
 #include <cassert>
+#include <iostream>
 
 int
 main()
 {
-	Binding b1(Binding::Key('w') | Binding::Gamepad(4));
+	Binding b1(Binding::Key('w'), Binding::Gamepad(7));
 	assert(b1.is_keyboard() == true);
 	assert(b1.is_gamepad() == true);
 	assert(b1.alt() == false);
-	assert(b1.get_gamepad_button() == 4);
+	assert(b1.get_gamepad_button() == 7);
 	assert(b1.get_key() == 'w');
 	
-	Binding b2(Binding::Key(Binding::CTRL | Binding::ALT | 'c'));
-	assert(b2.is_gamepad() == false);
+	Binding b2(Binding::Key(Binding::CTRL | Binding::ALT | 'c'), Binding::Gamepad(18));
+	assert(b2.is_gamepad() == true);
 	assert(b2.is_keyboard() == true);
+	assert(b2.get_gamepad_button() == 18);
 	assert(b2.get_key() == 'c');
 	assert(b2.ctrl() == true);
 	assert(b2.alt() == true);
