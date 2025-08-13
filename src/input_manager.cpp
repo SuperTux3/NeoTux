@@ -16,6 +16,9 @@
 
 #include "input_manager.hpp"
 #include "sdl_exception.hpp"
+#include "util/filesystem.hpp"
+#include "util/logger.hpp"
+#include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_events.h>
 #include <format>
@@ -34,18 +37,20 @@ void
 InputManager::define_game_default_mappings()
 {
 	LEFT_BINDING = g_input_manager.define_mapping("Left", Binding{
-		Binding::Key('a')
+		Binding::Key('a'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_DPAD_LEFT)
 	});
 	RIGHT_BINDING = g_input_manager.define_mapping("Right", Binding{
-		Binding::Key('d')
+		Binding::Key('d'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_DPAD_RIGHT)
 	});
 	UP_BINDING = g_input_manager.define_mapping("Up", Binding{
-		Binding::Key('w')
+		Binding::Key('w'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_DPAD_UP)
 	});
 	DOWN_BINDING = g_input_manager.define_mapping("Down", Binding{
-		Binding::Key('s')
+		Binding::Key('s'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_DPAD_DOWN)
 	});
-	JUMP_BINDING = UP_BINDING;
+	JUMP_BINDING = g_input_manager.define_mapping("Jump", Binding{
+		Binding::Key('w'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_SOUTH)
+	});
 	CROUCH_BINDING = DOWN_BINDING;
 }
 
@@ -61,6 +66,64 @@ InputManager::InputManager() :
 {
 	if (!SDL_Init(SDL_INIT_GAMEPAD))
 		throw SDLException("SDL_Init(SDL_INIT_GAMEPAD)");
+	
+	SDL_AddGamepadMappingsFromFile(FS::path("gamecontrollerdb.txt").c_str());
+}
+
+void
+InputManager::load_gamepads()
+{
+	std::unique_ptr<SDL_JoystickID, decltype(&SDL_free)> gamepads_store{nullptr, SDL_free};
+	int count;
+	gamepads_store.reset(SDL_GetGamepads(&count));
+	SDL_JoystickID *gamepads = gamepads_store.get();
+	if (!count || gamepads == nullptr)
+		return;
+	
+	while (--count >= 0)
+	{
+		SDL_Gamepad *tmp;
+		for (auto &pad : m_gamepads)
+		{
+			if (SDL_GetGamepadID(pad.get()) == gamepads[count])
+				goto gamepad_exists;
+		}
+		tmp = SDL_OpenGamepad(gamepads[count]);
+		m_gamepads.emplace_back(tmp, SDL_CloseGamepad);
+gamepad_exists:
+		continue;
+	}
+}
+
+bool
+InputManager::register_gamepad_by_id(int id)
+{
+	for (auto &pad : m_gamepads)
+	{
+		if (SDL_GetGamepadID(pad.get()) == id)
+		{
+			Logger::warn("Registered gamepad already exists.");
+			return false;
+		}
+	}
+
+	Logger::info("Gamepad detected!");	
+	m_gamepads.emplace_back(SDL_OpenGamepad(id), SDL_CloseGamepad);
+	return true;
+}
+
+void
+InputManager::unregister_gamepad(int id)
+{
+	for (auto it = m_gamepads.begin(); it != m_gamepads.end(); ++it)
+	{
+		if (SDL_GetGamepadID(it->get()) == id)
+		{
+			Logger::info("Unregistering gamepad...");
+			m_gamepads.erase(it);
+			return;
+		}
+	}
 }
 
 size_t
@@ -93,6 +156,47 @@ InputManager::handle_event(const SDL_Event &ev)
 			m_mouse_scroll_x += ev.wheel.integer_y;
 			m_mouse_scroll_y += ev.wheel.integer_y;
 			break;
+		case SDL_EVENT_GAMEPAD_ADDED:
+			if (g_input_manager.register_gamepad_by_id(ev.gdevice.which))
+			{
+				SDL_RumbleGamepad(SDL_GetGamepadFromID(ev.gdevice.which), 0xFFFF, 0xFFFF, 300);
+			}
+			break;
+		case SDL_EVENT_GAMEPAD_REMOVED:
+			g_input_manager.unregister_gamepad(ev.gdevice.which);
+			break;
+		case SDL_EVENT_GAMEPAD_BUTTON_DOWN: {
+			int btn = ev.gbutton.button;
+			for (auto &pair : m_bindings)
+			{
+				auto &binding = pair.second;
+				if (binding.is_gamepad())
+				{
+					if (btn == binding.get_gamepad_button())
+					{
+						binding.pressed = true;
+						break;
+					}
+				}
+			}
+		}
+			break;
+		case SDL_EVENT_GAMEPAD_BUTTON_UP: {
+			int btn = ev.gbutton.button;
+			for (auto &pair : m_bindings)
+			{
+				auto &binding = pair.second;
+				if (binding.is_gamepad())
+				{
+					if (btn == binding.get_gamepad_button())
+					{
+						binding.pressed = false;
+						break;
+					}
+				}
+			}
+		}
+			break;
 		case SDL_EVENT_KEY_DOWN: {
 			char key = SDL_SCANCODE_TO_KEYCODE(ev.key.key);
 			m_keys.push_back(key);
@@ -108,8 +212,6 @@ InputManager::handle_event(const SDL_Event &ev)
 						binding.pressed = true;
 						break;
 					}
-				}
-				else {
 				}
 			}
 		}
@@ -129,8 +231,6 @@ InputManager::handle_event(const SDL_Event &ev)
 						binding.pressed = false;
 						break;
 					}
-				}
-				else {
 				}
 			}
 		}

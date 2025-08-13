@@ -48,6 +48,7 @@ Game::Game() :
 	init_video_system();
 	
 	InputManager::define_game_default_mappings();
+	g_input_manager.load_gamepads();
 }
 
 void
