@@ -25,44 +25,48 @@ RetroPlayer::RetroPlayer() :
 	//MovingObject({0, 0, {60, 100}}, {10, 20, {53, 100}}, "player")
 {
 	enable_gravity();
+	m_physics.set_gravity_modifier(1.2);
 	
 	set_action("small-stand-right");
 }
 
 void
-RetroPlayer::move_left()
+RetroPlayer::controls_move(bool right)
 {
+	double dir = right ? 1.0 : -1.0;
 	m_moving = true;
-	move(-0.5 * g_dtime, 0);
-	m_flip = (int)FLIP_HORIZONTAL;
-	m_direction = false;
-	if (m_grounded)
-		set_action(get_size_str()+"walk-right");
-
-}
-
-void
-RetroPlayer::move_right()
-{
-	m_moving = true;
-	move(0.5 * g_dtime, 0);
-	m_flip = FLIP_NONE;
-	m_direction = true;
+	move(500 * dir * g_dtime, 0);
+	m_flip = right ? FLIP_NONE : FLIP_HORIZONTAL;
+	m_direction = right;
 	if (m_grounded)
 		set_action(get_size_str()+"walk-right");
 }
 
 void
-RetroPlayer::jump()
+RetroPlayer::controls_jump()
 {
 	m_performed_jump = true;
 	if (!m_grounded)
 		return;
 	
 	m_jumped = true;
-	set_y_vel(0.8);
+	set_y_vel(600);
 	g_mixer.play_sound("sounds/bigjump.wav");
 	set_action(get_size_str()+"jump-right");
+}
+
+void
+RetroPlayer::handle_input()
+{
+	if (g_input_manager.mapping_pressed(JUMP_BINDING))
+	{
+		controls_jump();
+	}
+	
+	if (g_input_manager.mapping_pressed(LEFT_BINDING))
+		controls_move(false);
+	else if (g_input_manager.mapping_pressed(RIGHT_BINDING))
+		controls_move(true);
 }
 
 void
@@ -86,8 +90,6 @@ RetroPlayer::update(Sector &sector, Tilemap &tilemap)
 	if (m_physics.get_y_vel() < -0.1)
 		set_action(get_size_str()+"fall-right");
 		
-	//Player::update(tilemap);
-	
 	
 	Rectf orig_colbox = get_colbox();
 		

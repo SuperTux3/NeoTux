@@ -30,9 +30,9 @@ public:
 	void update(Sector &sector, Tilemap &tilemap) override;
 	void draw();
 	
-	void move_left();
-	void move_right();
-	void jump();
+	void controls_move(bool right);
+	void controls_jump();
+	void handle_input();
 public:
 	bool m_moving,
 	     m_performed_jump,
