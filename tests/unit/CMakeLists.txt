@@ -33,6 +33,9 @@ make_unit_test(FilesystemTest SOURCE filesystem_test.cpp
 make_unit_test(VectorTest SOURCE vector_test.cpp
 	EXTERNAL math/vector.hpp)
 
+make_unit_test(BindingsTest SOURCE bindings_test.cpp
+	EXTERNAL input_manager.hpp)
+
 #message("ALL TESTS: ${all_test_targets}")
 
 set(NEOTUX_UNITTESTS_DIR "${PROJECT_SOURCE_DIR}/tests/unit" CACHE PATH "Where NeoTux will look for unit test data.")
