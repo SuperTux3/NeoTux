@@ -75,6 +75,7 @@ Player::controls_move(bool right)
 	if ((m_physics.get_x_vel() > SKID_MIN_XVEL && !right) ||
 		(m_physics.get_x_vel() < -SKID_MIN_XVEL && right))
 	{
+		std::cout << "wow" << std::endl;
 		m_turning_dir = right;
 		m_state.set(PLAYER_TURNING, true);
 		if (!m_state.get(PLAYER_STARTED_TURNING))
@@ -94,6 +95,10 @@ Player::controls_move(bool right)
 		m_physics.set_x_vel(100 * dir);
 		m_state.set(PLAYER_TURNING, false);
 		m_state.set(PLAYER_STARTED_TURNING, false);
+	}
+	else if (m_physics.get_x_vel() < -0.1 && right ||
+			 m_physics.get_x_vel() > 0.1 && !right) {
+		m_physics.set_x_vel(100 * dir);
 	}
 	
 	if (m_state.get(PLAYER_TURNING)) {
