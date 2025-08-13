@@ -309,7 +309,7 @@ extern "C"
 int main(int argc, char** argv)
 {
 #ifdef NEOTUX_PSP
-	setup_callbacks();
+	//setup_callbacks();
 	//return 0;
 #endif
 	g_settings = std::make_unique<Settings>();
