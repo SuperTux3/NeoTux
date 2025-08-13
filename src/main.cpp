@@ -37,7 +37,7 @@
 #include <pspdebug.h>
 
 PSP_MODULE_INFO("NEOTUX", 0, 1, 0);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
 int exit_callback(int arg1, int arg2, void *common)
 {
@@ -46,10 +46,6 @@ int exit_callback(int arg1, int arg2, void *common)
 
 int callback_thread(SceSize args, void *argp) {
     int cbid = sceKernelCreateCallback("Exit Callbacks", exit_callback, NULL);
-	GameTest::init_all_tests();
-	g_settings = std::make_unique<Settings>();
-	g_game = std::unique_ptr<Game>(GameTest::get_game_test("retro"));
-	g_game->run();
     sceKernelRegisterExitCallback(cbid);
     sceKernelSleepThreadCB();
     return 0;
