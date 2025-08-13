@@ -23,6 +23,32 @@
 
 InputManager g_input_manager;
 
+size_t JUMP_BINDING;
+size_t CROUCH_BINDING;
+size_t LEFT_BINDING;
+size_t RIGHT_BINDING;
+size_t UP_BINDING;
+size_t DOWN_BINDING;
+
+void
+InputManager::define_game_default_mappings()
+{
+	LEFT_BINDING = g_input_manager.define_mapping("Left", Binding{
+		Binding::Key('a')
+	});
+	RIGHT_BINDING = g_input_manager.define_mapping("Right", Binding{
+		Binding::Key('d')
+	});
+	UP_BINDING = g_input_manager.define_mapping("Up", Binding{
+		Binding::Key('w')
+	});
+	DOWN_BINDING = g_input_manager.define_mapping("Down", Binding{
+		Binding::Key('s')
+	});
+	JUMP_BINDING = UP_BINDING;
+	CROUCH_BINDING = DOWN_BINDING;
+}
+
 InputManager::InputManager() :
 	m_mouse_x(),
 	m_mouse_y(),
@@ -75,11 +101,13 @@ InputManager::handle_event(const SDL_Event &ev)
 				auto &binding = pair.second;
 				if (binding.is_keyboard())
 				{
-					binding.pressed = (
-						(key == binding.get_data()) &&
+					if ((key == binding.get_data()) &&
 					    (binding.ctrl() == ((ev.key.mod & SDL_KMOD_CTRL) != 0)) &&
-						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0))
-					);
+						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0)))
+					{
+						binding.pressed = true;
+						break;
+					}
 				}
 				else {
 				}
@@ -94,12 +122,13 @@ InputManager::handle_event(const SDL_Event &ev)
 				auto &binding = pair.second;
 				if (binding.is_keyboard())
 				{
-					if (
-						(key == binding.get_data()) &&
+					if ((key == binding.get_data()) &&
 					    (binding.ctrl() == ((ev.key.mod & SDL_KMOD_CTRL) != 0)) &&
-						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0))
-					)
+						(binding.alt() == ((ev.key.mod & SDL_KMOD_ALT) != 0)))
+					{
 						binding.pressed = false;
+						break;
+					}
 				}
 				else {
 				}

@@ -60,6 +60,8 @@ public:
 	InputManager();
 	~InputManager() = default;
 	
+	static void define_game_default_mappings();
+	
 	void handle_event(const SDL_Event &ev);
 	
 	size_t define_mapping(std::string name, Binding binding);
@@ -95,5 +97,12 @@ private:
 };
 
 extern InputManager g_input_manager;
+
+extern size_t JUMP_BINDING;
+extern size_t CROUCH_BINDING;
+extern size_t LEFT_BINDING;
+extern size_t RIGHT_BINDING;
+extern size_t UP_BINDING;
+extern size_t DOWN_BINDING;
 
 #endif
