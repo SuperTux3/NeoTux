@@ -21,6 +21,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include "config.h"
 #ifdef NEOTUX_USE_MIXER
 #include <SDL3_mixer/SDL_mixer.h>
 #endif
