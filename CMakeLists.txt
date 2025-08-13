@@ -26,11 +26,17 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(sfsexp)
 include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
 
-FetchContent_Declare(
-	SDL3_mixer
-	URL https://github.com/libsdl-org/SDL_mixer/archive/68764f35899e133b402336843c046d75136eaf08.tar.gz
-)
-FetchContent_MakeAvailable(SDL3_mixer)
+option(NEOTUX_USE_MIXER "Build with SDL3 Mixer support." ON)
+if (NEOTUX_USE_MIXER)
+	message(STATUS "Using SDL3 Mixer...")
+	FetchContent_Declare(
+		SDL3_mixer
+		URL https://github.com/libsdl-org/SDL_mixer/archive/68764f35899e133b402336843c046d75136eaf08.tar.gz
+	)
+	FetchContent_MakeAvailable(SDL3_mixer)
+else()
+	message(STATUS "NOT using SDL3 Mixer...")
+endif (NEOTUX_USE_MIXER)
 
 set(SSQ_BUILD_STATIC_ONLY Off)
 
@@ -99,9 +105,11 @@ target_link_libraries(NeoTux PUBLIC
 	SDL3::SDL3
 	PkgConfig::SDL3_image
 	PkgConfig::SDL3_ttf
-	SDL3_mixer::SDL3_mixer
 	simplesquirrel
 )
+if(NEOTUX_USE_MIXER)
+	target_link_libraries(NeoTux PUBLIC SDL3_mixer::SDL3_mixer)
+endif()
 
 if(NEOTUX_BGFX)
 	target_sources(NeoTux PRIVATE "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
