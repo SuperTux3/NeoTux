@@ -156,11 +156,11 @@ Player::controls_jump()
 void
 Player::handle_input()
 {
-	if (g_input_manager.is_key_down('w'))
+	if (g_input_manager.mapping_pressed(JUMP_BINDING))
 	{
 		controls_jump();
 	}
-	else if (!g_input_manager.is_key_down('w')) {
+	else if (!g_input_manager.mapping_pressed(JUMP_BINDING)) {
 		if (m_state.get(PLAYER_JUMPING))
 		{
 			m_state.set(PLAYER_JUMPING, false);
@@ -171,9 +171,9 @@ Player::handle_input()
 	if (m_state.get(PLAYER_JUMP_EARLY_APEX) && m_physics.get_y_vel() <= 0)
 		try_jump_apex();
 	
-	if (g_input_manager.is_key_down('a'))
+	if (g_input_manager.mapping_pressed(LEFT_BINDING))
 		controls_move(false);
-	else if (g_input_manager.is_key_down('d'))
+	else if (g_input_manager.mapping_pressed(RIGHT_BINDING))
 		controls_move(true);
 	else
 		m_state.set(PLAYER_MOVING, false);

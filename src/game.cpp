@@ -46,6 +46,8 @@ Game::Game() :
 	m_quit(false)
 {
 	init_video_system();
+	
+	InputManager::define_game_default_mappings();
 }
 
 void
