@@ -64,7 +64,7 @@ extern double g_dtime;
 static double
 get_fps()
 {
-	return 1000.0 / g_dtime;
+	return 1.0 / g_dtime;
 }
 
 

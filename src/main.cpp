@@ -334,7 +334,7 @@ int main(int argc, char** argv)
 
 	// g_game will be set if a game test was selected
 #ifdef NEOTUX_PSP
-	g_game = std::unique_ptr<Game>(GameTest::get_game_test("retro"));
+	g_game = std::unique_ptr<Game>(GameTest::get_game_test("raw-draw"));
 #else
 	if (g_game == nullptr)
 		g_game = std::make_unique<Game>();

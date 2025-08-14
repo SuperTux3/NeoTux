@@ -14,35 +14,11 @@
 //  You should have received a copy of the GNU General Public License 
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ALL_GAME_TESTS_HEADER
-#define ALL_GAME_TESTS_HEADER
+#ifndef TESTS_GAME_TESTS_RAW_DRAW_TEST_HPP
+#define TESTS_GAME_TESTS_RAW_DRAW_TEST_HPP
 
 #include "game_test.hpp"
-#include "everything_test.hpp"
-#include "collision_test.hpp"
-#include "gui_test.hpp"
-#include "milestone_1_test.hpp"
-#include "platforming_test.hpp"
-#include "raw_draw_test.hpp"
 
-namespace GameTest {
-
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * |||   PUT YOUR GAME TESTS HERE   |||
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-static void init_all_tests()
-{
-	register_game_test<EverythingTest>();
-	register_game_test<CollisionTest>();
-	register_game_test<PlatformingTest>();
-	register_game_test<Milestone1Test>();
-	register_game_test<GuiTest>();
-	register_game_test<RawDrawTest>();
-}
-	
-} // namespace GameTest
-
+GAME_TEST_DECLARE(RawDrawTest, "raw-draw")
 
 #endif
