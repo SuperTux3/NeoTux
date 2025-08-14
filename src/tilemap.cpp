@@ -20,6 +20,7 @@
 #include "math/rect.hpp"
 #include "object/moving_object.hpp"
 #include "settings.hpp"
+#include "tile_chunk.hpp"
 #include "tiles_reader.hpp"
 #include "util/logger.hpp"
 #include "video/texture_manager.hpp"
@@ -71,6 +72,14 @@ Tilemap::Tilemap(SexpElt root) :
 		t.get_tile(rel_x, rel_y).set_id(tile_id);
 	}
 	
+	// TODO don't iterate over it all again, do it in the last loop
+	for (auto &chunk_x : m_chunks.m_hash)
+	{
+		for (auto &chunk : chunk_x.second)
+		{
+			chunk.second.update_texture();
+		}
+	}
 	
 	Logger::debug(std::format("Tilemap info\n\t"
 	                          "Width: {}\n\t"
@@ -171,20 +180,28 @@ Tilemap::draw(const Camera &camera)
 	float invcam_y = camera.height / camera.zoom;
 	float offset_x = camera.x - (invcam_x - camera.width) / 2.0f;
 	float offset_y = camera.y - (invcam_y - camera.height) / 2.0f;
+	float chunk_size = 32.f * TileChunk::CHUNK_SIZE;
 	
-	float cam_tx = offset_x / 32.f;
-	float cam_ty = offset_y / 32.f;
-	float cam_tw = invcam_x / 32.f;
-	float cam_th = invcam_y / 32.f;
+	float cam_tx = offset_x / chunk_size;
+	float cam_ty = offset_y / chunk_size;
+	float cam_tw = invcam_x / chunk_size;
+	float cam_th = invcam_y / chunk_size;
 	
 	for (int x = std::max<long>(0, cam_tx); x < cam_tx + cam_tw && x < m_size.width; ++x)
 	{
 		for (int y = std::max<long>(0, cam_ty); y < cam_ty + cam_th && y < m_size.height; ++y)
 		{
-			float rx = x * 32.f;
-			float ry = y * 32.f;
-			Rectf rrect{(float)rx, (float)ry, {32.f, 32.f}};
-			const Tile &tile = get_tile(x, y);
+			float rx = x * chunk_size;
+			float ry = y * chunk_size;
+			Rectf rrect{(float)rx, (float)ry, {chunk_size, chunk_size}};
+			TileChunk *chunk = m_chunks.at(x, y);
+			if (!chunk)
+				continue;
+			TextureRef chunk_tex = chunk->get_texture();
+			Rectf srect{0, 0, {(float)chunk_tex->get_size().width, (float)chunk_tex->get_size().height}};
+			painter->draw(chunk_tex, srect, rrect);
+#if 0
+			Tile &tile = get_tile(x, y);
 			if (tile.get_id() != 0)
 			{
 				try{
@@ -193,11 +210,12 @@ Tilemap::draw(const Camera &camera)
 						continue;
 					tilemeta.info->timer.tick();
 					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->get_image(), true);
-					//painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
+					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
 				}catch(...){
 					continue;
 				}
 			}
+#endif
 		}
 	}
 }

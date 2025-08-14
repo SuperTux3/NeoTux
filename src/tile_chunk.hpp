@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <vector>
 #include "tile.hpp"
+#include "video/texture.hpp"
 
 class TileChunk
 {
@@ -27,13 +28,18 @@ public:
 	static constexpr uint8_t CHUNK_SIZE = 16;
 	
 	TileChunk() :
+		m_texture(),
 		m_tiles()
 	{}
 	~TileChunk() = default;
 	
+	void update_texture();
+	Texture *get_texture() const { return m_texture.get(); }
+	
 	Tile& get_tile(uint8_t x, uint8_t y);
 	
 private:
+	std::shared_ptr<Texture> m_texture;
 	Tile m_tiles[CHUNK_SIZE * CHUNK_SIZE];
 };
 

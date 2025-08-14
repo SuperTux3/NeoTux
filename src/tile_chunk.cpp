@@ -15,6 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tile_chunk.hpp"
+#include "tiles_reader.hpp"
+#include "video/sdl/surface_blitter.hpp"
+#include "video/texture_manager.hpp"
 #include <stdexcept>
 
 Tile&
@@ -26,3 +29,37 @@ TileChunk::get_tile(uint8_t x, uint8_t y)
 	return m_tiles[x + (y * TileChunk::CHUNK_SIZE)];
 }
 
+void
+TileChunk::update_texture()
+{
+	SurfaceBlitter tileset({(int)32 * CHUNK_SIZE, (int)32.f * CHUNK_SIZE});
+	for (int i = 0; i < CHUNK_SIZE; ++i)
+	{
+		for (int j = 0; j < CHUNK_SIZE; ++j)
+		{
+			SDL_Rect dest{i * 32, j * 32, 32, 32};
+			try{
+			TileMeta &meta = g_tiles_reader.m_tiles.at(get_tile(i, j).get_id());
+			
+			const std::string &img = meta.info->get_image();
+			SDL_Rect src{(int)meta.x * 32, (int)meta.y * 32, 32, 32};
+			if (img.empty())
+				continue;
+			TextureRef tile = g_texture_manager.load("images/" + img, true);
+#ifndef NDEBUG
+			if (!tile->get_sdl_surface())
+			{
+				Logger::warn(img + " doesn't have an SDL Surface... Expect bad!");
+				continue;
+			}
+#endif
+			tileset.blit(tile->get_sdl_surface(), src, dest);
+			} 
+			catch (const std::out_of_range&) {
+				continue;
+			}
+		}
+	}
+	m_texture.reset(tileset.to_texture());
+	tileset.destroy();
+}

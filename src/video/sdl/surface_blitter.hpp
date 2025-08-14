@@ -34,7 +34,7 @@ public:
 	SDL_Color read_pixel(int x, int y);
 	void write_pixel(int x, int y, SDL_Color color);
 	
-	void blit(SDL_Surface *surface, const SDL_Rect *src, SDL_Rect *dest);
+	void blit(SDL_Surface *surface, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dest);
 	void draw_circle(int x, int y, unsigned r, SDL_Color color);
 	void fill(SDL_Color color);
 	
