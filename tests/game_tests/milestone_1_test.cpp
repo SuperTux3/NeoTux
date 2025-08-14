@@ -99,6 +99,11 @@ Milestone1Test::run()
 		
 		if (g_input_manager.get_scroll_y() != 0)
 			g_camera.zoom += g_input_manager.get_scroll_y() / 15.0;
+		if (g_input_manager.mapping_pressed(ZOOMIN_BINDING))
+			g_camera.zoom += 1 * g_dtime;
+		else if (g_input_manager.mapping_pressed(ZOOMOUT_BINDING))
+			g_camera.zoom -= 1 * g_dtime;
+			
 		
 		if (!levelscreen.finished())
 		{

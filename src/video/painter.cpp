@@ -23,10 +23,15 @@ Painter::in_camera_bounds(std::optional<Rectf> dest)
 	if (!m_camera || !dest)
 		return true;
 	
-	if (dest->bottom - m_camera->y < 0 ||
-	    dest->top - m_camera->y > m_camera->height ||
-		dest->right - m_camera->x < 0 ||
-		dest->left - m_camera->x > m_camera->width)
+	double zoomed_left = (dest->left - m_camera->x) * m_camera->zoom;
+	double zoomed_top = (dest->top - m_camera->y) * m_camera->zoom;
+	double zoomed_right = (dest->right - m_camera->x) * m_camera->zoom;
+	double zoomed_bottom = (dest->bottom - m_camera->y) * m_camera->zoom;
+	
+	if (zoomed_bottom + ((m_camera->height - (m_camera->height * m_camera->zoom)) / 2) < 0 ||
+	    zoomed_top + ((m_camera->height - (m_camera->height * m_camera->zoom)) / 2) > m_camera->height ||
+		zoomed_right + ((m_camera->width - (m_camera->width * m_camera->zoom)) / 2) < 0 ||
+		zoomed_left + ((m_camera->width - (m_camera->width * m_camera->zoom)) / 2) > m_camera->width)
 		return false;
 	
 	return true;

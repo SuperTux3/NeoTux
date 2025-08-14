@@ -121,5 +121,7 @@ extern size_t LEFT_BINDING;
 extern size_t RIGHT_BINDING;
 extern size_t UP_BINDING;
 extern size_t DOWN_BINDING;
+extern size_t ZOOMIN_BINDING;
+extern size_t ZOOMOUT_BINDING;
 
 #endif

@@ -152,17 +152,25 @@ void
 Tilemap::draw(const Camera &camera)
 {
 	Painter *painter = g_video_system->get_painter();
-	float cam_tx = camera.x / 32.f;
-	float cam_ty = camera.y / 32.f;
-	float cam_tw = camera.width / 32.f;
-	float cam_th = camera.height / 32.f;
+	//double offset_x = (camera.width - (camera.width * camera.zoom)) / 2.0;
+	float tile_size = 32.0f;
+
+	float invcam_x = camera.width / camera.zoom;
+	float invcam_y = camera.height / camera.zoom;
+	float offset_x = camera.x - (invcam_x - camera.width) / 2.0f;
+	float offset_y = camera.y - (invcam_y - camera.height) / 2.0f;
+	
+	float cam_tx = offset_x / 32.f;
+	float cam_ty = offset_y / 32.f;
+	float cam_tw = invcam_x / 32.f;
+	float cam_th = invcam_y / 32.f;
 	
 	for (int x = std::max<long>(0, cam_tx); x < cam_tx + cam_tw && x < m_size.width; ++x)
 	{
 		for (int y = std::max<long>(0, cam_ty); y < cam_ty + cam_th && y < m_size.height; ++y)
 		{
-			int rx = x * 32;
-			int ry = y * 32;
+			float rx = x * 32.f;
+			float ry = y * 32.f;
 			Rectf rrect{(float)rx, (float)ry, {32.f, 32.f}};
 			const Tile &tile = get_tile(x, y);
 			if (tile.get_id() != 0)

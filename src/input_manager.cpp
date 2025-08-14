@@ -32,6 +32,8 @@ size_t LEFT_BINDING;
 size_t RIGHT_BINDING;
 size_t UP_BINDING;
 size_t DOWN_BINDING;
+size_t ZOOMIN_BINDING;
+size_t ZOOMOUT_BINDING;
 
 void
 InputManager::define_game_default_mappings()
@@ -52,6 +54,12 @@ InputManager::define_game_default_mappings()
 		Binding::Key('w'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_SOUTH)
 	});
 	CROUCH_BINDING = DOWN_BINDING;
+	ZOOMIN_BINDING = g_input_manager.define_mapping("Zoom-in", Binding{
+		Binding::Key('='), Binding::Gamepad(SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER)
+	});
+	ZOOMOUT_BINDING = g_input_manager.define_mapping("Zoom-out", Binding{
+		Binding::Key('-'), Binding::Gamepad(SDL_GAMEPAD_BUTTON_LEFT_SHOULDER)
+	});
 }
 
 InputManager::InputManager() :
