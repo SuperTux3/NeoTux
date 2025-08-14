@@ -193,7 +193,7 @@ Tilemap::draw(const Camera &camera)
 						continue;
 					tilemeta.info->timer.tick();
 					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->get_image(), true);
-					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
+					//painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
 				}catch(...){
 					continue;
 				}

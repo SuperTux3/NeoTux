@@ -21,6 +21,7 @@
 #include "object/player.hpp"
 #include "video/font_manager.hpp"
 #include "video/sdl/painter.hpp"
+#include "video/sdl/surface_blitter.hpp"
 #include "video/sdl/texture.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
@@ -39,11 +40,26 @@ RawDrawTest::run()
 	SDLPainter *sdl_painter = static_cast<SDLPainter*>(painter);
 	SDL_Renderer *renderer = sdl_painter->m_sdl_renderer.get();
 	
+	TextureRef tile = g_texture_manager.load("images/tiles/forest/foresttiles-1.png", true);
 	TextureRef ptex = g_texture_manager.load("images/creatures/tux/small/idle-0.png");
 	SDL_Texture* tex = static_cast<SDLTexture*>(ptex)->get_sdl_texture();
 	
+	// create tile surface
+	SurfaceBlitter tileset({32*6, 32*6});
+	//tileset.fill({255, 0, 0, 255});
+	SDL_Rect src{1*32, 2*32, 32, 32};
+	for (int i = 0; i < 6; ++i)
+		for (int j = 0; j < 6; ++j)
+		{
+			SDL_Rect dest{i * 32, j * 32, 32, 32};
+			tileset.blit(tile->get_sdl_surface(), &src, &dest);
+		}
+	std::unique_ptr<Texture> tileset_tex(tileset.to_texture());
+	tileset.destroy();
+	
+	
+	// state
 	double total = 3.0;
-
 	Camera cam{(unsigned)g_video_system->get_window_size().width, (unsigned)g_video_system->get_window_size().height};
 	bool jumped = false;
 	bool use_painter = false;
@@ -88,9 +104,15 @@ RawDrawTest::run()
 			painter->clear();
 		else
 			SDL_RenderClear(renderer);
+			
+		
+		
 		TextureRef fpstex = g_font_manager.load(SUPERTUX_MEDIUM, 18,
 			std::format("({}) FPS: {:.0f}", use_painter ? "Painter" : "SDL", get_fps()), {255, 255, 255, 155});
 		SDL_Texture* fps = static_cast<SDLTexture*>(fpstex)->get_sdl_texture();
+		
+		painter->draw(tileset_tex.get(), std::nullopt,
+			SDL_FRect{200, 200, (float)tileset_tex->get_size().width, (float)tileset_tex->get_size().height});
 		
 		for (int i = 0; i < (int)total; ++i)
 		{
