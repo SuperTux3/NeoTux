@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "texture.hpp"
+#include <SDL3/SDL_surface.h>
 #include <SDL3/SDL_timer.h>
 #include <SDL3_image/SDL_image.h>
 #include "sdl_exception.hpp"
@@ -23,7 +24,8 @@
 #include "video/video_system.hpp"
 
 Texture::Texture() :
-	m_time(0)
+	m_time(0),
+	m_sdl_surface(nullptr, SDL_DestroySurface)
 {}
 
 void
@@ -32,12 +34,12 @@ Texture::load_file(const std::string& filename)
 }
 
 Texture*
-Texture::create(const std::string &filename)
+Texture::create(const std::string &filename, bool as_surface)
 {
 	switch (g_video_system->get_video_system())
 	{
 	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(filename);
+		return new SDLTexture(filename, as_surface);
 	}
 }
 
@@ -47,7 +49,7 @@ Texture::create(SDL_Surface *surface)
 	switch (g_video_system->get_video_system())
 	{
 	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(surface);
+		return new SDLTexture(surface, false);
 	}
 }
 

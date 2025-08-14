@@ -20,11 +20,12 @@
 #include "sdl_video_system.hpp"
 #include "video/sdl/painter.hpp"
 
-SDLTexture::SDLTexture(std::string filename) :
-	SDLTexture{create_surface(filename), true}
+SDLTexture::SDLTexture(std::string filename, bool as_surface /* = false */) :
+	SDLTexture{create_surface(filename), as_surface ? false : true, as_surface}
 {}
 
-SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = false */) :
+SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = false */, bool keep_surface) :
+	Texture(),
 	m_sdl_texture{nullptr, SDL_DestroyTexture}
 {
 #ifndef NDEBUG
@@ -41,7 +42,12 @@ SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = fal
 	size.height = surface->h;
 	m_sdl_texture.reset(texture);
 	
-	if (destroy_surface)
+	if (keep_surface)
+	{
+		Logger::debug("Texture surface was also stored.");
+		m_sdl_surface.reset(surface);
+	}
+	else if (destroy_surface)
 		SDL_DestroySurface(surface);
 }
 

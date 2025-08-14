@@ -28,7 +28,7 @@ public:
 	TextureManager();
 	~TextureManager();
 	
-	TextureRef load(const std::string &filename);
+	TextureRef load(const std::string &filename, bool as_surface = false);
 	
 public:
 	std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;

@@ -21,6 +21,7 @@
 #include "math/rect.hpp"
 #include <SDL3/SDL_surface.h>
 #include <cstdint>
+#include <memory>
 #include <string>
 
 class Texture
@@ -31,17 +32,19 @@ public:
 	
 	void load_file(const std::string &filename);
 	//virtual void draw(Texture* texture, Rectf src, Rectf dest) = 0;
-	static Texture* create(const std::string &filename);
+	static Texture* create(const std::string &filename, bool as_surface = false);
 	static Texture* create(SDL_Surface *surface);
 	
 	Size get_size() const { return size; }
 	void poke_last_used();
 	uint64_t get_last_used() const { return m_time; }
+	SDL_Surface* get_sdl_surface() const { return m_sdl_surface.get(); }
 protected:
 	static SDL_Surface* create_surface(const std::string &filename);
 	
 	uint64_t m_time;
 	Size size;
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> m_sdl_surface;
 };
 
 using TextureRef = Texture*;

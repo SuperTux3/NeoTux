@@ -64,7 +64,7 @@ Tilemap::Tilemap(SexpElt root) :
 					if (!image.empty())
 					{
 						Logger::debug("Caching " + image + "...");
-						g_texture_manager.load("images/" + image);
+						g_texture_manager.load("images/" + image, true);
 					}
 				}
 			} catch (const std::out_of_range&) {}
@@ -192,7 +192,7 @@ Tilemap::draw(const Camera &camera)
 					if (tilemeta.info->images.empty())
 						continue;
 					tilemeta.info->timer.tick();
-					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->get_image());
+					TextureRef tex = g_texture_manager.load("images/"+tilemeta.info->get_image(), true);
 					painter->draw(tex, tilemeta.get_src_rect(tex), rrect);
 				}catch(...){
 					continue;

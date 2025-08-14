@@ -29,13 +29,13 @@ TextureManager::~TextureManager()
 }
 
 TextureRef
-TextureManager::load(const std::string &filename)
+TextureManager::load(const std::string &filename, bool as_surface)
 {
 	if (m_textures.contains(filename))
 		return m_textures[filename].get();
 	else
 	{
-		TextureRef tex = Texture::create(FS::path(filename));
+		TextureRef tex = Texture::create(FS::path(filename), as_surface);
 		m_textures.insert({filename, std::unique_ptr<Texture>(tex)});
 		return tex;
 	}
