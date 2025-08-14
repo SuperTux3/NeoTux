@@ -19,12 +19,14 @@
 #include "collision.hpp"
 #include "math/rect.hpp"
 #include "object/moving_object.hpp"
+#include "settings.hpp"
 #include "tiles_reader.hpp"
 #include "util/logger.hpp"
 #include "video/texture_manager.hpp"
 #include "video/video_system.hpp"
 #include <algorithm>
 #include <format>
+#include <stdexcept>
 
 Tilemap::Tilemap(SexpElt root) :
 	m_size(),
@@ -55,6 +57,17 @@ Tilemap::Tilemap(SexpElt root) :
 		int rel_x = x % TileChunk::CHUNK_SIZE;
 		int rel_y = y % TileChunk::CHUNK_SIZE;
 		TileChunk &t = m_chunks.get_or_create(chunk_x, chunk_y, TileChunk());
+		if (g_settings->aggressive_caching > 0)
+			try {
+				for (auto &image : g_tiles_reader.m_tiles.at(tile_id).info->images)
+				{
+					if (!image.empty())
+					{
+						Logger::debug("Caching " + image + "...");
+						g_texture_manager.load("images/" + image);
+					}
+				}
+			} catch (const std::out_of_range&) {}
 		t.get_tile(rel_x, rel_y).set_id(tile_id);
 	}
 	
@@ -153,7 +166,6 @@ Tilemap::draw(const Camera &camera)
 {
 	Painter *painter = g_video_system->get_painter();
 	//double offset_x = (camera.width - (camera.width * camera.zoom)) / 2.0;
-	float tile_size = 32.0f;
 
 	float invcam_x = camera.width / camera.zoom;
 	float invcam_y = camera.height / camera.zoom;

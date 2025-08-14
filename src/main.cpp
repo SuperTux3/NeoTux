@@ -115,6 +115,7 @@ Argument st_args[] = {
 	{ "list-tests", 'l', "List in-game tests" },
 	
 	{ "Debugging:" },
+	{ "aggressive-caching", 'C', "Cache more stuff before the game loop to prevent stutters" },
 	{ "forced-delay", 'F', "Add an intentional delay in MS to the game loop", "<ms>" },
 	{ "show-hitboxes", 'b', "Shows MovingObject hitboxes" },
 	{ "game-speed", 's', "Set game speed as a float (default: 1.0)", "<speed>" },
@@ -170,7 +171,11 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 			return 1;
 		}
 		
-		case 9: try {
+		case 9:
+			g_settings->aggressive_caching++;
+			return 0;
+		
+		case 10: try {
 			long forced_delay =  std::stol(argv[argvidx + 1]);
 			if (forced_delay < 0)
 			{
@@ -191,11 +196,11 @@ int apply_argument(int argc, char** argv, int argvidx, Argument args[], int idx)
 			return 1;
 		}
 		
-		case 10:
+		case 11:
 			g_settings->show_hitboxes = true;
 			return 0;
 		
-		case 11:
+		case 12:
 			const char *number = argv[argvidx + 1];
 			if (!number)
 				return 1;
