@@ -23,13 +23,16 @@ struct Camera
 		x{0},
 		y{0},
 		width{w},
-		height{h} {};
+		height{h},
+		zoom{1.0}
+	{}
 	~Camera() = default;
 	
 	int x;
 	int y;
 	unsigned width;
 	unsigned height;
+	double zoom;
 };
 
 extern Camera g_camera;

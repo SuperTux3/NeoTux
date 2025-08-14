@@ -57,6 +57,13 @@ SDLPainter::draw(TextureRef texture,
 	{
 		dest_sdl.x -= m_camera->x;
 		dest_sdl.y -= m_camera->y;
+		dest_sdl.x *= m_camera->zoom;
+		dest_sdl.y *= m_camera->zoom;
+		dest_sdl.w *= m_camera->zoom;
+		dest_sdl.h *= m_camera->zoom;
+		
+		dest_sdl.x +=  (m_camera->width - (m_camera->width  * m_camera->zoom)) / 2;
+		dest_sdl.y += (m_camera->height - (m_camera->height * m_camera->zoom)) / 2;
 	}
 	if (m_do_clip)
 	{

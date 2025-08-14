@@ -97,6 +97,9 @@ Milestone1Test::run()
 			continue;
 		}
 		
+		if (g_input_manager.get_scroll_y() != 0)
+			g_camera.zoom += g_input_manager.get_scroll_y() / 15.0;
+		
 		if (!levelscreen.finished())
 		{
 			if (g_mixer.is_playing_music())
