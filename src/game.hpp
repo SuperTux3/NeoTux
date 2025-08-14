@@ -35,7 +35,7 @@
 	if (g_settings->forced_delay != 0) \
 		SDL_Delay(g_settings->forced_delay); \
 	g_dtime = (((double)SDL_GetTicksNS() * 0.000000001) - __last_time) * g_settings->speed; \
-	if (g_dtime > .17) { \
+	if (g_dtime > .19) { \
 		Logger::warn(std::format("Frame took too long! ({:.0f} ms). Skipping", g_dtime * 1000)); \
 		g_dtime = 0; \
 	} \
@@ -55,7 +55,7 @@ public:
 	void handle_events();
 	
 	bool is_running() const { return !m_quit; }
-private:
+public:
 	bool m_quit;
 };
 

@@ -38,6 +38,9 @@ void
 SDLWindow::create_window(u32 flags, const std::string& title)
 {
 	m_sdl_window.reset(SDL_CreateWindow(title.c_str(), 800, 600, flags));
+#ifdef NEOTUX_PSP
+	SDL_SetWindowSize(m_sdl_window.get(), 480, 272);
+#endif
 	
 	set_icon(FS::path("images/engine/supertux-256x256.png"));
 }

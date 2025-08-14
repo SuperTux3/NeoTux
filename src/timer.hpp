@@ -22,7 +22,7 @@
 class Timer
 {
 public:
-	using duration_t = uint32_t;
+	using duration_t = uint64_t;
 	Timer(duration_t ms, int loops = 1);
 	~Timer() = default;
 	

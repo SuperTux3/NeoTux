@@ -41,11 +41,12 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
 int exit_callback(int arg1, int arg2, void *common)
 {
+	g_game->m_quit = true;
 	return 0;
 }
 
 int callback_thread(SceSize args, void *argp) {
-    int cbid = sceKernelCreateCallback("Exit Callbacks", exit_callback, NULL);
+    int cbid = sceKernelCreateCallback("Exit Callback", exit_callback, NULL);
     sceKernelRegisterExitCallback(cbid);
     sceKernelSleepThreadCB();
     return 0;
@@ -305,8 +306,7 @@ extern "C"
 int main(int argc, char** argv)
 {
 #ifdef NEOTUX_PSP
-	//setup_callbacks();
-	//return 0;
+	setup_callbacks();
 #endif
 	g_settings = std::make_unique<Settings>();
 	

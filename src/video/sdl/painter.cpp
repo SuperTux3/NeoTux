@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <SDL3/SDL_render.h>
+#include "config.h"
 #include "camera.hpp"
 #include "painter.hpp"
 #include "video/sdl/sdl_video_system.hpp"
@@ -27,6 +28,9 @@ SDLPainter::SDLPainter(VideoSystem *video) :
 		&SDL_DestroyRenderer)
 {
 	SDL_SetRenderDrawBlendMode(m_sdl_renderer.get(), SDL_BLENDMODE_BLEND);
+#ifdef NEOTUX_PSP
+	SDL_SetRenderVSync(m_sdl_renderer.get(), 1);
+#endif
 }
 
 void

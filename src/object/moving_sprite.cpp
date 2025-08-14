@@ -119,7 +119,11 @@ MovingSprite::parse_sprite()
 		if (aelt)
 		{
 			while (aelt.next_inplace())
+			{
+				//Logger::info(std::format("Trying to cache {}...", aelt.get_value()));
+				//g_texture_manager.load(m_parent_dir + "/" + aelt.get_value());
 				images.push_back(aelt.get_value());
+			}
 		}
 		
 		

@@ -146,12 +146,10 @@ if (PSP)
 	#string(REPLACE "-pthread" "" NEW_OPTS "${CURRENT_OPTS}")
 	set_target_properties(NeoTux PROPERTIES LINK_OPTIONS "")
 	
-	target_link_libraries(NeoTux PUBLIC stdc++ pspirkeyb psppower)
-	
 	create_pbp_file(
 		TARGET NeoTux
-		ICON_PATH NULL
-		BACKGROUND_PATH NULL
+		ICON_PATH ${PROJECT_SOURCE_DIR}/data/images/engine/pspicon0.png
+		BACKGROUND_PATH ${PROJECT_SOURCE_DIR}/data/images/engine/psppic1.png
 		PREVIEW_PATH NULL
 		TITLE NeoTux
 		VERSION 01.00
