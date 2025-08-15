@@ -30,6 +30,9 @@ constexpr int texture_size = 10;
 constexpr int texture_size = 32;
 #endif
 
+static SurfaceBlitter tileset({
+	(int)texture_size * TileChunk::CHUNK_SIZE,
+	(int)texture_size * TileChunk::CHUNK_SIZE});
 static std::thread texture_worker;
 static std::atomic_bool texture_worker_running = false;
 static std::atomic_bool just_finished_texture = false;
@@ -53,9 +56,7 @@ TileChunk::get_tile(uint8_t x, uint8_t y)
 void
 TileChunk::update_texture_worker()
 {
-	static SurfaceBlitter tileset({
-		(int)texture_size * TileChunk::CHUNK_SIZE,
-		(int)texture_size * TileChunk::CHUNK_SIZE});
+	tileset.reset();
 	for (int i = 0; i < CHUNK_SIZE; ++i)
 	{
 		for (int j = 0; j < CHUNK_SIZE; ++j)

@@ -26,7 +26,7 @@ SurfaceBlitter::SurfaceBlitter(Size size) :
 	m_sdl_surface(nullptr, SDL_DestroySurface),
 	m_size(std::move(size))
 {
-	m_sdl_surface.reset(SDL_CreateSurface(m_size.width, m_size.height, SDL_PIXELFORMAT_ABGR32));
+	reset();
 }
 
 SDL_Color
@@ -141,6 +141,12 @@ SurfaceBlitter::fill(SDL_Color color)
 	for (int x = 0; x < m_size.width; ++x)
 		for (int y = 0; y < m_size.height; ++y)
 			write_pixel(x, y, color);
+}
+
+void
+SurfaceBlitter::reset()
+{
+	m_sdl_surface.reset(SDL_CreateSurface(m_size.width, m_size.height, SDL_PIXELFORMAT_ABGR32));
 }
 
 void
