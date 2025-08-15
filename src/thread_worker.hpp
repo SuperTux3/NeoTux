@@ -29,7 +29,7 @@
 struct ThreadInfo
 {
 	ThreadInfo() :
-		m_done{std::make_shared<std::atomic_bool>()}
+		m_done{std::make_shared<std::atomic_bool>(false)}
 	{}
 	~ThreadInfo() = default;
 	
@@ -63,7 +63,7 @@ public:
 		// Safe, since m_threads is std::list
 		ThreadPair &pair = m_threads.emplace_back();
 		auto bound = std::bind(std::forward<F>(f), std::forward<Args>(args)..., std::ref(pair.info));
-		pair.thread = std::thread(std::move(bound));
+		pair.thread = std::move(std::thread(std::move(bound)));
 		id = pair.thread.get_id();
 		return true;
 	}
@@ -74,7 +74,7 @@ public:
 	ThreadInfo info;
 	size_t m_max_threads;
 	std::list<ThreadPair> m_threads;
-	std::atomic_uint32_t m_running_threads;
+	//std::atomic_uint32_t m_running_threads;
 };
 
 #endif

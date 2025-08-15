@@ -25,21 +25,12 @@
 #include <stdexcept>
 #include <thread>
 
-#ifdef NEOTUX_PSP
-// temporary
-constexpr int texture_size = 10;
-#else
-constexpr int texture_size = 32;
-#endif
-
-static SurfaceBlitter tileset({
-	(int)texture_size * TileChunk::CHUNK_SIZE,
-	(int)texture_size * TileChunk::CHUNK_SIZE});
 
 TileChunk::TileChunk() :
 	m_texture(nullptr),
 	m_tiles(),
-	texture_updating(false)
+	texture_updating(false),
+	m_empty(true)
 {
 
 }
@@ -58,9 +49,17 @@ TileChunk::get_tile(uint8_t x, uint8_t y)
 }
 
 void
-TileChunk::update_texture_worker(ThreadInfo &info)
+TileChunk::set_tile(uint8_t x, uint8_t y, unsigned long id)
 {
-	tileset.reset();
+	get_tile(x, y).set_id(id);
+	if (id != 0)
+		m_empty = false;
+}
+
+void
+TileChunk::update_texture_worker(Tilemap *parent, ThreadInfo &info)
+{
+	parent->m_tileset->reset();
 	for (int i = 0; i < CHUNK_SIZE; ++i)
 	{
 		for (int j = 0; j < CHUNK_SIZE; ++j)
@@ -81,7 +80,7 @@ TileChunk::update_texture_worker(ThreadInfo &info)
 				continue;
 			}
 #endif
-			tileset.blit(tile->get_sdl_surface(), src, dest);
+			parent->m_tileset->blit(tile->get_sdl_surface(), src, dest);
 			} 
 			catch (const std::out_of_range&) {
 				continue;
@@ -89,6 +88,7 @@ TileChunk::update_texture_worker(ThreadInfo &info)
 		}
 	}
 	info.mark_as_done();
+	
 }
 
 void
@@ -96,20 +96,18 @@ TileChunk::update_texture(Tilemap *parent)
 {
 	if (!m_texture.get())
 	{
-		//if (m_parent)
 		if (!texture_updating)
 		{
-			if (parent->m_threads->spawn(m_thread_id, &TileChunk::update_texture_worker, this))
+			if (parent->m_threads->spawn(m_thread_id, &TileChunk::update_texture_worker, this, parent))
 				texture_updating = true;
-			
-			return;
 		}
 		
 		auto id = parent->m_threads->poll();
 		if (id && *id == m_thread_id && texture_updating)
 		{
 			parent->m_threads->remove_thread(m_thread_id);
-			m_texture.reset(tileset.to_texture());
+			m_texture.reset(parent->m_tileset->to_texture());
+			parent->m_tileset->reset();
 			texture_updating = false;
 		}
 	}

@@ -27,6 +27,7 @@
 #include "tile.hpp"
 #include "tile_chunk.hpp"
 #include "util/sexp.hpp"
+#include "video/sdl/surface_blitter.hpp"
 
 struct Camera;
 struct TilesReader;
@@ -42,13 +43,14 @@ public:
 	long get_zpos() const { return m_zpos; }
 	Size get_size() const { return m_size; }
 	
-	// TODO: Make tiles_reader a member
+	// TODO: Make tiles_reader a member	
 	std::optional<std::vector<Collision::CollideInfo<float>>> try_object_collision(MovingObject &obj);
 	
 	void draw(const Camera &camera);
 	
 protected:
 	std::shared_ptr<ThreadWorker> m_threads;
+	std::shared_ptr<SurfaceBlitter> m_tileset;
 	
 private:
 	Size m_size;

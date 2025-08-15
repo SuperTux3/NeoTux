@@ -23,23 +23,32 @@
 #include "tile.hpp"
 #include "video/texture.hpp"
 
+#ifdef NEOTUX_PSP
+// temporary
+constexpr int texture_size = 10;
+#else
+constexpr int texture_size = 32;
+#endif
+
 struct Tilemap;
 
 class TileChunk
 {
 public:
-	static constexpr uint8_t CHUNK_SIZE = 15;
+	static constexpr uint8_t CHUNK_SIZE = 8;
 	
 	TileChunk();
 	~TileChunk();
 	
 	void update_texture(Tilemap *parent);
-	void update_texture_worker(ThreadInfo &info);
+	void update_texture_worker(Tilemap *parent, ThreadInfo &info);
 	Texture *get_texture() const { return m_texture.get(); }
 	
 	Tile& get_tile(uint8_t x, uint8_t y);
+	void set_tile(uint8_t x, uint8_t y, unsigned long id);
 	
 private:
+	bool m_empty;
 	ThreadWorker::id_t m_thread_id;
 	bool texture_updating;
 	std::shared_ptr<Texture> m_texture;

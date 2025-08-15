@@ -20,8 +20,7 @@
 ThreadWorker::ThreadWorker(size_t max) :
 	m_max_threads(max),
 	m_threads()
-{
-}
+{}
 
 ThreadWorker::~ThreadWorker()
 {

@@ -31,6 +31,9 @@
 
 Tilemap::Tilemap(SexpElt root) :
 	m_threads(std::make_shared<ThreadWorker>(1)),
+	m_tileset(std::make_shared<SurfaceBlitter>(Size{
+		(int)texture_size * TileChunk::CHUNK_SIZE,
+		(int)texture_size * TileChunk::CHUNK_SIZE})),
 	m_size(),
 	m_chunks(),
 	m_zpos()
@@ -70,7 +73,8 @@ Tilemap::Tilemap(SexpElt root) :
 					}
 				}
 			} catch (const std::out_of_range&) {}
-		t.get_tile(rel_x, rel_y).set_id(tile_id);
+		t.set_tile(rel_x, rel_y, tile_id);
+		//t.get_tile(rel_x, rel_y).set_id(tile_id);
 	}
 	
 	Logger::debug(std::format("Tilemap info\n\t"

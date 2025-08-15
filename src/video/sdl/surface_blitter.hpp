@@ -26,6 +26,10 @@
 class SurfaceBlitter
 {
 public:
+	SurfaceBlitter() :
+		m_sdl_surface{nullptr, &SDL_DestroySurface},
+		m_size{}
+	{}
 	SurfaceBlitter(Size size);
 	~SurfaceBlitter() = default;
 	
