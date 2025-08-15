@@ -18,7 +18,28 @@
 #include "tiles_reader.hpp"
 #include "video/sdl/surface_blitter.hpp"
 #include "video/texture_manager.hpp"
+#include "config.h"
+#include <atomic>
 #include <stdexcept>
+#include <thread>
+
+#ifdef NEOTUX_PSP
+// temporary
+constexpr int texture_size = 10;
+#else
+constexpr int texture_size = 32;
+#endif
+
+static std::thread texture_worker;
+static std::atomic_bool texture_worker_running = false;
+static std::atomic_bool just_finished_texture = false;
+
+
+TileChunk::~TileChunk()
+{
+	if (texture_worker.joinable())
+		texture_worker.join();
+}
 
 Tile&
 TileChunk::get_tile(uint8_t x, uint8_t y)
@@ -30,14 +51,16 @@ TileChunk::get_tile(uint8_t x, uint8_t y)
 }
 
 void
-TileChunk::update_texture()
+TileChunk::update_texture_worker()
 {
-	SurfaceBlitter tileset({(int)32 * CHUNK_SIZE, (int)32.f * CHUNK_SIZE});
+	static SurfaceBlitter tileset({
+		(int)texture_size * TileChunk::CHUNK_SIZE,
+		(int)texture_size * TileChunk::CHUNK_SIZE});
 	for (int i = 0; i < CHUNK_SIZE; ++i)
 	{
 		for (int j = 0; j < CHUNK_SIZE; ++j)
 		{
-			SDL_Rect dest{i * 32, j * 32, 32, 32};
+			SDL_Rect dest{i * texture_size, j * texture_size, texture_size, texture_size};
 			try{
 			TileMeta &meta = g_tiles_reader.m_tiles.at(get_tile(i, j).get_id());
 			
@@ -60,6 +83,37 @@ TileChunk::update_texture()
 			}
 		}
 	}
-	m_texture.reset(tileset.to_texture());
-	tileset.destroy();
+	texture_worker_running = false;
+	just_finished_texture = true;
+}
+
+void
+TileChunk::update_texture()
+{
+	if (!texture_worker_running && !m_texture.get())
+	{
+		if (just_finished_texture)
+		{
+			if (texture_updating)
+			{
+				m_texture.reset(tileset.to_texture());
+				texture_updating = false;
+				just_finished_texture = false;
+		
+				if (texture_worker.joinable())
+					texture_worker.join();
+			}
+			return;
+		}
+		
+		texture_worker_running = true;
+		texture_worker = std::thread{&TileChunk::update_texture_worker, this};
+		texture_updating = true;
+
+	}
+	if (m_texture.get())
+		return;
+
+	//m_texture.reset(tileset.to_texture());
+	//tileset.destroy();
 }

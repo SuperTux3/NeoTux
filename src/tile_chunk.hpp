@@ -25,20 +25,23 @@
 class TileChunk
 {
 public:
-	static constexpr uint8_t CHUNK_SIZE = 16;
+	static constexpr uint8_t CHUNK_SIZE = 15;
 	
 	TileChunk() :
-		m_texture(),
-		m_tiles()
+		m_texture(nullptr),
+		m_tiles(),
+		texture_updating(false)
 	{}
-	~TileChunk() = default;
+	~TileChunk();
 	
 	void update_texture();
+	void update_texture_worker();
 	Texture *get_texture() const { return m_texture.get(); }
 	
 	Tile& get_tile(uint8_t x, uint8_t y);
 	
 private:
+	bool texture_updating;
 	std::shared_ptr<Texture> m_texture;
 	Tile m_tiles[CHUNK_SIZE * CHUNK_SIZE];
 };

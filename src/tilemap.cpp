@@ -77,7 +77,6 @@ Tilemap::Tilemap(SexpElt root) :
 	{
 		for (auto &chunk : chunk_x.second)
 		{
-			chunk.second.update_texture();
 		}
 	}
 	
@@ -197,7 +196,10 @@ Tilemap::draw(const Camera &camera)
 			TileChunk *chunk = m_chunks.at(x, y);
 			if (!chunk)
 				continue;
+			chunk->update_texture();
 			TextureRef chunk_tex = chunk->get_texture();
+			if (!chunk_tex)
+				continue;
 			Rectf srect{0, 0, {(float)chunk_tex->get_size().width, (float)chunk_tex->get_size().height}};
 			painter->draw(chunk_tex, srect, rrect);
 #if 0

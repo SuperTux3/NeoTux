@@ -44,12 +44,12 @@ Texture::create(const std::string &filename, bool as_surface)
 }
 
 Texture*
-Texture::create(SDL_Surface *surface)
+Texture::create(SDL_Surface *surface, bool destroy_surface)
 {
 	switch (g_video_system->get_video_system())
 	{
 	case VideoSystem::Backend::VIDEO_SDL:
-		return new SDLTexture(surface, false);
+		return new SDLTexture(surface, destroy_surface);
 	}
 }
 

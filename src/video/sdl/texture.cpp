@@ -37,10 +37,13 @@ SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = fal
 #endif
 	SDLVideoSystem *video = static_cast<SDLVideoSystem*>(g_video_system.get());
 	SDLPainter *painter = static_cast<SDLPainter*>(g_video_system->get_painter());
+	if (!keep_surface)
+	{
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(painter->m_sdl_renderer.get(), surface);
 	size.width = surface->w;
 	size.height = surface->h;
 	m_sdl_texture.reset(texture);
+	}
 	
 	if (keep_surface)
 	{
