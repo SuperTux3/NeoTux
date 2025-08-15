@@ -59,6 +59,8 @@ TileChunk::set_tile(uint8_t x, uint8_t y, unsigned long id)
 void
 TileChunk::update_texture_worker(Tilemap *parent, ThreadInfo &info)
 {
+	assert(!m_empty);
+	
 	parent->m_tileset->reset();
 	for (int i = 0; i < CHUNK_SIZE; ++i)
 	{
@@ -88,12 +90,15 @@ TileChunk::update_texture_worker(Tilemap *parent, ThreadInfo &info)
 		}
 	}
 	info.mark_as_done();
-	
 }
 
 void
 TileChunk::update_texture(Tilemap *parent)
 {
+	// Don't bother working with empty chunks
+	if (m_empty)
+		return;
+	
 	if (!m_texture.get())
 	{
 		if (!texture_updating)
