@@ -30,15 +30,10 @@ class TileChunk
 public:
 	static constexpr uint8_t CHUNK_SIZE = 15;
 	
-	TileChunk() :
-		m_texture(nullptr),
-		m_tiles(),
-		texture_updating(false)
-	{}
+	TileChunk();
 	~TileChunk();
 	
 	void update_texture(Tilemap *parent);
-	//void update_texture_worker() {}
 	void update_texture_worker(ThreadInfo &info);
 	Texture *get_texture() const { return m_texture.get(); }
 	

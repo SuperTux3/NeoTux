@@ -36,6 +36,13 @@ static SurfaceBlitter tileset({
 	(int)texture_size * TileChunk::CHUNK_SIZE,
 	(int)texture_size * TileChunk::CHUNK_SIZE});
 
+TileChunk::TileChunk() :
+	m_texture(nullptr),
+	m_tiles(),
+	texture_updating(false)
+{
+
+}
 
 TileChunk::~TileChunk()
 {
