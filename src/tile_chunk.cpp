@@ -19,7 +19,6 @@
 #include "tiles_reader.hpp"
 #include "video/sdl/surface_blitter.hpp"
 #include "video/texture_manager.hpp"
-#include "config.h"
 #include "tilemap.hpp"
 #include <atomic>
 #include <stdexcept>

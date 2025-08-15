@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <vector>
 #include "thread_worker.hpp"
+#include "config.h"
 #include "tile.hpp"
 #include "video/texture.hpp"
 
