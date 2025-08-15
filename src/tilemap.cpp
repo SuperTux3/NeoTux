@@ -30,6 +30,7 @@
 #include <stdexcept>
 
 Tilemap::Tilemap(SexpElt root) :
+	m_threads(std::make_shared<ThreadWorker>(1)),
 	m_size(),
 	m_chunks(),
 	m_zpos()
@@ -70,14 +71,6 @@ Tilemap::Tilemap(SexpElt root) :
 				}
 			} catch (const std::out_of_range&) {}
 		t.get_tile(rel_x, rel_y).set_id(tile_id);
-	}
-	
-	// TODO don't iterate over it all again, do it in the last loop
-	for (auto &chunk_x : m_chunks.m_hash)
-	{
-		for (auto &chunk : chunk_x.second)
-		{
-		}
 	}
 	
 	Logger::debug(std::format("Tilemap info\n\t"
@@ -196,7 +189,7 @@ Tilemap::draw(const Camera &camera)
 			TileChunk *chunk = m_chunks.at(x, y);
 			if (!chunk)
 				continue;
-			chunk->update_texture();
+			chunk->update_texture(this);
 			TextureRef chunk_tex = chunk->get_texture();
 			if (!chunk_tex)
 				continue;

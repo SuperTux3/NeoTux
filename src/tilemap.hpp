@@ -23,6 +23,7 @@
 #include "collision.hpp"
 #include "spatial_hash.hpp"
 #include "math/size.hpp"
+#include "thread_worker.hpp"
 #include "tile.hpp"
 #include "tile_chunk.hpp"
 #include "util/sexp.hpp"
@@ -45,10 +46,16 @@ public:
 	std::optional<std::vector<Collision::CollideInfo<float>>> try_object_collision(MovingObject &obj);
 	
 	void draw(const Camera &camera);
+	
+protected:
+	std::shared_ptr<ThreadWorker> m_threads;
+	
 private:
 	Size m_size;
 	SpatialHash<TileChunk> m_chunks;
 	long m_zpos;
+	
+	friend class TileChunk;
 };
 
 #endif

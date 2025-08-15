@@ -15,10 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tile_chunk.hpp"
+#include "thread_worker.hpp"
 #include "tiles_reader.hpp"
 #include "video/sdl/surface_blitter.hpp"
 #include "video/texture_manager.hpp"
 #include "config.h"
+#include "tilemap.hpp"
 #include <atomic>
 #include <stdexcept>
 #include <thread>
@@ -54,7 +56,7 @@ TileChunk::get_tile(uint8_t x, uint8_t y)
 }
 
 void
-TileChunk::update_texture_worker()
+TileChunk::update_texture_worker(ThreadInfo &info)
 {
 	tileset.reset();
 	for (int i = 0; i < CHUNK_SIZE; ++i)
@@ -84,37 +86,29 @@ TileChunk::update_texture_worker()
 			}
 		}
 	}
-	texture_worker_running = false;
-	just_finished_texture = true;
+	info.mark_as_done();
 }
 
 void
-TileChunk::update_texture()
+TileChunk::update_texture(Tilemap *parent)
 {
-	if (!texture_worker_running && !m_texture.get())
+	if (!m_texture.get())
 	{
-		if (just_finished_texture)
+		//if (m_parent)
+		if (!texture_updating)
 		{
-			if (texture_updating)
-			{
-				m_texture.reset(tileset.to_texture());
-				texture_updating = false;
-				just_finished_texture = false;
-		
-				if (texture_worker.joinable())
-					texture_worker.join();
-			}
+			if (parent->m_threads->spawn(m_thread_id, &TileChunk::update_texture_worker, this))
+				texture_updating = true;
+			
 			return;
 		}
 		
-		texture_worker_running = true;
-		texture_worker = std::thread{&TileChunk::update_texture_worker, this};
-		texture_updating = true;
-
+		auto id = parent->m_threads->poll();
+		if (id && *id == m_thread_id && texture_updating)
+		{
+			parent->m_threads->remove_thread(m_thread_id);
+			m_texture.reset(tileset.to_texture());
+			texture_updating = false;
+		}
 	}
-	if (m_texture.get())
-		return;
-
-	//m_texture.reset(tileset.to_texture());
-	//tileset.destroy();
 }

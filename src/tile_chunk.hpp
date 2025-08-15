@@ -19,8 +19,11 @@
 
 #include <cstdint>
 #include <vector>
+#include "thread_worker.hpp"
 #include "tile.hpp"
 #include "video/texture.hpp"
+
+struct Tilemap;
 
 class TileChunk
 {
@@ -34,13 +37,15 @@ public:
 	{}
 	~TileChunk();
 	
-	void update_texture();
-	void update_texture_worker();
+	void update_texture(Tilemap *parent);
+	//void update_texture_worker() {}
+	void update_texture_worker(ThreadInfo &info);
 	Texture *get_texture() const { return m_texture.get(); }
 	
 	Tile& get_tile(uint8_t x, uint8_t y);
 	
 private:
+	ThreadWorker::id_t m_thread_id;
 	bool texture_updating;
 	std::shared_ptr<Texture> m_texture;
 	Tile m_tiles[CHUNK_SIZE * CHUNK_SIZE];
