@@ -40,14 +40,24 @@ ThreadWorker::poll()
 		if (*it->info.m_done == true)
 		{
 			ThreadWorker::id_t id = it->thread.get_id();
-			if (it->thread.joinable())
-				it->thread.join();
-			std::cout << "Thread finished :D" << std::endl;
-			// TODO delete thread
-			m_threads.erase(it);
 			return id;
 		}
 	}
 	return std::nullopt;
 }
 
+void
+ThreadWorker::remove_thread(ThreadWorker::id_t id)
+{
+	for (auto it = m_threads.begin(); it != m_threads.end(); ++it)
+	{
+		if (it->thread.get_id() == id)
+		{
+			if (it->thread.joinable())
+				it->thread.join();
+
+			m_threads.erase(it);
+			return;
+		}
+	}
+}

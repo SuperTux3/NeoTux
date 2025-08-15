@@ -18,6 +18,7 @@
 #define SUPERTUX_SRC_THREAD_WORKER_HPP
 
 #include <iostream>
+#include <list>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -59,22 +60,20 @@ public:
 		if (m_threads.size() >= m_max_threads)
 			return false;
 		
-		ThreadInfo info;
-		m_threads.emplace_back(std::move(info), std::thread{});
-		std::thread th(std::forward<F>(f), std::forward<Args>(args)..., std::ref(
-			m_threads.back().info));
-		id = th.get_id();
-		// Move our new thread back in
-		m_threads.back().thread = std::move(th);
-		// Now cry.
+		// Safe, since m_threads is std::list
+		ThreadPair &pair = m_threads.emplace_back();
+		auto bound = std::bind(std::forward<F>(f), std::forward<Args>(args)..., std::ref(pair.info));
+		pair.thread = std::thread(std::move(bound));
+		id = pair.thread.get_id();
 		return true;
 	}
 	
 	std::optional<id_t> poll();
+	void remove_thread(id_t id);
 public:
 	ThreadInfo info;
 	size_t m_max_threads;
-	std::vector<ThreadPair> m_threads;
+	std::list<ThreadPair> m_threads;
 	std::atomic_uint32_t m_running_threads;
 };
 
