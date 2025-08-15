@@ -128,6 +128,7 @@ CollisionTest::run()
 		//player.handle_input();
 		//else if (g_input_manager.is_key_down('s'))
 		//	player.down();
+		
 		player.update(sector, *tilemap);
 		tilemap->draw(g_camera);
 		tilemap->try_object_collision(player);
