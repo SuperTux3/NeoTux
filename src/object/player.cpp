@@ -42,7 +42,7 @@ constexpr double SKID_XM     = 200;
 } // namespace
 
 Player::Player() :
-	MovingSprite("images/creatures/tux/tux.sprite", "tux"),
+	MovingSprite("images/creatures/tux/tuxsheet.sprite", "tux"),
 	m_state(PLAYER_STATE_SIZE),
 	m_powerup_state(0),
 	m_iframes(1000, 1)

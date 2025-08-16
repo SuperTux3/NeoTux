@@ -68,7 +68,7 @@ MovingSprite::set_sprite(const std::string &filename)
 void
 MovingSprite::parse_sprite()
 {
-	SexpElt root, elt, aelt;
+	SexpElt root, elt, aelt, telt;
 	bool not_new = false;
 	
 	if (m_actions.size() != 0)
@@ -90,10 +90,14 @@ MovingSprite::parse_sprite()
 	
 	while (root.next_inplace())
 	{
-		std::string name;
+		std::string name, spritesheet;
 		double fps = 0.0;
 		int loops = -1;
+		int offset[] = { 0, 0 };
+		int stride[] = { 0, 0 };
 		std::vector<std::string> images;
+		std::vector<Rect_t<int>> spritesheets;
+		Rect_t<int> sheet;
 		int hitboxes[4] = { -1, -1, -1, -1 };
 		SpriteAction *sprite_action;
 		
@@ -103,44 +107,85 @@ MovingSprite::parse_sprite()
 		if (!elt.is_value())
 			continue;
 		
-		aelt = elt.find_car("name");
-		if (aelt)
-			name = aelt.next().get_value();
-		
-		aelt = elt.find_car("fps");
-		if (aelt)
-			fps = aelt.next().get_number();
-		
-		aelt = elt.find_car("loops");
-		if (aelt)
-			loops = aelt.next().get_int();
-		
-		aelt = elt.find_car("images");
-		if (aelt)
+		if (elt.get_value() == "spritesheet")
 		{
-			while (aelt.next_inplace())
-			{
-				//Logger::info(std::format("Trying to cache {}...", aelt.get_value()));
-				//g_texture_manager.load(m_parent_dir + "/" + aelt.get_value());
-				images.push_back(aelt.get_value());
-			}
+			aelt = elt.find_car("image");
+			if (aelt)
+				spritesheet = aelt.next().get_value();
+			m_spritesheet = spritesheet;
 		}
-		
-		
-		aelt = elt.find_car("hitbox");
-		if (aelt)
-		{
-			int i = 0;
-			for (i = 0; i < 4 && aelt.next_inplace(); ++i)
+		if (elt.get_value() == "action") {
+			aelt = elt.find_car("name");
+			if (aelt)
+				name = aelt.next().get_value();
+
+			aelt = elt.find_car("fps");
+			if (aelt)
+				fps = aelt.next().get_number();
+
+			aelt = elt.find_car("loops");
+			if (aelt)
+				loops = aelt.next().get_int();
+
+			aelt = elt.find_car("images");
+			if (aelt)
 			{
-				hitboxes[i] = aelt.get_int();
+				while (aelt.next_inplace())
+				{
+					//Logger::info(std::format("Trying to cache {}...", aelt.get_value()));
+					//g_texture_manager.load(m_parent_dir + "/" + aelt.get_value());
+					images.push_back(aelt.get_value());
+				}
 			}
-			if (i != 4)
-				Logger::warn("A sprite hitbox is missing values! Expect bugs...");
+			
+			aelt = elt.find_car("offset");
+			if (aelt)
+				for (int i = 0; i < 2 && aelt.next_inplace(); ++i)
+					offset[i] = aelt.get_int();
+			
+			aelt = elt.find_car("stride");
+			if (aelt)
+				for (int i = 0; i < 2 && aelt.next_inplace(); ++i)
+					stride[i] = aelt.get_int();
+			
+			aelt = elt.find_car("spritesheets");
+			if (aelt && !m_spritesheet.empty())
+			{
+				while (aelt.next_inplace())
+				{
+					if (!aelt.is_list())
+						continue;
+					telt = aelt.get_list();
+					
+					sheet.left = telt.get_int() * stride[0];
+					telt.next_inplace();
+					sheet.top = telt.get_int() * stride[1];
+					telt.next_inplace();
+					sheet.right = telt.get_int() + offset[0];
+					telt.next_inplace();
+					sheet.bottom = telt.get_int() + offset[1];
+					
+					//Logger::info(std::format("Trying to cache {}...", telt.get_value()));
+					//g_texture_manager.load(m_parent_dir + "/" + telt.get_value());
+					spritesheets.push_back(sheet);
+				}
+			}
+
+			aelt = elt.find_car("hitbox");
+			if (aelt)
+			{
+				int i = 0;
+				for (i = 0; i < 4 && aelt.next_inplace(); ++i)
+				{
+					hitboxes[i] = aelt.get_int();
+				}
+				if (i != 4)
+					Logger::warn("A sprite hitbox is missing values! Expect bugs...");
+			}
+
+			sprite_action = new SpriteAction(fps, loops, images, spritesheets, hitboxes);
+			m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 		}
-		
-		sprite_action = new SpriteAction(fps, loops, images, hitboxes);
-		m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 	}
 	
 	if (!m_action_string.empty())
