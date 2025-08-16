@@ -96,8 +96,8 @@ MovingSprite::parse_sprite()
 		int offset[] = { 0, 0 };
 		int stride[] = { 0, 0 };
 		std::vector<std::string> images;
-		std::vector<Rect_t<int>> spritesheets;
-		Rect_t<int> sheet;
+		std::vector<Rectf> spritesheets;
+		Rectf sheet;
 		int hitboxes[4] = { -1, -1, -1, -1 };
 		SpriteAction *sprite_action;
 		
@@ -157,13 +157,13 @@ MovingSprite::parse_sprite()
 						continue;
 					telt = aelt.get_list();
 					
-					sheet.left = telt.get_int() * stride[0];
+					sheet.left = (telt.get_int() * stride[0]) + offset[0];
 					telt.next_inplace();
-					sheet.top = telt.get_int() * stride[1];
+					sheet.top = (telt.get_int() * stride[1]) + offset[1];
 					telt.next_inplace();
-					sheet.right = telt.get_int() + offset[0];
+					sheet.right = sheet.left + telt.get_int();
 					telt.next_inplace();
-					sheet.bottom = telt.get_int() + offset[1];
+					sheet.bottom = sheet.top + telt.get_int();
 					
 					//Logger::info(std::format("Trying to cache {}...", telt.get_value()));
 					//g_texture_manager.load(m_parent_dir + "/" + telt.get_value());
@@ -209,14 +209,18 @@ MovingSprite::set_action(const std::string &action)
 	}
 	m_action = s_action;
 	
-	std::string img = m_action->get_image(m_action_timer);
-	if (!img.empty())
+	if (!m_action->is_spritesheet())
 	{
-		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
-			
-		m_rect.right = m_rect.left + tex->get_size().width;
-		m_rect.bottom = m_rect.top + tex->get_size().height;
+		std::string img = m_action->get_image(m_action_timer);
+		if (!img.empty())
+		{
+			TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
+
+			m_rect.right = m_rect.left + tex->get_size().width;
+			m_rect.bottom = m_rect.top + tex->get_size().height;
+		}
 	}
+	
 	m_colbox.left = m_action->hitboxes[0] != -1 ? m_action->hitboxes[0] : 0;
 	m_colbox.top = m_action->hitboxes[1] != -1 ? m_action->hitboxes[1] : 0;
 	m_colbox.right = m_action->hitboxes[2] != -1 ? m_action->hitboxes[2] : m_rect.get_width();
@@ -239,10 +243,20 @@ MovingSprite::draw()
 {
 	if (!m_action)
 		return;
+	if (m_action->is_spritesheet())
+	{
+		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_spritesheet);
+		Rectf src = m_action->get_sprite(m_action_timer);
+		m_rect.right = m_rect.left + src.get_width();
+		m_rect.bottom = m_rect.top + src.get_height();
+		g_video_system->get_painter()->draw(tex, src, m_rect, m_flip, m_alpha);
+	}
+	else {
 	std::string img = m_action->get_image(m_action_timer);
 	if (img.empty())
 		return;
 	TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
 	g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip, m_alpha);
+	}
 	MovingObject::draw();
 }

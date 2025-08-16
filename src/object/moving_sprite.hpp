@@ -28,7 +28,7 @@ struct SpriteAction
 	SpriteAction(double fps,
 	             int loops,
 	             std::vector<std::string> images,
-				 std::vector<Rect_t<int>> spritesheets,
+				 std::vector<Rectf> spritesheets,
 				 int *_hitboxes) :
 		fps(std::move(fps)),
 		loops(loops),
@@ -47,11 +47,25 @@ struct SpriteAction
 		return images[timer.get_iterations() % (images.size())];
 	}
 	
+	Rectf
+	get_sprite(Timer &timer)
+	{
+		if (spritesheets.size() == 0)
+			return {};
+		return spritesheets[timer.get_iterations() % (spritesheets.size())];
+	}
+	
+	bool
+	is_spritesheet()
+	{
+		return spritesheets.size() > 0;
+	}
+	
 	double fps;
 	int loops;
 	// TODO Maybe a union so these don't both get initialized
 	std::vector<std::string> images;
-	std::vector<Rect_t<int>> spritesheets;
+	std::vector<Rectf> spritesheets;
 	int hitboxes[4];
 };
 
