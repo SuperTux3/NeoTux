@@ -168,6 +168,7 @@ MovingSprite::set_action(const std::string &action)
 	if (!img.empty())
 	{
 		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
+		if (!tex) return;
 			
 		m_rect.right = m_rect.left + tex->get_size().width;
 		m_rect.bottom = m_rect.top + tex->get_size().height;

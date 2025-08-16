@@ -61,6 +61,7 @@ TileChunk::update_texture_worker(Tilemap *parent, ThreadInfo &info)
 	assert(!m_empty);
 	
 	parent->m_tileset->reset();
+begin:
 	for (int i = 0; i < CHUNK_SIZE; ++i)
 	{
 		for (int j = 0; j < CHUNK_SIZE; ++j)
@@ -74,6 +75,8 @@ TileChunk::update_texture_worker(Tilemap *parent, ThreadInfo &info)
 			if (img.empty())
 				continue;
 			TextureRef tile = g_texture_manager.load("images/" + img, true);
+			if (!tile)
+				goto begin;
 #ifndef NDEBUG
 			if (!tile->get_sdl_surface())
 			{

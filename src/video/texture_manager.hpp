@@ -17,10 +17,12 @@
 #ifndef SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
 #define SUPERTUX_SRC_VIDEO_TEXTURE_MANAGER_HPP
 
+#include <list>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include "texture.hpp"
+#include "thread_worker.hpp"
 
 class TextureManager
 {
@@ -28,10 +30,14 @@ public:
 	TextureManager();
 	~TextureManager();
 	
+	void init();
 	TextureRef load(const std::string &filename, bool as_surface = false);
-	
+	void poll_unloaded();
 public:
+	ThreadWorker m_threads;
+	std::list<std::pair<std::string, bool>> m_waiting_load;
 	std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;
+	std::unique_ptr<Texture> m_dummy_texture;
 };
 
 extern TextureManager g_texture_manager;

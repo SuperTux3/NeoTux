@@ -23,6 +23,7 @@
 #include "util/logger.hpp"
 #include <memory>
 #include <format>
+#include "video/texture_manager.hpp"
 
 #define BEGIN_GAME_LOOP double __last_time; \
 	g_dtime = 0; \
@@ -31,6 +32,7 @@
 		if (!g_video_system) continue; \
 	
 #define END_GAME_LOOP g_video_system->flip(); \
+	g_texture_manager.poll_unloaded(); \
 	g_input_manager.reset(); \
 	if (g_settings->forced_delay != 0) \
 		SDL_Delay(g_settings->forced_delay); \

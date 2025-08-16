@@ -41,6 +41,8 @@ SDLPainter::draw(TextureRef texture,
 				 float alpha)
 {
 	SDLTexture *sdltex = static_cast<SDLTexture*>(texture);
+	if (!sdltex)
+		return;
 	SDL_Texture *tex = sdltex->get_sdl_texture();
 	float last_alpha;
 	

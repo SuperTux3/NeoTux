@@ -16,16 +16,41 @@
 
 #include "texture_manager.hpp"
 #include "util/filesystem.hpp"
+#include "video/sdl/surface_blitter.hpp"
 
 TextureManager g_texture_manager{};
 
-TextureManager::TextureManager()
+TextureManager::TextureManager() :
+	m_threads(1),
+	m_dummy_texture()
 {
 	
 }
 
 TextureManager::~TextureManager()
 {
+}
+
+void
+TextureManager::init()
+{
+	SurfaceBlitter blitter({64, 64});
+	blitter.fill({0, 255, 0, 255});
+	blitter.draw_circle(32, 32, 32, {255, 0, 255, 255});
+	m_dummy_texture.reset(blitter.to_texture());
+}
+
+void
+TextureManager::poll_unloaded()
+{
+	if (m_waiting_load.begin() == m_waiting_load.end())
+		return;
+	auto p = m_waiting_load.front();
+	std::cout << "Here! " << p.first << " " << p.second << std::endl;
+	TextureRef tex = Texture::create(FS::path(p.first), p.second);
+	m_textures.insert({p.first, std::unique_ptr<Texture>(tex)});
+	
+	m_waiting_load.pop_front();
 }
 
 TextureRef
@@ -35,8 +60,16 @@ TextureManager::load(const std::string &filename, bool as_surface)
 		return m_textures[filename].get();
 	else
 	{
-		TextureRef tex = Texture::create(FS::path(filename), as_surface);
-		m_textures.insert({filename, std::unique_ptr<Texture>(tex)});
-		return tex;
+		bool exists = false;
+		for (auto &wait : m_waiting_load)
+		{
+			if (wait.first == filename && wait.second == as_surface)
+				exists = true;
+		}
+		if (!exists)
+			m_waiting_load.emplace_front(filename, as_surface);
+		//TextureRef tex = Texture::create(FS::path(filename), as_surface);
+		//m_textures.insert({filename, std::unique_ptr<Texture>(tex)});
+		return nullptr;
 	}
 }
