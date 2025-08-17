@@ -193,7 +193,7 @@ MovingSprite::parse_sprite()
 					//_blitter.fill({0, 255, 0, 255});
 					_blitter.blit(surface.get(),
 						sheet.to_sdl_rect(),
-						SDL_Rect{ 0, 0, (int)sheet.get_width(), (int)sheet.get_height() });
+						std::nullopt);
 					_tstore.store(_blitter.to_texture(), m_spritesheet, Rect{sheet});
 #endif
 					
