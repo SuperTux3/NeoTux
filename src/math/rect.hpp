@@ -79,6 +79,15 @@ public:
 	{}
 	
 	template <typename U>
+	Rect_t(const Rect_t<U> &r) :
+		left(r.left),
+		top(r.top),
+		right(r.right),
+		bottom(r.bottom)
+	{
+	}
+	
+	template <typename U>
 	Rect_t(const Size_t<U> &size) :
 		left(0),
 		top(0),
@@ -120,13 +129,13 @@ public:
 		return { left, top, get_width(), get_height() };
 	}
 	
-	bool operator==(const Rect_t<T> &other)
+	bool operator==(const Rect_t<T> &other) const
 	{
 		return left == other.left && top == other.top &&
 			right == other.right && bottom == other.bottom;
 	}
 	
-	bool operator!=(const Rect_t<T> &other)
+	bool operator!=(const Rect_t<T> &other) const
 	{
 		return !operator==(other);
 	}
@@ -155,5 +164,20 @@ std::ostream& operator<<(std::ostream& out, const Rect_t<T> rect)
 
 using Rect = Rect_t<int>;
 using Rectf = Rect_t<float>;
+
+template <>
+struct std::hash<Rect>
+{
+	std::size_t operator()(const Rect &r) const
+	{
+		constexpr std::size_t GOLDEN_RATIO = 0x9e3779b9;
+		std::size_t hash = 0;
+		hash ^= std::hash<int>()(r.left)   + GOLDEN_RATIO + (hash<<6) + (hash>>2);
+		hash ^= std::hash<int>()(r.top)    + GOLDEN_RATIO + (hash<<6) + (hash>>2);
+		hash ^= std::hash<int>()(r.right)  + GOLDEN_RATIO + (hash<<6) + (hash>>2);
+		hash ^= std::hash<int>()(r.bottom) + GOLDEN_RATIO + (hash<<6) + (hash>>2);
+		return hash;
+	}
+};
 
 #endif // HEADER_SUPERTUX_MATH_RECT_HPP

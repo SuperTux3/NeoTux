@@ -39,9 +39,9 @@ public:
 	void poke_last_used();
 	uint64_t get_last_used() const { return m_time; }
 	SDL_Surface* get_sdl_surface() const { return m_sdl_surface.get(); }
-protected:
 	static SDL_Surface* create_surface(const std::string &filename);
-	
+
+protected:	
 	uint64_t m_time;
 	Size size;
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> m_sdl_surface;

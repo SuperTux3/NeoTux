@@ -46,6 +46,7 @@ public:
 	Texture* to_texture();
 	void destroy();
 	void reset();
+	void reset(Size size);
 private:
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> m_sdl_surface;
 	Size m_size;

@@ -150,6 +150,13 @@ SurfaceBlitter::reset()
 }
 
 void
+SurfaceBlitter::reset(Size size)
+{
+	m_size = std::move(size);
+	m_sdl_surface.reset(SDL_CreateSurface(m_size.width, m_size.height, SDL_PIXELFORMAT_ABGR32));
+}
+
+void
 SurfaceBlitter::destroy()
 {
 	m_sdl_surface.reset();

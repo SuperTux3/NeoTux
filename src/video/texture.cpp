@@ -63,14 +63,6 @@ SDL_Surface*
 Texture::create_surface(const std::string& filename)
 {
 	SDL_Surface* image = IMG_Load(filename.c_str());
-#ifdef NEOTUX_PSP
-	// Size of PSP textures can only be so large
-	// TODO should downscale later 
-	if (image->w >= 512)
-		image->w = 512;
-	if (image->h >= 512)
-		image->h = 512;
-#endif
 	if (!image)
 		throw SDLException("IMG_Load");
 	return image;
