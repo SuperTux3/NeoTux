@@ -1,5 +1,21 @@
 #!/usr/bin/env perl
-use Data::SExpression qw(cons consp scalarp);
+#   SuperTux 
+#   Copyright (C) 2025 Hyland B. <me@ow.swag.toys> 
+#  
+#   This program is free software: you can redistribute it and/or modify 
+#   it under the terms of the GNU General Public License as published by 
+#   the Free Software Foundation, either version 3 of the License, or 
+#   (at your option) any later version. 
+#  
+#   This program is distributed in the hope that it will be useful, 
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of 
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+#   GNU General Public License for more details. 
+#  
+#   You should have received a copy of the GNU General Public License 
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+use Data::SExpression;
 use Image::Magick;
 use File::Find;
 use File::Basename;
@@ -7,23 +23,25 @@ use File::Spec;
 use Getopt::Long;
 use Data::Dumper;
 
-$image = Image::Magick->new;
-
-my $src = '../data';
-my $dest = "data";
-my $MAX_W = 2000;
+my $src = undef;
+my $dest = undef;
+my $MAX_W = 1000;
 
 sub helpme
 {
 	"Usage: convert2spritesheet.pl [OPTIONS...]
 
   --src <dir>                  Source data directory with all sprites
-  --dest <dir>                 Destination data directory";
+  --dest <dir>                 Destination data directory
+  --max-width <width>          Optionally provide a texture width (default: 1000)";
 }
 
 GetOptions('src=s' => \$src,
            'dest=s' => \$dest,
-		   'help' => sub { printf helpme() . "\n"; exit(); }) or die(helpme());
+		   'max-width=i' => \$MAX_W,
+		   'help' => sub { printf helpme . "\n"; exit(); }) or die(helpme);
+
+die "Must provide two arguments.\n" . helpme . "\n" unless $src && $dest;
 		   
 sub src_dir { $src . '/' . $_[0] }
 sub dest_dir { $dest . '/' . $_[0] }
@@ -56,7 +74,6 @@ sub append_spritesheet_from_data
 			
 			# Work with image now
 			my $err = $sprite->Read($file);
-			#warn "$err" if "$err";
 			my ($w, $h) = $sprite->Get('width', 'height');
 			$max_h = $h if $h > $max_h;
 			# Set canvas size
