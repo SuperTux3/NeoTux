@@ -6,6 +6,9 @@ build.*/
 **/CMakeCache.txt
 supertux2
 
+# For testing
+scripts/data/
+
 # User-defined libraries
 external/
 
