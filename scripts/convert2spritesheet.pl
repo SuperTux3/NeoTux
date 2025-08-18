@@ -26,6 +26,7 @@ use Data::Dumper;
 my $src = undef;
 my $dest = undef;
 my $MAX_W = 1000;
+my $quality = 9;
 
 sub helpme
 {
@@ -33,12 +34,14 @@ sub helpme
 
   --src <dir>                  Source data directory with all sprites
   --dest <dir>                 Destination data directory
-  --max-width <width>          Optionally provide a texture width (default: 1000)";
+  --max-width <width>          Optionally provide a texture width (default: 1000)
+  --quality <quality>          Texture quality (PNG: 0-9)";
 }
 
 GetOptions('src=s' => \$src,
            'dest=s' => \$dest,
 		   'max-width=i' => \$MAX_W,
+		   'quality=i' => \$quality,
 		   'help' => sub { printf helpme . "\n"; exit(); }) or die(helpme);
 
 die "Must provide two arguments.\n" . helpme . "\n" unless $src && $dest;
@@ -154,7 +157,8 @@ sub parse_sprite
 		fold_dashes => 0,
 		use_symbol_class => 1,
 	});
-	my $image = Image::Magick->new(size=>'100x100');
+	my $image = Image::Magick->new(size=>'10x10');
+	$image->Set(quality=>$quality);
 	$image->Read('xc:none');
 	open my $fh, '<', $filename or die "Couldn't open $filename: $!";
 	my $fcontent = do { local $/; <$fh> };
