@@ -27,6 +27,7 @@ my $src = undef;
 my $dest = undef;
 my $MAX_W = 1000;
 my $quality = 9;
+my $scale = 1.0;
 
 sub helpme
 {
@@ -35,13 +36,15 @@ sub helpme
   --src <dir>                  Source data directory with all sprites
   --dest <dir>                 Destination data directory
   --max-width <width>          Optionally provide a texture width (default: 1000)
-  --quality <quality>          Texture quality (PNG: 0-9)";
+  --quality <quality>          Texture quality (PNG: 0-9)
+  --scale <amount>             Scale each texture by this amount (default: 1.0)";
 }
 
 GetOptions('src=s' => \$src,
            'dest=s' => \$dest,
 		   'max-width=i' => \$MAX_W,
 		   'quality=i' => \$quality,
+		   'scale=f' => \$scale,
 		   'help' => sub { printf helpme . "\n"; exit(); }) or die(helpme);
 
 die "Must provide two arguments.\n" . helpme . "\n" unless $src && $dest;
@@ -118,8 +121,8 @@ sub parse_sprite_data
 
 				# Store spritesheet information
 				$used_images{$file} = [
-					$curr_x, $curr_y,
-					$w, $h
+					$curr_x * $scale, $curr_y * $scale,
+					$w * $scale, $h * $scale
 				];
 
 				# For the next image...
@@ -211,6 +214,9 @@ sub parse_sprite
 	}
 	
 	parse_sprite_data($image, $dir, $name, \@actions);
+	
+	my ($w, $h) = $image->Get('width', 'height');
+	$image->Scale(width => $w * $scale, height => $h * $scale) if $scale != 1.0;
 	my $x = $image->Write(dest_dir($dir) . "/".$name."_spritesheet.png");
 	warn "$x" if "$x";
 	
