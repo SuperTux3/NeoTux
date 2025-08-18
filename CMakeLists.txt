@@ -3,7 +3,15 @@ project(NeoTux LANGUAGES CXX C)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-set(DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Location of the data directory (shaders, levels, images...)")
+set(NEOTUX_DATA_DIR "${CMAKE_BINARY_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
+
+if (NOT EXISTS "${NEOTUX_DATA_DIR}")
+	if ("${NEOTUX_DATA_DIR}" STREQUAL "${CMAKE_BINARY_DIR}/data")
+		message(ERROR "No compiled data directory found. Did you run the script?")
+	else()
+		message(ERROR "Your specified data directory doesn't exist. Is it placed?")
+	endif()
+endif()
 
 # TODO: my module function
 find_package(SDL3 REQUIRED)
@@ -28,7 +36,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(sfsexp)
 include("${PROJECT_SOURCE_DIR}/cmake/sfsexp.cmake")
 
-set(NEOTUX_DATA_DIR "${PROJECT_SOURCE_DIR}/data" CACHE PATH "Where NeoTux will look for game assets.")
 option(NEOTUX_USE_MIXER "Build with SDL3 Mixer support." ON)
 if (PSP)
 	message(STATUS "Building PSP version...")
@@ -80,15 +87,15 @@ if(NEOTUX_BGFX)
 
 	bgfx_compile_shaders(
 		TYPE VERTEX
-		SHADERS "${DATA_DIR}/shaders/vert.glsl"
-		VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
+		SHADERS "${NEOTUX_DATA_DIR}/shaders/vert.glsl"
+		VARYING_DEF "${NEOTUX_DATA_DIR}/shaders/varying.def.sc"
 		OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
 	)
 
 	bgfx_compile_shaders(
 		TYPE FRAGMENT
-		SHADERS "${DATA_DIR}/shaders/frag.glsl"
-		VARYING_DEF "${DATA_DIR}/shaders/varying.def.sc"
+		SHADERS "${NEOTUX_DATA_DIR}/shaders/frag.glsl"
+		VARYING_DEF "${NEOTUX_DATA_DIR}/shaders/varying.def.sc"
 		OUTPUT_DIR "${CMAKE_BINARY_DIR}/include/shaders"
 	)
 endif()
@@ -124,7 +131,7 @@ if(NEOTUX_USE_MIXER)
 endif()
 
 if(NEOTUX_BGFX)
-	target_sources(NeoTux PRIVATE "${DATA_DIR}/shaders/frag.glsl" "${DATA_DIR}/shaders/vert.glsl")
+	target_sources(NeoTux PRIVATE "${NEOTUX_DATA_DIR}/shaders/frag.glsl" "${NEOTUX_DATA_DIR}/shaders/vert.glsl")
 	target_link_libraries(NeoTux PUBLIC bgfx)
 endif()
 option(NEOTUX_ASAN "Use Address Santizer." OFF)
@@ -155,6 +162,8 @@ if (PSP)
 		VERSION 01.00
 	)
 endif()
+
+message(STATUS "Data dir: ${NEOTUX_DATA_DIR}")
 
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 target_include_directories(NeoTux PRIVATE ${PROJECT_BINARY_DIR})
