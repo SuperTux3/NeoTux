@@ -26,9 +26,9 @@
 #include <SDL3/SDL_surface.h>
 
 // PSP has 512x512 texture limit, so to bypass that we blit new textures from the source spritesheet
-//#ifdef PSP
-//#	define NEOTUX_BLIT_TEXTURES
-//#endif
+#ifdef PSP
+#	define NEOTUX_BLIT_TEXTURES
+#endif
 
 #ifdef NEOTUX_BLIT_TEXTURES
 #	include "video/texture_store.hpp"
@@ -193,12 +193,12 @@ MovingSprite::parse_sprite()
 					sheet.bottom = sheet.top + telt.get_int();
 					
 #ifdef NEOTUX_BLIT_TEXTURES
-					_blitter.reset({(int)((float)sheet.get_width() / scale), (int)((float)sheet.get_height() / scale)});
+					_blitter.reset({ sheet.get_width(), sheet.get_height() });
 					// Uncomment to debug if it's being blitted or not
 					//_blitter.fill({0, 255, 0, 255});
 					_blitter.blit(surface.get(),
 						sheet.to_sdl_rect(),
-						SDL_Rect{ 0, 0, (int)((float)sheet.get_width() / scale), (int)((float)sheet.get_height() / scale) });
+						SDL_Rect{ 0, 0, sheet.get_width(), sheet.get_height() });
 					_tstore.store(_blitter.to_texture(), m_spritesheet, Rect{sheet});
 #endif
 					
