@@ -135,7 +135,7 @@ SexpParser::read_data(const std::vector<char> &data)
 {
 	sexp_t *sexp = parse_sexp((char*)data.data(), data.size());
 	if (!sexp)
-		throw std::runtime_error("Failed to parse S-Expression");
+		throw std::runtime_error(std::format("Failed to parse S-Expression (errno: {})", (int)sexp_errno));
 	m_sexp.reset(sexp);
 	
 	return SexpElt(sexp);

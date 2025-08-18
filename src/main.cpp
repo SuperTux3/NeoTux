@@ -14,7 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <SDL3/SDL_messagebox.h>
+#include <exception>
 #include <format>
+#include <stdexcept>
 #include <string>
 #include <iomanip>
 #include <iostream>
@@ -310,6 +313,9 @@ extern "C"
 #endif
 int main(int argc, char** argv)
 {
+// TODO do this only for release builds
+	try
+	{
 #ifdef NEOTUX_PSP
 	setup_callbacks();
 #endif
@@ -343,5 +349,11 @@ int main(int argc, char** argv)
 	g_game->run();
 	
 	g_game->shutdown();
+	}
+	catch (const std::exception& err)
+	{
+		SDL_ShowSimpleMessageBox(
+			SDL_MESSAGEBOX_ERROR, "Exception occured", err.what(), NULL);
+	}
 	return 0;
 }
