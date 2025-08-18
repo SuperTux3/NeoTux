@@ -113,7 +113,7 @@ MovingSprite::parse_sprite()
 		double fps = 0.0;
 		int loops = -1;
 		int offset[] = { 0, 0 };
-		int stride[] = { 0, 0 };
+		int stride[] = { 1, 1 };
 		std::vector<std::string> images;
 		std::vector<Rectf> spritesheets;
 		Rectf sheet;
