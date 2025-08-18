@@ -49,6 +49,11 @@ SDLTexture::SDLTexture(SDL_Surface * const surface, bool destroy_surface/* = fal
 	{
 		Logger::debug("Texture surface was also stored.");
 		m_sdl_surface.reset(surface);
+		if (destroy_surface)
+		{
+			Logger::debug("But the surface is deleted...");
+			SDL_DestroySurface(surface);
+		}
 	}
 	else if (destroy_surface)
 		SDL_DestroySurface(surface);

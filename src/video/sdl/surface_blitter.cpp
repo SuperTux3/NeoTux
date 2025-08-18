@@ -165,6 +165,6 @@ SurfaceBlitter::destroy()
 Texture*
 SurfaceBlitter::to_texture()
 {
-	Texture *tex = Texture::create(m_sdl_surface.get(), false);
+	Texture *tex = Texture::create(m_sdl_surface.get(), false, false);
 	return tex;
 }

@@ -33,7 +33,7 @@ public:
 	void load_file(const std::string &filename);
 	//virtual void draw(Texture* texture, Rectf src, Rectf dest) = 0;
 	static Texture* create(const std::string &filename, bool as_surface = false);
-	static Texture* create(SDL_Surface *surface, bool destroy_surface = true);
+	static Texture* create(SDL_Surface *surface, bool destroy_surface = true, bool keep_surface = false);
 	
 	Size get_size() const { return size; }
 	void poke_last_used();

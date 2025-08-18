@@ -26,9 +26,9 @@
 #include <SDL3/SDL_surface.h>
 
 // PSP has 512x512 texture limit, so to bypass that we blit new textures from the source spritesheet
-#if 1
-#	define NEOTUX_BLIT_TEXTURES
-#endif
+//#ifdef PSP
+//#	define NEOTUX_BLIT_TEXTURES
+//#endif
 
 #ifdef NEOTUX_BLIT_TEXTURES
 #	include "video/texture_store.hpp"
