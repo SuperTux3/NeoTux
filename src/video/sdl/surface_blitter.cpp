@@ -78,7 +78,7 @@ SurfaceBlitter::write_pixel(int x, int y, SDL_Color color)
 void
 SurfaceBlitter::blit(SDL_Surface *surface, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dest)
 {
-	SDL_BlitSurface(surface, src ? &*src : NULL, m_sdl_surface.get(), dest ? &*dest : NULL);
+	SDL_BlitSurfaceScaled(surface, src ? &*src : NULL, m_sdl_surface.get(), dest ? &*dest : NULL, SDL_SCALEMODE_LINEAR);
 }
 
 // bresenham's circle

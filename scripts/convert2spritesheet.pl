@@ -59,6 +59,7 @@ sub cons_action
 	#print Dumper $images, $hitbox, $fps, $name;
 	my $pad = "\t\t\t";
 	my $res = "$pad(action \n";
+	$res .= "$pad  (scale $scale)\n" if $scale != 1.0;
 	$res .= "$pad  (name \"$name\")\n" if $name;
 	$res .= "$pad  (fps $fps)\n" unless $fps eq '0';
 	$res .= sprintf("$pad  (hitbox %s %s %s %s)\n", $hitbox->[0], $hitbox->[1], $hitbox->[2], $hitbox->[3]);

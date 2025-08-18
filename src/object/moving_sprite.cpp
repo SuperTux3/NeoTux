@@ -26,7 +26,7 @@
 #include <SDL3/SDL_surface.h>
 
 // PSP has 512x512 texture limit, so to bypass that we blit new textures from the source spritesheet
-#ifdef NEOTUX_PSP
+#if 1
 #	define NEOTUX_BLIT_TEXTURES
 #endif
 
@@ -112,6 +112,7 @@ MovingSprite::parse_sprite()
 		std::string name, spritesheet;
 		double fps = 0.0;
 		int loops = -1;
+		float scale = 1.0f;
 		int offset[] = { 0, 0 };
 		int stride[] = { 1, 1 };
 		std::vector<std::string> images;
@@ -144,6 +145,10 @@ MovingSprite::parse_sprite()
 			aelt = elt.find_car("fps");
 			if (aelt)
 				fps = aelt.next().get_number();
+			
+			aelt = elt.find_car("scale");
+			if (aelt)
+				scale = aelt.next().get_number();
 
 			aelt = elt.find_car("loops");
 			if (aelt)
@@ -188,12 +193,12 @@ MovingSprite::parse_sprite()
 					sheet.bottom = sheet.top + telt.get_int();
 					
 #ifdef NEOTUX_BLIT_TEXTURES
-					_blitter.reset({(int)sheet.get_width(), (int)sheet.get_height()});
+					_blitter.reset({(int)((float)sheet.get_width() / scale), (int)((float)sheet.get_height() / scale)});
 					// Uncomment to debug if it's being blitted or not
 					//_blitter.fill({0, 255, 0, 255});
 					_blitter.blit(surface.get(),
 						sheet.to_sdl_rect(),
-						std::nullopt);
+						SDL_Rect{ 0, 0, (int)((float)sheet.get_width() / scale), (int)((float)sheet.get_height() / scale) });
 					_tstore.store(_blitter.to_texture(), m_spritesheet, Rect{sheet});
 #endif
 					
@@ -215,7 +220,7 @@ MovingSprite::parse_sprite()
 					Logger::warn("A sprite hitbox is missing values! Expect bugs...");
 			}
 
-			sprite_action = new SpriteAction(fps, loops, images, spritesheets, hitboxes);
+			sprite_action = new SpriteAction(fps, loops, images, spritesheets, scale, hitboxes);
 			m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 		}
 	}
@@ -281,14 +286,14 @@ MovingSprite::draw()
 		Rect src = m_action->get_sprite(m_action_timer);
 		TextureRef tex = _tstore.load(m_spritesheet, src);
 		assert(tex);
-		m_rect.right = m_rect.left + src.get_width();
-		m_rect.bottom = m_rect.top + src.get_height();
+		m_rect.right = m_rect.left + ((float)src.get_width() / m_action->scale);
+		m_rect.bottom = m_rect.top + ((float)src.get_height() / m_action->scale);
 		g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip, m_alpha);
 #else			
 		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_spritesheet);
 		Rectf src = m_action->get_sprite(m_action_timer);
-		m_rect.right = m_rect.left + src.get_width();
-		m_rect.bottom = m_rect.top + src.get_height();
+		m_rect.right = m_rect.left + ((float)src.get_width() / m_action->scale);
+		m_rect.bottom = m_rect.top + ((float)src.get_height() / m_action->scale);
 		g_video_system->get_painter()->draw(tex, src, m_rect, m_flip, m_alpha);
 #endif
 	}
@@ -297,7 +302,9 @@ MovingSprite::draw()
 		if (img.empty())
 			return;
 		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + img);
-		g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip, m_alpha);
+		Rectf m_scaled_rect = m_rect;
+		//m_scaled_rect.right
+		g_video_system->get_painter()->draw(tex, std::nullopt, m_scaled_rect, m_flip, m_alpha);
 	}
 	MovingObject::draw();
 }

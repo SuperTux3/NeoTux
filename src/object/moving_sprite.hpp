@@ -29,11 +29,13 @@ struct SpriteAction
 	             int loops,
 	             std::vector<std::string> images,
 				 std::vector<Rectf> spritesheets,
+				 float scale,
 				 int *_hitboxes) :
 		fps(std::move(fps)),
 		loops(loops),
 		images(std::move(images)),
 		spritesheets(std::move(spritesheets)),
+		scale(scale),
 		hitboxes()
 	{
 		std::memcpy(hitboxes, _hitboxes, sizeof(decltype(*hitboxes))*4);
@@ -66,6 +68,7 @@ struct SpriteAction
 	// TODO Maybe a union so these don't both get initialized
 	std::vector<std::string> images;
 	std::vector<Rectf> spritesheets;
+	float scale;
 	int hitboxes[4];
 };
 
