@@ -85,11 +85,6 @@ MovingObject::do_collision(Rectf rect, bool do_real_collision_stuff, std::option
 	auto collide = Collision::aabb(custom_colbox ? *custom_colbox : get_colbox(), rect);
 	if (collide.is_colliding() && do_real_collision_stuff)
 	{
-		if (collide.top && collide.bottom && collide.left && collide.right)
-		{
-			// Player will go right forever otherwise
-			std::cout << collide.top_constraint << " " << collide.left_constraint << " " << collide.right_constraint << " " << collide.bottom_constraint << std::endl;
-		}
 		if (collide.top)
 		{
 			if (m_physics.get_y_vel() > 0)

@@ -75,7 +75,6 @@ Player::controls_move(bool right)
 	if ((m_physics.get_x_vel() > SKID_MIN_XVEL && !right) ||
 		(m_physics.get_x_vel() < -SKID_MIN_XVEL && right))
 	{
-		std::cout << "wow" << std::endl;
 		m_turning_dir = right;
 		m_state.set(PLAYER_TURNING, true);
 		if (!m_state.get(PLAYER_STARTED_TURNING))
@@ -258,8 +257,10 @@ Player::update(Sector &sector, Tilemap &tilemap)
 	if ((m_grounded || m_on_slope) && !m_state.get(PLAYER_TURNING) && m_physics.get_x_vel() != std::clamp<double>(m_physics.get_x_vel(), -35, 35))
 		set_action(get_size_str()+"walk-right");
 	
-	if (!m_on_slope && m_physics.get_y_vel() < -0.1)
+	if (!m_on_slope && !m_grounded && m_physics.get_y_vel() < -0.5)
 		set_action(get_size_str()+"fall-right");
+		
+	
 	handle_input();
 	MovingSprite::update(sector, tilemap);
 	
