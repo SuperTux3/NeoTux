@@ -37,13 +37,22 @@ sub append_spritesheet_from_data
 	my $curr_x = 0;
 	my $max_h = 0;
 	
-	print Dumper $actions;
+	my %used_images;
+	
 	foreach my $action (@$actions)
 	{
 		foreach my $file_rel (@{$action->{'images'}})
 		{
-			my $sprite = Image::Magick->new;
 			my $file = src_dir($dir) . '/' . $file_rel;
+			if ($used_images{$file})
+			{
+				# Don't punch in new images again
+				next;
+			}
+			else {
+				$used_images{$file} = 1;
+			}
+			my $sprite = Image::Magick->new;
 			
 			# Work with image now
 			my $err = $sprite->Read($file);
