@@ -82,7 +82,7 @@ sub parse_sprite_data
 		if (scalar @{$action->{'images'}} != 0)
 		{
 			$is_spritesheet = 1;
-			$sexp .= "\t\t\t  (spritesheet\n";
+			$sexp .= "\t\t\t  (spritesheets\n";
 		}
 		foreach my $file_rel (@{$action->{'images'}})
 		{
