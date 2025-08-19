@@ -62,13 +62,16 @@ sub dest_dir { $dest . '/' . $_[0] }
 sub cons_action
 {
 	my $action = $_[0];
-	my ($name, $fps, $hitbox) = ($action->{'name'}, $action->{'fps'}, $action->{'hitbox'});
+	my ($name, $fps, $hitbox, $loops) = (
+		$action->{'name'}, $action->{'fps'}, $action->{'hitbox'}, $action->{'loops'}
+	);
 	#print Dumper $images, $hitbox, $fps, $name;
 	my $pad = "\t\t\t";
 	my $res = "$pad(action \n";
 	$res .= "$pad  (scale $scale)\n" if $scale != 1.0;
 	$res .= "$pad  (name \"$name\")\n" if $name;
 	$res .= "$pad  (fps $fps)\n" unless $fps eq '0';
+	$res .= "$pad  (loops $loops)\n" if $loops;
 	$res .= sprintf("$pad  (hitbox %s %s %s %s)\n", $hitbox->[0], $hitbox->[1], $hitbox->[2], $hitbox->[3]);
 	
 	$res;
@@ -214,6 +217,7 @@ sub parse_sprite
 			# For consistency we keep fps as a string.
 			my $fps = "0";
 			my @hitbox;
+			my $loops;
 			# action
 			foreach my $list (@$root)
 			{
@@ -228,12 +232,14 @@ sub parse_sprite
 							$next = 2 if $action eq "images";
 							$next = 3 if $action eq "hitbox";
 							$next = 4 if $action eq "fps";
+							$next = 5 if $action eq "loops";
 							next;
 						}
 						$pname = $action if $next == 1;
 						push(@images, $action) if $next == 2;
 						push(@hitbox, $action) if $next == 3;
 						$fps = $action if $next == 4;
+						$loops = $action if $next == 5;
 					}
 				}
 			}
@@ -242,6 +248,7 @@ sub parse_sprite
 				images => [@images],
 				fps    => $fps,
 				hitbox => [@hitbox],
+				loops  => $loops,
 			});
 		}
 	}
