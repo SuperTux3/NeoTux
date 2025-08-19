@@ -26,8 +26,10 @@ use Data::Dumper;
 my $src = undef;
 my $dest = undef;
 my $MAX_W = 1000;
+my $MAX_H = undef;
 my $quality = 9;
 my $scale = 1.0;
+my $split_sprites = undef;
 
 sub helpme
 {
@@ -36,17 +38,22 @@ sub helpme
   --src <dir>                  Source data directory with all sprites
   --dest <dir>                 Destination data directory
   --max-width <width>          Optionally provide a texture width (default: 1000)
+  --max-height <height>        Optionally provide a texture height (default: unset)
   --quality <quality>          Texture quality (PNG: 0-9)
-  --scale <amount>             Scale each texture by this amount (default: 1.0)";
+  --scale <amount>             Scale each texture by this amount (default: 1.0)
+  --split-sprites              Split spritesheets into multiple files (requires: max-width, max-height)";
 }
 
 GetOptions('src=s' => \$src,
            'dest=s' => \$dest,
 		   'max-width=i' => \$MAX_W,
+		   'max-height=i' => \$MAX_H,
 		   'quality=i' => \$quality,
 		   'scale=f' => \$scale,
+		   'split-sprites' => sub { $split_sprites = 1; },
 		   'help' => sub { printf helpme . "\n"; exit(); }) or die(helpme);
 
+die "Must set both --max-width and --max-height if using --split-sprites.\n".helpme."\n" if $split_sprites && !$MAX_H;
 die "Must provide two arguments.\n" . helpme . "\n" unless $src && $dest;
 		   
 sub src_dir { $src . '/' . $_[0] }
@@ -75,12 +82,15 @@ sub parse_sprite_data
 	my $curr_y = 0;
 	my $curr_x = 0;
 	my $max_h = 0;
+	my $spritesheet_idx = 0;
 	
 	my %used_images;
 	
-	my $sexp = ";; Ugly trash proudly produced by ./convert2spritesheet.pl
-(supertux-sprite\n
-\t\t\t(spritesheet (image \"".$name."_spritesheet.png\"))\n";
+
+	my $sexp = "";
+	my $spritesheet_sexp = "";
+	$spritesheet_sexp = "(spritesheet (images ".$name."_spritesheet$spritesheet_idx.png ";
+	#$sexp .= "\t\t\t(spritesheet (image \"".$name."_spritesheet.png\"))\n" unless $split_sprites;
 	
 	foreach my $action (@$actions)
 	{
@@ -104,11 +114,31 @@ sub parse_sprite_data
 			
 			unless ($used_images{$file})
 			{
+				if ($curr_x + $w > $MAX_W)
+				{
+					$curr_x = 0;
+					$curr_y += $max_h;
+					$max_h = 0;
+				}
+				
+				if ($split_sprites && $curr_y + $h > $MAX_H)
+				{
+					$curr_x = 0;
+					$curr_y = 0;
+					$max_h = 0;
+					my $fn = $name."_spritesheet$spritesheet_idx.png";
+					$spritesheet_idx += 1;
+					$image->Scale(width => $w * $scale, height => $h * $scale) if $scale != 1.0;
+					$image->Write(dest_dir($dir) . "/" . $fn);
+					print "Writing ".dest_dir($dir)."/$fn\n";
+					$fn = $name."_spritesheet$spritesheet_idx.png";
+					$spritesheet_sexp .= "$fn ";
+				}
+				
 				$max_h = $h if $h > $max_h;
 				# Set canvas size
 				$curr_max_h = $h + $curr_y if ($h + $curr_y > $curr_max_h);
 				$curr_max_w = $w + $curr_x if ($w + $curr_x > $curr_max_w);
-
 				# Resize image width if larger
 				#$image->Extent(width => ($curr_x + $w), height => ($curr_y + $max_h));
 				$image->Extent(geometry=>$curr_max_w.'x'.$curr_max_h, background=>'transparent');
@@ -129,17 +159,12 @@ sub parse_sprite_data
 				# For the next image...
 				$curr_x += $w;
 
-				if ($curr_x > $MAX_W)
-				{
-					$curr_x = 0;
-					$curr_y += $max_h;
-					$max_h = 0;
-				}
 			}
 			
-			$sexp .= sprintf("\t\t\t    (%d %d %d %d)\n",
+			$sexp .= sprintf("\t\t\t    (%d %d %d %d %d)\n",
 				$used_images{$file}->[0], $used_images{$file}->[1],
-				$used_images{$file}->[2], $used_images{$file}->[3]) if $is_spritesheet;
+				$used_images{$file}->[2], $used_images{$file}->[3],
+				$spritesheet_idx) if $is_spritesheet;
 			
 			undef $sprite;
 		}
@@ -147,10 +172,17 @@ sub parse_sprite_data
 		$sexp .= ')' if $is_spritesheet;
 	}
 	
-	$sexp .= ')';
+	$sexp = ";; Ugly trash proudly produced by ./convert2spritesheet.pl
+(supertux-sprite\n $spritesheet_sexp)) $sexp )";
 	open my $fh, '>', dest_dir($dir).'/'.$name."_sheet.sprite" or die "Could not open sprite";
 	print $fh $sexp;
 	print "Writing ".dest_dir($dir).'/'.$name."_sheet.sprite\n";
+	
+	
+	my ($w, $h) = $image->Get('width', 'height');
+	$image->Scale(width => $w * $scale, height => $h * $scale) if $scale != 1.0;
+	$image->Write(dest_dir($dir) . "/".$name."_spritesheet$spritesheet_idx.png");
+	print "Writing ".dest_dir($dir).'/'.$name."_spritesheet$spritesheet_idx.png\n";
 }
 
 sub parse_sprite
@@ -216,12 +248,6 @@ sub parse_sprite
 	
 	parse_sprite_data($image, $dir, $name, \@actions);
 	
-	my ($w, $h) = $image->Get('width', 'height');
-	$image->Scale(width => $w * $scale, height => $h * $scale) if $scale != 1.0;
-	my $x = $image->Write(dest_dir($dir) . "/".$name."_spritesheet.png");
-	warn "$x" if "$x";
-	
-	print "Writing ".dest_dir($dir)."/".$name."_spritesheet.png\n";
 	undef $image;
 }
 
