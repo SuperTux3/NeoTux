@@ -25,11 +25,14 @@
 #include "config.h"
 #include <SDL3/SDL_surface.h>
 
-// PSP has 512x512 texture limit, so to bypass that we blit new textures from the source spritesheet
 //#ifdef PSP
 //#	define NEOTUX_BLIT_TEXTURES
 //#endif
 
+// Blitting sprites into new textures isn't recommended anymore since
+// we've worked around the 512x512 sprite limit on the PSP by creating
+// multiple spritesheets. However, if the occasional stutters still
+// annoy you, feel free to specify this #ifdef.
 #ifdef NEOTUX_BLIT_TEXTURES
 #	include "video/texture_store.hpp"
 
@@ -118,6 +121,7 @@ MovingSprite::parse_sprite()
 		std::vector<std::string> images;
 		std::vector<Rectf> spritesheets;
 		Rectf sheet;
+		unsigned spritesheet_idx = 0;
 		int hitboxes[4] = { -1, -1, -1, -1 };
 		SpriteAction *sprite_action;
 		
@@ -129,13 +133,18 @@ MovingSprite::parse_sprite()
 		
 		if (elt.get_value() == "spritesheet")
 		{
-			aelt = elt.find_car("image");
+			aelt = elt.find_car("images");
 			if (aelt)
-				spritesheet = aelt.next().get_value();
-			m_spritesheet = spritesheet;
+			{
+				while (aelt.next_inplace())
+				{
+					spritesheet = aelt.get_value();
+					m_spritesheets.push_back(spritesheet);
 #ifdef NEOTUX_BLIT_TEXTURES
-			surface.reset(Texture::create_surface(FS::path(m_parent_dir + '/' + m_spritesheet)));
+					//surface.reset(Texture::create_surface(FS::path(m_parent_dir + '/' + m_spritesheet)));
 #endif
+				}
+			}
 		}
 		if (elt.get_value() == "action") {
 			aelt = elt.find_car("name");
@@ -176,7 +185,7 @@ MovingSprite::parse_sprite()
 					stride[i] = aelt.get_int();
 			
 			aelt = elt.find_car("spritesheets");
-			if (aelt && !m_spritesheet.empty())
+			if (aelt && !m_spritesheets.empty())
 			{
 				while (aelt.next_inplace())
 				{
@@ -184,6 +193,7 @@ MovingSprite::parse_sprite()
 						continue;
 					telt = aelt.get_list();
 					
+					// Parse spritesheet rect info
 					sheet.left = (telt.get_int() * stride[0]) + offset[0];
 					telt.next_inplace();
 					sheet.top = (telt.get_int() * stride[1]) + offset[1];
@@ -191,6 +201,10 @@ MovingSprite::parse_sprite()
 					sheet.right = sheet.left + telt.get_int();
 					telt.next_inplace();
 					sheet.bottom = sheet.top + telt.get_int();
+					
+					// Spritesheet index the rect is for
+					telt.next_inplace();
+					spritesheet_idx = telt.get_int_or(0);
 					
 #ifdef NEOTUX_BLIT_TEXTURES
 					_blitter.reset({ sheet.get_width(), sheet.get_height() });
@@ -220,7 +234,7 @@ MovingSprite::parse_sprite()
 					Logger::warn("A sprite hitbox is missing values! Expect bugs...");
 			}
 
-			sprite_action = new SpriteAction(fps, loops, images, spritesheets, scale, hitboxes);
+			sprite_action = new SpriteAction(fps, loops, images, spritesheets, spritesheet_idx, scale, hitboxes);
 			m_actions.emplace(name, std::unique_ptr<SpriteAction>(sprite_action));
 		}
 	}
@@ -290,7 +304,7 @@ MovingSprite::draw()
 		m_rect.bottom = m_rect.top + ((float)src.get_height() / m_action->scale);
 		g_video_system->get_painter()->draw(tex, std::nullopt, m_rect, m_flip, m_alpha);
 #else			
-		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_spritesheet);
+		TextureRef tex = g_texture_manager.load(m_parent_dir + "/" + m_spritesheets[m_action->spritesheet_idx]);
 		Rectf src = m_action->get_sprite(m_action_timer);
 		m_rect.right = m_rect.left + ((float)src.get_width() / m_action->scale);
 		m_rect.bottom = m_rect.top + ((float)src.get_height() / m_action->scale);

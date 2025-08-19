@@ -29,13 +29,15 @@ struct SpriteAction
 	             int loops,
 	             std::vector<std::string> images,
 				 std::vector<Rectf> spritesheets,
+				 unsigned spritesheet_idx,
 				 float scale,
 				 int *_hitboxes) :
 		fps(std::move(fps)),
 		loops(loops),
 		images(std::move(images)),
 		spritesheets(std::move(spritesheets)),
-		scale(scale),
+		spritesheet_idx(std::move(spritesheet_idx)),
+		scale(std::move(scale)),
 		hitboxes()
 	{
 		std::memcpy(hitboxes, _hitboxes, sizeof(decltype(*hitboxes))*4);
@@ -68,6 +70,7 @@ struct SpriteAction
 	// TODO Maybe a union so these don't both get initialized
 	std::vector<std::string> images;
 	std::vector<Rectf> spritesheets;
+	unsigned spritesheet_idx;
 	float scale;
 	int hitboxes[4];
 };
@@ -92,7 +95,7 @@ protected:
 	std::string m_parent_dir;
 	std::string m_filename;
 	std::string m_action_string;
-	std::string m_spritesheet;
+	std::vector<std::string> m_spritesheets;
 	SpriteAction *m_action;
 	std::unordered_map<std::string, std::unique_ptr<SpriteAction>> m_actions;
 	SexpParser m_parser;
