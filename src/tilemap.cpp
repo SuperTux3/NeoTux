@@ -167,7 +167,7 @@ Tilemap::try_object_collision(MovingObject& obj)
 }
 
 void
-Tilemap::draw(const Camera &camera)
+Tilemap::draw(const ViewContext &camera)
 {
 	Painter *painter = g_video_system->get_painter();
 	//double offset_x = (camera.width - (camera.width * camera.zoom)) / 2.0;

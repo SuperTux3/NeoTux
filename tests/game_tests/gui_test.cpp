@@ -28,13 +28,13 @@ GuiTest::run()
 	FontManager::load_builtin_fonts();
 	Widget::register_all_widgets();
 	Size winsize = g_video_system->get_window_size();
-	g_camera.width = winsize.width;
-	g_camera.height = winsize.height;
+	g_rtcontext.width = winsize.width;
+	g_rtcontext.height = winsize.height;
 	
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
 	Painter* painter = g_video_system->get_painter();
-	painter->register_camera(&g_camera);
+	painter->register_camera(&g_rtcontext);
 	
 	GuiReader gui_reader;
 	Widget *box = gui_reader.open("guis/gui_test.stui");

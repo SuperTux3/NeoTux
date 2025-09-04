@@ -32,8 +32,8 @@ CollisionTest::run()
 {
 	FontManager::load_builtin_fonts();
 	Size winsize = g_video_system->get_window_size();
-	g_camera.width = winsize.width;
-	g_camera.height = winsize.height;
+	g_rtcontext.width = winsize.width;
+	g_rtcontext.height = winsize.height;
 	
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
@@ -47,7 +47,7 @@ CollisionTest::run()
 		return;
 	
 	Painter* painter = g_video_system->get_painter();
-	painter->register_camera(&g_camera);
+	painter->register_camera(&g_rtcontext);
 	
 	Player player;
 	
@@ -74,13 +74,13 @@ CollisionTest::run()
 				player.disable_gravity();
 			}
 			else if (g_input_manager.get_mouse_button() == 3) {
-				player.move_to((int)g_input_manager.get_mouse_x() + g_camera.x,
-				               (int)g_input_manager.get_mouse_y() + g_camera.y);
+				player.move_to((int)g_input_manager.get_mouse_x() + g_rtcontext.x,
+				               (int)g_input_manager.get_mouse_y() + g_rtcontext.y);
 				player.disable_gravity();
 			}
 			else if (g_input_manager.get_mouse_button() == 2) {
-				g_camera.x -= g_input_manager.get_mouse_dx()*3.0;
-				g_camera.y -= g_input_manager.get_mouse_dy()*3.0;
+				g_rtcontext.x -= g_input_manager.get_mouse_dx()*3.0;
+				g_rtcontext.y -= g_input_manager.get_mouse_dy()*3.0;
 			}
 		}
 		else if (player.m_likes_falling == false) {
@@ -90,8 +90,8 @@ CollisionTest::run()
 		
 		mline_beg.x = player.get_rect().left;
 		mline_beg.y = player.get_rect().top;
-		mline_end.x = player.get_rect().left - g_camera.x - (double)g_input_manager.get_mouse_x();
-		mline_end.y = player.get_rect().top - g_camera.y - (double)g_input_manager.get_mouse_y();
+		mline_end.x = player.get_rect().left - g_rtcontext.x - (double)g_input_manager.get_mouse_x();
+		mline_end.y = player.get_rect().top - g_rtcontext.y - (double)g_input_manager.get_mouse_y();
 		
 		
 		TextureRef help_1 = g_font_manager.load(SUPERTUX_MEDIUM, 32,
@@ -130,7 +130,7 @@ CollisionTest::run()
 		//	player.down();
 		
 		player.update(sector, *tilemap);
-		tilemap->draw(g_camera);
+		tilemap->draw(g_rtcontext);
 		tilemap->try_object_collision(player);
 		player.draw();
 		

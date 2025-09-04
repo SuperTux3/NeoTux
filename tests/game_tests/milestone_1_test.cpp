@@ -48,8 +48,8 @@ Milestone1Test::run()
 	// First is considered a completion to start
 	bool completed = true;
 	Size winsize = g_video_system->get_window_size();
-	g_camera.width = winsize.width;
-	g_camera.height = winsize.height;
+	g_rtcontext.width = winsize.width;
+	g_rtcontext.height = winsize.height;
 	
 	g_tiles_reader.open();	
 	
@@ -59,7 +59,7 @@ Milestone1Test::run()
 	Tilemap *tilemap = nullptr;
 	
 	Painter* painter = g_video_system->get_painter();
-	painter->register_camera(&g_camera);
+	painter->register_camera(&g_rtcontext);
 	
 	StatsOverlay stats;
 	LevelScreen levelscreen{nullptr};
@@ -98,11 +98,11 @@ Milestone1Test::run()
 		}
 		
 		if (g_input_manager.get_scroll_y() != 0)
-			g_camera.zoom += g_input_manager.get_scroll_y() / 15.0;
+			g_rtcontext.zoom += g_input_manager.get_scroll_y() / 15.0;
 		if (g_input_manager.mapping_pressed(ZOOMIN_BINDING))
-			g_camera.zoom += 1 * g_dtime;
+			g_rtcontext.zoom += 1 * g_dtime;
 		else if (g_input_manager.mapping_pressed(ZOOMOUT_BINDING))
-			g_camera.zoom -= 1 * g_dtime;
+			g_rtcontext.zoom -= 1 * g_dtime;
 			
 		
 		if (!levelscreen.finished())
@@ -153,17 +153,17 @@ Milestone1Test::run()
 		tilemap->try_object_collision(player);
 		
 		
-		g_camera.x = 
+		g_rtcontext.x = 
 			std::max(0.f,
-				std::min<float>(tilemap->get_size().width * 32 - g_camera.width,
-				         (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f));
-		g_camera.y = 
+				std::min<float>(tilemap->get_size().width * 32 - g_rtcontext.width,
+				         (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_rtcontext.width / 2.f));
+		g_rtcontext.y = 
 			std::max(0.f,
-				std::min<float>(tilemap->get_size().height * 32 - g_camera.height,
-				         (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f));
+				std::min<float>(tilemap->get_size().height * 32 - g_rtcontext.height,
+				         (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_rtcontext.height / 2.f));
 		
 		
-		tilemap->draw(g_camera);
+		tilemap->draw(g_rtcontext);
 		level->draw();
 		player.draw();
 		

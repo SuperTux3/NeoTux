@@ -20,34 +20,34 @@
 bool
 Painter::in_camera_bounds(std::optional<Rectf> dest)
 {
-	if (!m_camera || !dest)
+	if (!m_context || !dest)
 		return true;
 	
-	double zoomed_left = (dest->left - m_camera->x) * m_camera->zoom;
-	double zoomed_top = (dest->top - m_camera->y) * m_camera->zoom;
-	double zoomed_right = (dest->right - m_camera->x) * m_camera->zoom;
-	double zoomed_bottom = (dest->bottom - m_camera->y) * m_camera->zoom;
+	double zoomed_left = (dest->left - m_context->x) * m_context->zoom;
+	double zoomed_top = (dest->top - m_context->y) * m_context->zoom;
+	double zoomed_right = (dest->right - m_context->x) * m_context->zoom;
+	double zoomed_bottom = (dest->bottom - m_context->y) * m_context->zoom;
 	
-	if (zoomed_bottom + ((m_camera->height - (m_camera->height * m_camera->zoom)) / 2) < 0 ||
-	    zoomed_top + ((m_camera->height - (m_camera->height * m_camera->zoom)) / 2) > m_camera->height ||
-		zoomed_right + ((m_camera->width - (m_camera->width * m_camera->zoom)) / 2) < 0 ||
-		zoomed_left + ((m_camera->width - (m_camera->width * m_camera->zoom)) / 2) > m_camera->width)
+	if (zoomed_bottom + ((m_context->height - (m_context->height * m_context->zoom)) / 2) < 0 ||
+	    zoomed_top + ((m_context->height - (m_context->height * m_context->zoom)) / 2) > m_context->height ||
+		zoomed_right + ((m_context->width - (m_context->width * m_context->zoom)) / 2) < 0 ||
+		zoomed_left + ((m_context->width - (m_context->width * m_context->zoom)) / 2) > m_context->width)
 		return false;
 	
 	return true;
 }
 
 void
-Painter::register_camera(Camera *camera)
+Painter::register_camera(ViewContext *camera)
 {
-	m_camera = camera;
+	m_context = camera;
 }
 
-Camera*
+ViewContext*
 Painter::unregister_camera()
 {
-	Camera *old_camera = m_camera;
-	m_camera = nullptr;
+	ViewContext *old_camera = m_context;
+	m_context = nullptr;
 	return old_camera;
 }
 

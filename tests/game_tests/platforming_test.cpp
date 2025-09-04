@@ -29,8 +29,8 @@ void
 PlatformingTest::run()
 {
 	Size winsize = g_video_system->get_window_size();
-	g_camera.width = winsize.width;
-	g_camera.height = winsize.height;
+	g_rtcontext.width = winsize.width;
+	g_rtcontext.height = winsize.height;
 	
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
 	
@@ -42,7 +42,7 @@ PlatformingTest::run()
 	Tilemap *tilemap = sector.get_tilemap_by_zpos(0);
 	
 	Painter* painter = g_video_system->get_painter();
-	painter->register_camera(&g_camera);
+	painter->register_camera(&g_rtcontext);
 	
 	MovingSprite sprite("images/creatures/tux/tux.sprite", "super the tux");
 	sprite.set_action("small-stand-right");
@@ -81,10 +81,10 @@ PlatformingTest::run()
 		if (timer.tick())
 			std::cout << "Timer ticked!" << std::endl;
 			
-		g_camera.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_camera.width / 2.f;
-		g_camera.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_camera.height / 2.f;
+		g_rtcontext.x = (player.get_rect().left + player.get_rect().get_width() / 2.f) - g_rtcontext.width / 2.f;
+		g_rtcontext.y = (player.get_rect().top + player.get_rect().get_height() / 2.f) - g_rtcontext.height / 2.f;
 		
-		tilemap->draw(g_camera);
+		tilemap->draw(g_rtcontext);
 		player.draw();
 		sprite.draw();
 	END_GAME_LOOP

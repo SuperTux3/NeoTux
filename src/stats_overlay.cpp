@@ -29,8 +29,8 @@ void
 StatsOverlay::draw()
 {
 	Painter *painter = g_video_system->get_painter();
-	Camera *last_camera = painter->unregister_camera();
-	Camera camera{last_camera->width, last_camera->height};
+	ViewContext *last_camera = painter->unregister_camera();
+	ViewContext camera{last_camera->width, last_camera->height};
 	painter->register_camera(&camera);
 	
 	TextureRef time = g_font_manager.load(SUPERTUX_MEDIUM, 24,
@@ -45,10 +45,10 @@ StatsOverlay::draw()
 		Rectf{0, 0,
 		      {(float)time->get_size().width, (float)time->get_size().height}});
 	painter->draw(coins, std::nullopt,
-		Rectf{(float)g_camera.width - lives->get_size().width, 0,
+		Rectf{(float)g_rtcontext.width - lives->get_size().width, 0,
 		      {(float)coins->get_size().width, (float)coins->get_size().height}});
 	painter->draw(lives, std::nullopt,
-		Rectf{(float)g_camera.width - lives->get_size().width,
+		Rectf{(float)g_rtcontext.width - lives->get_size().width,
 		      (float)lives->get_size().height,
 		      {(float)lives->get_size().width, (float)lives->get_size().height}});
 	

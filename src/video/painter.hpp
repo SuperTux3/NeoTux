@@ -32,7 +32,7 @@ enum
 };
 using Flip = uint8_t;
 
-class Camera;
+class ViewContext;
 
 class Painter
 {
@@ -56,8 +56,8 @@ public:
 	virtual void begin_clip(Rect clip);
 	virtual void end_clip();
 	
-	void register_camera(Camera *camera);
-	Camera* unregister_camera();
+	void register_camera(ViewContext *camera);
+	ViewContext* unregister_camera();
 	
 //#ifndef NDEBUG
 	inline unsigned long get_draw_count() const { return m_draw_count; }
@@ -69,7 +69,7 @@ public:
 //#endif
 
 protected:
-	Camera *m_camera;
+	ViewContext *m_context;
 	bool m_do_clip;
 	Rect m_clip;
 };

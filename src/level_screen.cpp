@@ -64,8 +64,8 @@ void
 LevelScreen::draw()
 {
 	Painter *painter = g_video_system->get_painter();
-	Camera *last_camera = painter->unregister_camera();
-	Camera camera{last_camera->width, last_camera->height};
+	ViewContext *last_camera = painter->unregister_camera();
+	ViewContext camera{last_camera->width, last_camera->height};
 	painter->register_camera(&camera);
 	
 	TextureRef lvlname = g_font_manager.load(SUPERTUX_MEDIUM, 30,

@@ -29,7 +29,7 @@
 #include "util/sexp.hpp"
 #include "video/sdl/surface_blitter.hpp"
 
-struct Camera;
+struct ViewContext;
 struct TilesReader;
 struct MovingObject;
 
@@ -46,7 +46,7 @@ public:
 	// TODO: Make tiles_reader a member	
 	std::optional<std::vector<Collision::CollideInfo<float>>> try_object_collision(MovingObject &obj);
 	
-	void draw(const Camera &camera);
+	void draw(const ViewContext &camera);
 	
 protected:
 	std::shared_ptr<ThreadWorker> m_threads;

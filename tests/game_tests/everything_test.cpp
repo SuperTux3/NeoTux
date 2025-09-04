@@ -61,8 +61,8 @@ EverythingTest::run()
 {
 	Size winsize = g_video_system->get_window_size();
 	Widget::register_all_widgets();
-	g_camera.width = winsize.width;
-	g_camera.height = winsize.height;
+	g_rtcontext.width = winsize.width;
+	g_rtcontext.height = winsize.height;
 	
 	g_font_cache.load("This message should be cleaned up.", {255, 255, 255, 255});
 	g_mixer.play_music("music/antarctic/chipdisko.ogg");
@@ -95,15 +95,15 @@ EverythingTest::run()
 		
 		Painter* painter = g_video_system->get_painter();
 		painter->clear();
-		painter->register_camera(&g_camera);
+		painter->register_camera(&g_rtcontext);
 		handle_events();
 		
 		painter->draw(cool_thing.get(), std::nullopt, SDL_FRect{80, 80, 300, 300});
 		
 		painter->begin_clip(SDL_Rect{90, 30, 600, 800});
 		
-		g_camera.x = 5;
-		g_camera.y = 5;
+		g_rtcontext.x = 5;
+		g_rtcontext.y = 5;
 		
 		if (box)
 		{
@@ -140,8 +140,8 @@ EverythingTest::run()
 		
 		painter->end_clip();
 		
-		g_camera.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
-		g_camera.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;
+		g_rtcontext.x = sin((float)i/10.f)*100.f - 50 - sin((float)i/300.f)*55;
+		g_rtcontext.y = cos((float)i/20.f)*100.f - 50 - tan((float)i/100.f)*55;
 		
 		g_texture_manager.load("images/creatures/mr_bomb/left-0.png");
 		g_texture_manager.load("images/creatures/nolok/walk-0.png");
@@ -158,12 +158,12 @@ EverythingTest::run()
 			g_mixer.play_sound("sounds/bigjump.wav");
 		}
 		
-		g_camera.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
-		g_camera.y = cos((float)i/20.f)*80.f - 200 - tan((float)i/80.f)*35;
+		g_rtcontext.x = sin((float)i/10.f)*80.f - 200 - sin((float)i/300.f)*35;
+		g_rtcontext.y = cos((float)i/20.f)*80.f - 200 - tan((float)i/80.f)*35;
 		draw_textures();
 		
-		g_camera.x = 0;
-		g_camera.y = 0;
+		g_rtcontext.x = 0;
+		g_rtcontext.y = 0;
 		
 //#ifndef NDEBUG
 		TextureRef fps = g_font_cache.load(std::format("FPS: {}", (int)get_fps()), {255, 255, 255, 155});

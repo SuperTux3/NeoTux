@@ -17,16 +17,16 @@
 #ifndef SUPERTUX_SRC_CAMERA_HPP
 #define SUPERTUX_SRC_CAMERA_HPP
 
-struct Camera
+struct ViewContext
 {
-	Camera(unsigned w, unsigned h) :
+	ViewContext(unsigned w, unsigned h) :
 		x{0},
 		y{0},
 		width{w},
 		height{h},
 		zoom{1.0}
 	{}
-	~Camera() = default;
+	~ViewContext() = default;
 	
 	int x;
 	int y;
@@ -35,6 +35,7 @@ struct Camera
 	double zoom;
 };
 
-extern Camera g_camera;
+// Root Context (Window size)
+extern ViewContext g_rtcontext;
 
 #endif

@@ -16,4 +16,4 @@
 
 #include "camera.hpp"
 
-Camera g_camera(0,0);
+ViewContext g_rtcontext(0,0);

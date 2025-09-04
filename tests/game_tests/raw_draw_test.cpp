@@ -60,7 +60,7 @@ RawDrawTest::run()
 	
 	// state
 	double total = 3.0;
-	Camera cam{(unsigned)g_video_system->get_window_size().width, (unsigned)g_video_system->get_window_size().height};
+	ViewContext cam{(unsigned)g_video_system->get_window_size().width, (unsigned)g_video_system->get_window_size().height};
 	bool jumped = false;
 	bool use_painter = false;
 	BEGIN_GAME_LOOP

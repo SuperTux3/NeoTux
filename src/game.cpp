@@ -110,8 +110,8 @@ Game::handle_events()
 			case SDL_EVENT_WINDOW_RESIZED:
 			{
 				g_video_system->on_resize(ev.window.data1, ev.window.data2);
-				g_camera.width  = ev.window.data1;
-				g_camera.height = ev.window.data2;
+				g_rtcontext.width  = ev.window.data1;
+				g_rtcontext.height = ev.window.data2;
 			}
 		}
 		g_input_manager.handle_event(ev);

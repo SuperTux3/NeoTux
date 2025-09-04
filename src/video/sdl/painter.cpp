@@ -53,17 +53,17 @@ SDLPainter::draw(TextureRef texture,
 	SDL_FRect dest_sdl;
 	if (dest)
 		dest_sdl = dest->to_sdl_frect();
-	if (m_camera)
+	if (m_context)
 	{
-		dest_sdl.x -= m_camera->x;
-		dest_sdl.y -= m_camera->y;
-		dest_sdl.x *= m_camera->zoom;
-		dest_sdl.y *= m_camera->zoom;
-		dest_sdl.w *= m_camera->zoom;
-		dest_sdl.h *= m_camera->zoom;
+		dest_sdl.x -= m_context->x;
+		dest_sdl.y -= m_context->y;
+		dest_sdl.x *= m_context->zoom;
+		dest_sdl.y *= m_context->zoom;
+		dest_sdl.w *= m_context->zoom;
+		dest_sdl.h *= m_context->zoom;
 		
-		dest_sdl.x +=  (m_camera->width - (m_camera->width  * m_camera->zoom)) / 2.0;
-		dest_sdl.y += (m_camera->height - (m_camera->height * m_camera->zoom)) / 2.0;
+		dest_sdl.x +=  (m_context->width - (m_context->width  * m_context->zoom)) / 2.0;
+		dest_sdl.y += (m_context->height - (m_context->height * m_context->zoom)) / 2.0;
 	}
 	if (m_do_clip)
 	{
@@ -98,10 +98,10 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 		return;
 	
 	SDL_FRect dest_sdl = dest.to_sdl_frect();
-	if (m_camera)
+	if (m_context)
 	{
-		dest_sdl.x -= m_camera->x;
-		dest_sdl.y -= m_camera->y;
+		dest_sdl.x -= m_context->x;
+		dest_sdl.y -= m_context->y;
 	}
 	if (m_do_clip)
 	{
@@ -117,13 +117,13 @@ SDLPainter::draw_fill_rect(Rectf dest, SDL_Color color)
 void
 SDLPainter::draw_line(Vec2 l_start, Vec2 l_end, SDL_Color color)
 {
-	if (m_camera)
+	if (m_context)
 	{
-		l_start.x -= m_camera->x;
-		l_start.y -= m_camera->y;
+		l_start.x -= m_context->x;
+		l_start.y -= m_context->y;
 		
-		l_end.x -= m_camera->x;
-		l_end.y -= m_camera->y;
+		l_end.x -= m_context->x;
+		l_end.y -= m_context->y;
 	}
 	if (m_do_clip)
 	{

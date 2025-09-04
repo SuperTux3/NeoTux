@@ -138,7 +138,7 @@ Sector::draw()
 {
 	for (auto &object : m_tilemaps)
 	{
-		object.draw(g_camera);
+		object.draw(g_rtcontext);
 	}
 	
 	for (auto &object : m_objects)
