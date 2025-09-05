@@ -44,7 +44,7 @@ GuiTest::run()
 		painter->clear();
 		
 		box->update();
-		box->draw();
+		box->draw(g_rtcontext);
 	END_GAME_LOOP
 	
 	delete box;

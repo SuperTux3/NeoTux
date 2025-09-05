@@ -40,7 +40,7 @@ BoxWidget::box()
 }
 
 void
-BoxWidget::draw()
+BoxWidget::draw(ViewContext& ctx)
 {
 	g_video_system->get_painter()->draw_fill_rect(*this, {r, g, b, 150});
 }

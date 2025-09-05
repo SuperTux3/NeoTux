@@ -26,7 +26,16 @@ struct ViewContext
 		height{h},
 		zoom{1.0}
 	{}
+	ViewContext(int x, int y, unsigned w, unsigned h) :
+		x{x},
+		y{y},
+		width{w},
+		height{h},
+		zoom{1.0}
+	{}
 	~ViewContext() = default;
+	
+	void use();
 	
 	int x;
 	int y;

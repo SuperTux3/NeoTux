@@ -26,7 +26,7 @@ ButtonWidget::ButtonWidget(const Rectf& props, BoxWidget *widget) :
 {}
 
 void
-ButtonWidget::draw()
+ButtonWidget::draw(ViewContext& ctx)
 {
 #ifndef NDEBUG
 	if (!m_widget)
@@ -34,7 +34,7 @@ ButtonWidget::draw()
 #endif
 	if (m_widget)
 	{
-		m_widget->draw();
+		m_widget->draw(ctx);
 	}
 }
 

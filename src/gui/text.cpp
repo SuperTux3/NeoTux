@@ -28,7 +28,7 @@ TextWidget::TextWidget(const Rectf& props, std::string message, unsigned font_si
 {}
 
 void
-TextWidget::draw()
+TextWidget::draw(ViewContext& ctx)
 {
 	TextureRef tex = g_font_manager.load(SUPERTUX_MEDIUM, m_font_size, m_message, m_color);
 	g_video_system->get_painter()->draw(tex,

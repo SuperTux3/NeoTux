@@ -108,8 +108,7 @@ EverythingTest::run()
 		if (box)
 		{
 			box->update();
-			box->draw();
-			
+			box->draw(g_rtcontext);
 		}
 		
 		// Draw tiles

@@ -15,5 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "camera.hpp"
+#include "video/video_system.hpp"
 
 ViewContext g_rtcontext(0,0);
+
+void
+ViewContext::use()
+{
+	g_video_system->get_painter()->register_camera(this);
+}

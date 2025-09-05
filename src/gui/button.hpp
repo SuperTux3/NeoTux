@@ -33,7 +33,7 @@ public:
 	
 	static Widget* construct(SexpElt elt);
 	
-	virtual void draw() override;
+	virtual void draw(ViewContext&) override;
 	virtual void update() override;
 	
 private:

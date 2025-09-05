@@ -35,7 +35,7 @@ public:
 	
 	void add(BoxWidget *box);
 	
-	virtual void draw() override;
+	virtual void draw(ViewContext&) override;
 	virtual void update() override;
 	
 private:

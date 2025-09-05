@@ -26,13 +26,13 @@ ContainerWidget::ContainerWidget(const Rectf& props, bool is_horizontal) :
 {}
 
 void
-ContainerWidget::draw()
+ContainerWidget::draw(ViewContext &ctx)
 {
 	float pos = 0.f;
 	for (const auto& widget : m_widgets)
 	{
 		const Rectf& r = widget->box();
-		widget->draw();
+		widget->draw(ctx);
 	}
 }
 

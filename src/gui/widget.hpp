@@ -20,6 +20,7 @@
 #include <functional>
 #include "util/sexp.hpp"
 
+struct ViewContext;
 struct Widget;
 struct SDL_Color;
 extern std::unordered_map<std::string_view, std::function<Widget*(SexpElt)>> _registered_widgets;
@@ -50,7 +51,7 @@ public:
 	static Widget* create(SexpElt elt);
 
 	bool handle_events() { return false; };
-	virtual void draw() = 0;
+	virtual void draw(ViewContext&) = 0;
 	virtual void update() = 0;
 
 	virtual bool on_mouse_button_up() { return false; }

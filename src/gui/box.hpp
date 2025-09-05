@@ -35,7 +35,7 @@ public:
 	
 	static Rectf parse_sexp(SexpElt &elt);
 
-	virtual void draw() override;
+	virtual void draw(ViewContext&) override;
 	virtual void update() override {};
 
 	//virtual void setup() override {};
